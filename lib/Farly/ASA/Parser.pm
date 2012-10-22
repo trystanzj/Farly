@@ -472,7 +472,6 @@ ANY :
 
 DEFAULTROUTE :
 			/0(\s+)0/
-		|	'0'
 
 IPADDRESS :
 		/((\d{1,3})((\.)(\d{1,3})){3})/
