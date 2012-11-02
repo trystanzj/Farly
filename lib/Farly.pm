@@ -19,7 +19,7 @@ use Farly::Transport::PortLT;
 use Farly::Transport::PortRange;
 use Farly::Transport::Protocol;
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 our ($volume,$dir,$file) = File::Spec->splitpath( $INC{'Farly.pm'} );
 Log::Log4perl::init( $volume.$dir.'Farly/Log/Farly.conf');

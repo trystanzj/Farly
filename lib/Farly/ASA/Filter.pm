@@ -6,7 +6,7 @@ use warnings;
 use Carp;
 use Log::Log4perl qw(get_logger);
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 sub new {
 	my ( $class ) = @_;

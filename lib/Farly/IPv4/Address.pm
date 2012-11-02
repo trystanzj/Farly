@@ -7,7 +7,7 @@ use Carp;
 use Farly::IPv4::Object;
 
 our @ISA     = qw(Farly::IPv4::Object);
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 sub new {
 	my ( $class, $address ) = @_;
