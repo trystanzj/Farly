@@ -35,36 +35,6 @@ sub new {
 sub config { return $_[0]->{CONFIG} }
 sub result { return $_[0]->{RESULT} }
 
-# all rule objects being removed will have been marked with the
-# 'REMOVE' property.  Update the $self->{CONFIG} container to
-# exclude all objects which are being removed. This allows
-# the remove() method to be called multiple times for the
-# same configuration.
-sub _cleanup {
-	my ($self) = @_;
-
-	my $new_list = Object::KVC::List->new();
-
-	foreach my $object ( $self->config->iter() ) {
-
-		#print $object->dump(),"\n";
-		if ( !$object->has_defined('REMOVE') ) {
-			$new_list->add($object);
-		}
-	}
-
-	foreach my $object ( $self->result->iter() ) {
-
-		# result includes all objects to add and remove,
-		# but only want the adds
-		if ( !$object->has_defined('REMOVE') ) {
-			$new_list->add($object);
-		}
-	}
-
-	$self->{CONFIG} = $new_list;
-}
-
 sub _fetch_config_acl {
 	my ( $self, $id ) = @_;
 
@@ -185,15 +155,13 @@ sub remove {
 
 		}
 
-		#the config rule had an error, so remove it
-		$config_rule->set( 'REMOVE', Object::KVC::String->new('RULE') );
-
+		#the running config rule had an error, so remove it
+		#use the expanded rule entries instead
 		my $r = $config_rule->clone();
+		$r->set( 'REMOVE', Object::KVC::String->new('RULE') );
 		$r->delete_key('LINE');
 		$self->result->add($r);
 	}
-
-	$self->_cleanup();
 }
 
 1;
