@@ -17,26 +17,26 @@ our $AUTOLOAD;
 our $Token_Class_Map = {
 	'STRING'      => 'Object::KVC::String',
 	'DIGIT'       => 'Object::KVC::Integer',
-	'NAME'        => 'Object::KVC::String',            #replace name with IP
+	'NAME'        => 'Object::KVC::String',            #method replaces name with IP
 	'IF_REF'      => 'Object::KVC::HashRef',
 	'OBJECT_REF'  => 'Object::KVC::HashRef',
 	'GROUP_REF'   => 'Object::KVC::HashRef',
 	'RULE_REF'    => 'Object::KVC::HashRef',
 	'GROUP_TYPE'  => 'Object::KVC::String',
 	'OBJECT_TYPE' => 'Object::KVC::String',
-	'ANY'         => 'Farly::IPv4::Network',			#ANY = '0.0.0.0 0.0.0.0'
+	'ANY'         => 'Farly::IPv4::Network',			#method ANY = '0.0.0.0 0.0.0.0'
 	'IPADDRESS'   => 'Farly::IPv4::Address',
 	'MASK'        => 'Farly::IPv4::Address',
 	'IPNETWORK'   => 'Farly::IPv4::Network',
 	'IPRANGE'     => 'Farly::IPv4::Range',
-	'NAMED_NET'   => 'Object::KVC::String',             #replace name with IP
+	'NAMED_NET'   => 'Object::KVC::String',             #method replaces name with IP
 	'PROTOCOL'    => 'Farly::Transport::Protocol',
 	'GROUP_PROTOCOL' => 'Object::KVC::String',          #not ::Protocol because of 'tcp-udp'
-	'ICMP_TYPE'      => 'Farly::IPv4::ICMPType',        #map string to int
-	'PORT_ID'       => 'Farly::Transport::Port',      	#map string to int
-	'PORT_RANGE'    => 'Farly::Transport::PortRange',   #map string to int
-	'PORT_GT'       => 'Farly::Transport::PortGT',      #map string to int
-	'PORT_LT'       => 'Farly::Transport::PortLT',      #map string to int
+	'ICMP_TYPE'      => 'Farly::IPv4::ICMPType',        #method maps string to int
+	'PORT_ID'       => 'Farly::Transport::Port',      	#method maps string to int
+	'PORT_RANGE'    => 'Farly::Transport::PortRange',   #method maps string to int
+	'PORT_GT'       => 'Farly::Transport::PortGT',      #method maps string to int
+	'PORT_LT'       => 'Farly::Transport::PortLT',      #method maps string to int
 	'ACTIONS'       => 'Object::KVC::String',
 	'ACL_TYPES'     => 'Object::KVC::String',
 	'REMARKS'       => 'Object::KVC::String',
@@ -45,7 +45,7 @@ our $Token_Class_Map = {
 	'STATE'         => 'Object::KVC::String',
 	'ACL_STATUS'    => 'Object::KVC::String',
 	'LOG_LEVEL'     => 'Object::KVC::String',
-	'DEFAULTROUTE'  => 'Farly::IPv4::Network',			#method DEFAULTROUTE = '0.0.0.0 0.0.0.0'
+	'DEFAULT_ROUTE' => 'Farly::IPv4::Network',			#method DEFAULT_ROUTE = '0.0.0.0 0.0.0.0'
 	'TUNNELED'      => 'Object::KVC::String'
 };
 
@@ -176,7 +176,7 @@ sub ANY {
 	$node->{'__VALUE__'} = Farly::IPv4::Network->new("0.0.0.0 0.0.0.0");
 }
 
-sub DEFAULTROUTE {
+sub DEFAULT_ROUTE {
 	my ( $self, $node ) = @_;
 	$node->{'__VALUE__'} = Farly::IPv4::Network->new("0.0.0.0 0.0.0.0");
 }

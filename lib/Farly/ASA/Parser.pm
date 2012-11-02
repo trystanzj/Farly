@@ -371,7 +371,7 @@ route_interface :
 
 route_dst :
 		IPNETWORK route_nexthop
-	|	DEFAULTROUTE route_nexthop
+	|	DEFAULT_ROUTE route_nexthop
 
 route_nexthop :
 		IPADDRESS route_cost
@@ -470,7 +470,7 @@ OBJECT_TYPE :
 ANY :
 		'any'
 
-DEFAULTROUTE :
+DEFAULT_ROUTE :
 			/0(\s+)0/
 
 IPADDRESS :
