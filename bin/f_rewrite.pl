@@ -86,7 +86,7 @@ if ( $property eq 'SRC_PORT' || $property eq 'DST_PORT' ) {
 }
 
 if ( $acl->size == 0 ) {
-	die $opts{'id'}, " is not a valid access-list id";
+	die "\n",$opts{'id'}, " is not a valid access-list id\n";
 }
 
 # group the rules into an @ of ::Sets using the "group by property"
