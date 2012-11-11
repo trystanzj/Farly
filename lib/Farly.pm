@@ -130,11 +130,11 @@ Returns Object::KVC::List<Object::KVC::Hash> firewall device model.
 Valid firewall types:
  ASA  - Cisco ASA firewall
 
-=AUTHOR
+=head1 AUTHOR
 
 Trystan Johnson
 
-=CONTRIBUTORS
+=head1 CONTRIBUTORS
 
 =over
 
