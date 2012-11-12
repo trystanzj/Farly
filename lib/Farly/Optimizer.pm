@@ -8,7 +8,7 @@ use Log::Log4perl qw(get_logger);
 
 use Farly::Template::Cisco;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 sub new {
 	my ( $class, $rule_list ) = @_;
