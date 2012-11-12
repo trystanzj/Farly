@@ -363,6 +363,10 @@ ag_interface :
 # routes
 #
 
+#
+# routes
+#
+
 route :
 		'route' route_interface
 
@@ -374,20 +378,20 @@ route_dst :
 	|	DEFAULT_ROUTE route_nexthop
 
 route_nexthop :
-		IPADDRESS route_cost
-
-route_cost :
-		DIGIT route_options
+		IPADDRESS route_options
 
 route_options :
-		route_track
+		route_cost
+	|	route_track
 	|	route_tunneled
 	|	EOL
 	|	<error>
 
+route_cost :
+		DIGIT route_options
+
 route_track :
-		'track' DIGIT route_tunneled
-	|	'track' DIGIT
+		'track' DIGIT route_options
 
 route_tunneled :
 		TUNNELED
