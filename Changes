@@ -50,3 +50,8 @@
   - Fixed bug in Farly::Remove::Address
   - Added 'route' support
  
+ 0.10 - November 2012
+  - Fixed documentation mistakes
+  - Pod tests
+  - ::ASA::Parser route bug fix
+  - Makefile.PL BUILD_REQUIRES Test::Simple and Test::More

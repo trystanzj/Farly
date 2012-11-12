@@ -7,7 +7,11 @@ $prereq{'UNIVERSAL::DOES'} = 0.004 if !defined &UNIVERSAL::DOES;
 WriteMakefile(
 	NAME               => 'Farly',
 	VERSION_FROM       => 'lib/Farly.pm',
-	BUILD_REQUIRES     => { 'ExtUtils::MakeMaker' => 6.62, },
+	LICENSE            => 'gpl',
+	BUILD_REQUIRES     => { 'ExtUtils::MakeMaker' => 6.62,
+		                    'Test::Simple'        => 0,
+		                    'Test::More'          => 0,
+		                  },
 	CONFIGURE_REQUIRES => { 'ExtUtils::MakeMaker' => 6.62, },
 	PREREQ_PM          => {
 		%prereq,
@@ -39,7 +43,6 @@ WriteMakefile(
 		'SelfLoader'        => 0,
 		'Symbol'            => 0,
 		'Sys::Hostname'     => 0,
-		'Test::Simple'      => 0,
 		'Text::Balanced'    => 0,
 		'Time::HiRes'       => 0,
 	},
