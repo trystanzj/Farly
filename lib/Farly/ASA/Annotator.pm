@@ -23,6 +23,7 @@ our $Token_Class_Map = {
 	'GROUP_REF'   => 'Object::KVC::HashRef',
 	'RULE_REF'    => 'Object::KVC::HashRef',
 	'GROUP_TYPE'  => 'Object::KVC::String',
+	'MEMBER_TYPE' => 'Object::KVC::String',
 	'OBJECT_TYPE' => 'Object::KVC::String',
 	'ANY'         => 'Farly::IPv4::Network',			#method ANY = '0.0.0.0 0.0.0.0'
 	'IPADDRESS'   => 'Farly::IPv4::Address',

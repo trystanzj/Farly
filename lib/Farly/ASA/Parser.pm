@@ -131,15 +131,31 @@ object_address :
 
 object_host :
 		'host' IPADDRESS
+{
+	$item{'MEMBER_TYPE'} = bless( {'__VALUE__' => 'HOST'}, 'MEMBER_TYPE' );
+	bless \%item, $item[0];
+}
 
 object_range :
 		'range' IPRANGE
+{
+	$item{'MEMBER_TYPE'} = bless( {'__VALUE__' => 'RANGE'}, 'MEMBER_TYPE' );
+	bless \%item, $item[0];
+}
 
 object_network :
 		'subnet' IPNETWORK
+{
+	$item{'MEMBER_TYPE'} = bless( {'__VALUE__' => 'NETWORK'}, 'MEMBER_TYPE' );
+	bless \%item, $item[0];
+}
 
 object_service :
 		'service' object_service_protocol
+{
+	$item{'MEMBER_TYPE'} = bless( {'__VALUE__' => 'SERVICE'}, 'MEMBER_TYPE' );
+	bless \%item, $item[0];
+}
 
 object_service_protocol :
 		PROTOCOL object_service_src
@@ -182,24 +198,52 @@ og_object :
 
 og_network_object :
 		'network-object' address
+{
+	$item{'MEMBER_TYPE'} = bless( {'__VALUE__' => 'NETWORK'}, 'MEMBER_TYPE' );
+	bless \%item, $item[0];
+}
 
 og_port_object :
 		'port-object' port
+{
+	$item{'MEMBER_TYPE'} = bless( {'__VALUE__' => 'PORT'}, 'MEMBER_TYPE' );
+	bless \%item, $item[0];
+}
 
 og_group_object :
 		'group-object' GROUP_REF
+{
+	$item{'MEMBER_TYPE'} = bless( {'__VALUE__' => 'GROUP'}, 'MEMBER_TYPE' );
+	bless \%item, $item[0];
+}
 
 og_protocol_object :
 		'protocol-object' PROTOCOL
+{
+	$item{'MEMBER_TYPE'} = bless( {'__VALUE__' => 'PROTOCOL'}, 'MEMBER_TYPE' );
+	bless \%item, $item[0];
+}
 
 og_description :
 		'description' REMARKS
+{
+	$item{'MEMBER_TYPE'} = bless( {'__VALUE__' => 'COMMENT'}, 'MEMBER_TYPE' );
+	bless \%item, $item[0];
+}
 
 og_icmp_object :
 		'icmp-object' ICMP_TYPE
+{
+	$item{'MEMBER_TYPE'} = bless( {'__VALUE__' => 'ICMP_TYPE'}, 'MEMBER_TYPE' );
+	bless \%item, $item[0];
+}
 
 og_service_object :
 		'service-object' og_so_protocol
+{
+	$item{'MEMBER_TYPE'} = bless( {'__VALUE__' => 'SERVICE'}, 'MEMBER_TYPE' );
+	bless \%item, $item[0];
+}
 
 og_so_protocol :
 		PROTOCOL og_so_dst_port
@@ -306,19 +350,19 @@ acl_logging :
 	|	'log' acl_time_range
 {
 	$item{'LOG_LEVEL'} = bless( {'__VALUE__' => '6'}, 'LOG_LEVEL' );
-	bless \%item, $item[0];
+	bless \%item, 'acl_log_level';
 }
 
 	|	'log' acl_inactive
 {
 	$item{'LOG_LEVEL'} = bless( {'__VALUE__' => '6'}, 'LOG_LEVEL' );
-	bless \%item, $item[0];
+	bless \%item, 'acl_log_level';
 }
 
 	|	'log'
 {
 	$item{'LOG_LEVEL'} = bless( {'__VALUE__' => '6'}, 'LOG_LEVEL' );
-	bless \%item, $item[0];
+	bless \%item, 'acl_log_level';
 }
 
 acl_log_level :
@@ -552,7 +596,14 @@ LOG_LEVEL :
 	| 'disable'
 
 EOL :
-		/$/	
+		/$/
+		
+#
+# Imaginary Tokens
+#
+# MEMBER_TYPE
+#
+
 };
 
 	return $grammar;

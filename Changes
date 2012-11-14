@@ -50,8 +50,14 @@
   - Fixed bug in Farly::Remove::Address
   - Added 'route' support
  
- 0.10 - November 2012
+0.10 - November 2012
   - Fixed documentation mistakes
   - Pod tests
   - ::ASA::Parser route bug fix
   - Makefile.PL BUILD_REQUIRES Test::Simple and Test::More
+
+0.11 - November 2012
+   - ::ASA::Parser acl_logging token type to acl_log_level
+   - added MEMBER_TYPE imaginary token inserts in ::ASA::Parser
+   - added ::ASA::Rewriter.pm and ::ASA::Generator.pm
+   - changed route DESTINATION to DST_IP
