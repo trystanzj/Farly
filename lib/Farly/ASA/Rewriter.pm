@@ -23,13 +23,13 @@ our $AST_Root_Class = {
 	'route'        => 'ROUTE',
 };
 
-# The $AST_Root_Class hash key is the rule name and the class of the parse tree node
-# The $AST_Root_Class hash value is the class of the new AST node
-# Any Token / '__VALUE__' found in the parse tree beneath a defined node
+# The $AST_Node_Class hash key is the rule name and the class of the parse tree node
+# The $AST_Node_Class hash value is the new AST node class 
+# Any Token / '__VALUE__' found in the parse tree beneath the given nodes
 # in the parse tree becomes the AST node '__VALUE__'
-# AST node class will become the key in the Object::KVC::Hash object
+# The AST node class will become the key in the Object::KVC::Hash object
 # AST node '__VALUE__' becomes the Object::KVC::Hash value object
-# i.e. The AST defines the vendor to Farly model mapping :
+# i.e. The $AST_Node_Class mapping defines the vendor to Farly model mapping :
 # $object->set( ref($ast_node), $ast_node->{__VALUE__} );
 
 my $AST_Node_Class = {

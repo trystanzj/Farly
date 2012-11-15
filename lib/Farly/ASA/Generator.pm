@@ -37,7 +37,7 @@ sub visit {
 
 	my $logger = get_logger(__PACKAGE__);
 
-	# the Farly translator parse one firewall object at a time
+	# the Farly translator parses one firewall object at a time
 	my $object = Object::KVC::Hash->new();
 
 	# the AST root node is the 'ENTRY'
