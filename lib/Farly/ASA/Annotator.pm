@@ -18,6 +18,7 @@ our $Token_Class_Map = {
 	'STRING'      => 'Object::KVC::String',
 	'DIGIT'       => 'Object::KVC::Integer',
 	'NAME'        => 'Object::KVC::String',            #method replaces name with IP
+	'NAME_ID'     => 'Object::KVC::String',            #this is just the name string	
 	'IF_REF'      => 'Object::KVC::HashRef',
 	'OBJECT_REF'  => 'Object::KVC::HashRef',
 	'GROUP_REF'   => 'Object::KVC::HashRef',
@@ -106,37 +107,40 @@ sub visit {
 
 		next if ( $seen{$node}++ );
 
+		#visit this node if its a token
 		if ( exists( $node->{'__VALUE__'} ) ) {
 			my $method = ref($node);
 			$self->$method($node);
+			next;
 		}
-		elsif ( $node->isa('names') ) {
-			$self->_new_name($node);
+		
+		# add name info the the names "symbol table"
+		if ( $node->isa('named_ip') ) {
+			$self->named_ip($node);
 		}
-		else {
 
-			foreach my $key ( keys %$node ) {
+		# continue walking the parse tree
+		foreach my $key ( keys %$node ) {
 
-				next if ( $key eq 'EOL' );
+			next if ( $key eq 'EOL' );
 
-				my $next = $node->{$key};
+			my $next = $node->{$key};
 
-				if ( blessed($next) ) {
+			if ( blessed($next) ) {
 
-					push @stack, $next;
-				}
+				push @stack, $next;
 			}
 		}
 	}
 	return 1;
 }
 
-sub _new_name {
+sub named_ip {
 	my ( $self, $node ) = @_;
 
 	my $logger = get_logger(__PACKAGE__);
 
-	my $name = $node->{NAME}->{__VALUE__}
+	my $name = $node->{name}->{NAME_ID}->{__VALUE__}
 	  or confess "$self error: name not found for ", ref($node);
 
 	my $ip = $node->{IPADDRESS}->{__VALUE__}

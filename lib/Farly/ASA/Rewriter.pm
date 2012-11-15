@@ -32,7 +32,10 @@ our $AST_Root_Class = {
 # i.e. The AST defines the vendor to Farly model mapping :
 # $object->set( ref($ast_node), $ast_node->{__VALUE__} );
 
-my $AST_Rule_To_Class = {
+my $AST_Node_Class = {
+	'named_ip'                => 'OBJECT',
+	'name'                    => 'ID',
+	'name_comment'            => 'COMMENT',
 	'hostname'                => 'ID',
 	'interface'               => 'NAME',
 	'if_name'                 => 'ID',
@@ -97,7 +100,7 @@ sub new {
 }
 
 sub rewrite {
-	my ( $self, $node ) = @_;
+	my ( $self, $pt_node ) = @_;
 
 	# $node is a reference to the current node in the parse tree
 	# i.e. the root of the parse tree to begin with
@@ -115,7 +118,7 @@ sub rewrite {
 
 	#stack is all neighbors of s
 	my @stack;
-	push @stack, [ $node, $ast_node ];
+	push @stack, [ $pt_node, $ast_node ];
 
 	my $key;
 
@@ -123,54 +126,54 @@ sub rewrite {
 
 		my $rec = pop @stack;
 
-		$node     = $rec->[0];
+		$pt_node  = $rec->[0];
 		$ast_node = $rec->[1];
 
-		$logger->debug( "cst node = ", ref($node), " : ast node = ", ref($ast_node) );
+		$logger->debug( "parse tree node = ", ref($pt_node), " : ast node = ", ref($ast_node) );
 
-		next if ( $seen{$node}++ );
+		next if ( $seen{$pt_node}++ );
 
-		my $rule_id = ref($node);
+		my $pt_node_class = ref($pt_node);
 
 		# redefine the abstract syntax tree root node class
-		if ( defined( $AST_Root_Class->{$rule_id} ) ) {
+		if ( defined( $AST_Root_Class->{$pt_node_class} ) ) {
 
-			$root     = bless( {}, $AST_Root_Class->{$rule_id} );
+			$root     = bless( {}, $AST_Root_Class->{$pt_node_class} );
 			$ast_node = $root;
 
 			$logger->debug( "new ast root class = ", ref($root) );
 		}
 
 		# create new abstract syntax tree nodes
-		if ( defined( $AST_Rule_To_Class->{$rule_id} ) ) {
+		if ( defined( $AST_Node_Class->{$pt_node_class} ) ) {
 
 			# create a new AST node and add it to the AST
-			my $new_ast_node_class = $AST_Rule_To_Class->{$rule_id};
+			my $new_ast_node_class = $AST_Node_Class->{$pt_node_class};
 			$ast_node->{ $new_ast_node_class } = bless( {}, $new_ast_node_class );
 			
 			#update the $ast_node reference to refer to the new AST node
 			$ast_node = $ast_node->{ $new_ast_node_class };
 
-			$logger->debug( "mapped $rule_id to AST class ", ref($ast_node) );
+			$logger->debug( "mapped $pt_node_class to AST class ", ref($ast_node) );
 
 			# the AST root class has to have been changed or something is very wrong
 			confess "rewrite error" if ( $root->isa('NULL') );
 		}
 
 		# continue exploring the parse tree
-		foreach my $key ( sort { $b cmp $a } keys %$node ) {
+		foreach my $key ( keys %$pt_node ) {
 
 			# not interested in the EOL token
 			next if ( $key eq "EOL" );
 
-			my $next = $node->{$key};
+			my $next = $pt_node->{$key};
 
 			# skip and filter out string values
 			if ( blessed($next) ) {
 
 				if ( $key eq '__VALUE__' ) {
 					#then $next isa token
-					$ast_node->{__VALUE__} = $next;
+					$ast_node->{'__VALUE__'} = $next;
 					$logger->debug( "ast node = ", ref($ast_node), " : token = ", ref($next) );
 				}
 				else {
@@ -199,7 +202,7 @@ an abstract syntax tree (AST). The AST structure mirrors the parse tree structur
 Farly::ASA::Rewriter is run after Farly::ASA::Annotator has converted the
 tokens into value objects. 
 
-The AST node classes are defined in $AST_Rule_To_Class. The AST node values
+The AST node classes are defined in $AST_Node_Class. The AST node values
 are the Token objects from the parse tree and are recognized by the presence
 of the '__VALUE__' key.
 

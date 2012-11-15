@@ -60,7 +60,7 @@ sub _grammar {
 startrule :
 		object_group EOL
 	|	access_list EOL
-	|	names EOL
+	|	named_ip EOL
 	|	interface EOL
 	|   object EOL
 	|	access_group EOL
@@ -75,9 +75,15 @@ hostname :
 # names
 #
 
-names :
-		'name' IPADDRESS NAME 'description' REMARKS
-	|   'name' IPADDRESS NAME
+named_ip :
+		'name' IPADDRESS name
+
+name :
+		NAME_ID name_comment
+	|	NAME_ID
+
+name_comment :
+		'description' REMARKS
 
 #
 # interfaces
@@ -407,10 +413,6 @@ ag_interface :
 # routes
 #
 
-#
-# routes
-#
-
 route :
 		'route' route_interface
 
@@ -445,6 +447,7 @@ route_tunneled :
 #
 # "object" should be fine here because "object" can not  
 # be used to specify ports 
+#
 
 address :
 		'host' IPADDRESS
@@ -493,7 +496,12 @@ STRING :
 DIGIT :
 		/\d+/
 
+# converted to an IP address
 NAME :
+		/((^|\s[a-zA-Z])(\.|[0-9a-zA-Z_-]+)+)/
+
+# not converted to an IP address
+NAME_ID :
 		/((^|\s[a-zA-Z])(\.|[0-9a-zA-Z_-]+)+)/
 
 IF_REF :

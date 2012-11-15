@@ -164,6 +164,9 @@ sub _format {
 	my $IF_REF = Object::KVC::HashRef->new();
 	$IF_REF->set( 'ENTRY', Object::KVC::String->new('INTERFACE') );
 
+	my $NAME = Object::KVC::Hash->new();
+	$NAME->set( 'ENTRY', Object::KVC::String->new('NAME') );
+
 	my $INTERFACE = Object::KVC::Hash->new();
 	$INTERFACE->set( 'ENTRY', Object::KVC::String->new('INTERFACE') );
 
@@ -176,6 +179,14 @@ sub _format {
 	my $ANY_ICMP_TYPE = Farly::IPv4::ICMPType->new( -1 );
 
 	my $hash;
+
+	#names should not be prefixed with 'host'
+	if ( $ce->matches( $NAME ) ) {
+		foreach my $key ( $ce->get_keys() ) {
+			$hash->{$key} = $ce->get($key)->as_string();
+		}
+		return $hash;
+	}
 
 	#interface ip addresses should not be prefixed with 'host'
 	if ( $ce->matches( $INTERFACE ) ) {

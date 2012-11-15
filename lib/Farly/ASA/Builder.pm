@@ -9,7 +9,8 @@ use Farly::Builder;
 use Farly::ASA::Filter;
 use Farly::ASA::Parser;
 use Farly::ASA::Annotator;
-use Farly::ASA::TokenPicker;
+use Farly::ASA::Rewriter;
+use Farly::ASA::Generator;
 use Farly::ASA::PortFormatter;
 use Farly::ASA::ProtocolFormatter;
 use Farly::ASA::ICMPFormatter;
@@ -32,10 +33,11 @@ sub new {
 sub run {
 	my ( $self ) = @_;
 
-	my $filter        = Farly::ASA::Filter->new();
-	my $parser        = Farly::ASA::Parser->new();
-	my $annotator     = Farly::ASA::Annotator->new();
-	my $token_picker  = Farly::ASA::TokenPicker->new();
+	my $filter    = Farly::ASA::Filter->new();
+	my $parser    = Farly::ASA::Parser->new();
+	my $annotator = Farly::ASA::Annotator->new();
+	my $rewriter  = Farly::ASA::Rewriter->new();
+    my $generator = Farly::ASA::Generator->new();
 
 	$filter->set_file( $self->file() );
 
@@ -44,19 +46,23 @@ sub run {
 	confess "configuration not recognized"
 		unless ( scalar(@preprocessed_file) > 0 );
 	
-	my $tree;
+	my $parse_tree;
 
 	foreach my $line ( @preprocessed_file ) {
 
 		eval {
 			#get the parse tree for the current line
-			$tree = $parser->parse($line);
+			$parse_tree = $parser->parse($line);
 	
 			#turn the tokens into objects
-			$annotator->visit($tree);
+			$annotator->visit($parse_tree);
 				
-			#collect the objects
-			$token_picker->visit($tree);
+			#rewrite the parse tree into an abstract syntax tree (AST)
+			my $ast = $rewriter->rewrite($parse_tree);
+
+			#convert the AST into an Object::KVC::Hash object
+			#which is stored in the generator's container object
+			$generator->visit($ast);
 		};
 		if ($@) {
 			chomp($line);
@@ -65,7 +71,7 @@ sub run {
 		
 	}
 	
-	$self->{CONTAINER} = $token_picker->container();
+	$self->{CONTAINER} = $generator->container();
 
 	return;
 }

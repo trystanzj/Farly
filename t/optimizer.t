@@ -17,7 +17,7 @@ eval { my $optimizer1 = Farly::Optimizer->new($container); };
 
 ok( $@ =~ /found invalid object/, "not expanded" );
 
-ok( $container->size() == 43, "import" );
+ok( $container->size() == 45, "import" );
 
 use Farly::Rules;
 

@@ -57,7 +57,10 @@
   - Makefile.PL BUILD_REQUIRES Test::Simple and Test::More
 
 0.11 - November 2012
+   - changed route DESTINATION to DST_IP
    - ::ASA::Parser acl_logging token type to acl_log_level
    - added MEMBER_TYPE imaginary token inserts in ::ASA::Parser
    - added ::ASA::Rewriter.pm and ::ASA::Generator.pm
-   - changed route DESTINATION to DST_IP
+   - changed ::ASA::Builder to use ::ASA::Rewriter and ::ASA::Generator
+   - added names support and updated tests
+   - retired ::ASA::TokenPicker

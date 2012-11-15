@@ -5,6 +5,10 @@
 	[% PROCESS interface %]
 [% END %]
 
+[% IF ENTRY == "NAME" %]
+	[% PROCESS name %]
+[% END %]
+
 [% IF ENTRY == "OBJECT" %]
 	[% IF REMOVE.defined %]
 		[% IF REMOVE == "OBJECT" %]
@@ -53,6 +57,15 @@
 [% END %]
 
 [% END %]
+[% END %]
+
+[% BLOCK name %]
+	[% FILTER collapse %]
+		name [% OBJECT %] [% ID %]
+		[% IF COMMENT.defined %]
+			description [% COMMENT %]
+		[% END %]
+	[% END %]
 [% END %]
 
 [% BLOCK interface %]
@@ -246,7 +259,7 @@
 
 [% BLOCK route %]
 	[% FILTER collapse %]
-		route [% INTERFACE %] [% DESTINATION %] [% NEXTHOP %] [% COST %]
+		route [% INTERFACE %] [% DST_IP %] [% NEXTHOP %] [% COST %]
 	
 		[% IF TRACK.defined %]
 			track [% TRACK %]

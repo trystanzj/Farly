@@ -13,4 +13,4 @@ use Farly;
 my $importer = Farly->new();
 my $container = $importer->process( "ASA", "$path/test.cfg" );
 
-ok( $container->size() == 43, "import");
+ok( $container->size() == 45, "import");
