@@ -62,7 +62,7 @@ startrule :
 	|	access_list EOL
 	|	named_ip EOL
 	|	interface EOL
-	|   object EOL
+	|	object EOL
 	|	access_group EOL
 	|	hostname EOL
 	|	route EOL
@@ -330,7 +330,7 @@ acl_dst_ip :
 
 acl_dst_port : 
 		port acl_options
-	|   acl_icmp_type acl_options
+	|	acl_icmp_type acl_options
 
 #
 # icmp_types
@@ -338,7 +338,7 @@ acl_dst_port :
 
 acl_icmp_type :
 		'OG_ICMP-TYPE' GROUP_REF
-	|   ICMP_TYPE
+	|	ICMP_TYPE
 
 #
 # access-list options
@@ -592,7 +592,7 @@ ACL_STATUS :
 		'inactive'
 
 STATE :		
-    	'enable'
+		'enable'
 	|	'disable'
 
 TUNNELED :

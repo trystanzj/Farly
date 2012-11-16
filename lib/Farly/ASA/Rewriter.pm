@@ -12,6 +12,7 @@ our $VERSION = '0.11';
 # the parser rule name maps to an abstract syntax tree (AST) root node class
 # this will become the 'ENTRY' model meta data in the Farly firewall model
 # 'ENTRY' is roughly equivalent to a namespace or table name
+
 our $AST_Root_Class = {
 	'hostname'     => 'HOSTNAME',
 	'named_ip'     => 'NAME',
