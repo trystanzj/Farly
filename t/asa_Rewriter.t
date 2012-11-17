@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use Storable;
 use Test::More tests => 1;
-use Data::Dumper;
+#use Data::Dumper;
 use Log::Log4perl qw(:easy);
 use Farly;
 use Farly::ASA::Parser;
