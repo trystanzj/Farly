@@ -226,6 +226,7 @@ sub PORT_RANGE {
 	if ( defined $self->port_formatter()->as_integer($low) ) {
 		$low = $self->port_formatter()->as_integer($low);
 	}
+
 	if ( defined $self->port_formatter()->as_integer($high) ) {
 		$high = $self->port_formatter()->as_integer($high);
 	}
@@ -254,10 +255,10 @@ sub PORT_LT {
 }
 
 sub _new_ObjectRef {
-	my ( $self, $token_type, $value ) = @_;
+	my ( $self, $token_class, $value ) = @_;
 
-	my $entry = $Entry_Map->{$token_type}
-	  or confess "No token type to ENTRY mapping for token $token_type\n";
+	my $entry = $Entry_Map->{$token_class}
+	  or confess "No token type to ENTRY mapping for token $token_class\n";
 
 	my $ce = Object::KVC::HashRef->new();
 
@@ -270,31 +271,31 @@ sub _new_ObjectRef {
 sub AUTOLOAD {
 	my ( $self, $node ) = @_;
 
-	my $type = ref($self) or confess "$self is not an object";
+	my $type = ref($self)
+	  or confess "$self is not an object";
 
 	confess "tree node for $type required"
 	  unless defined($node);
 
-	my $token_type = ref($node);
+	confess "value not found in node ",ref($node)
+	  unless defined( $node->{'__VALUE__'} );
 
-	my $class = $Token_Class_Map->{$token_type}
-	  or confess "$self error: class not found for $token_type\n";
+	my $token_class = ref($node);
 
-	my $value;
-	defined( $node->{'__VALUE__'} ) 
-	  ? $value = $node->{'__VALUE__'}
-	  : confess "$self error: value not found in node $token_type\n";
+	my $class = $Token_Class_Map->{ $token_class }
+	  or confess "$self error: class not found for $token_class\n";
 
 	my $object;
-	if ( $class eq 'Object::KVC::HashRef' ) {
 
+	my $value = $node->{'__VALUE__'};
+
+	if ( $class eq 'Object::KVC::HashRef' ) {
 		#need to set 'ENTRY' and 'ID' properties
-		$object = $self->_new_ObjectRef( $token_type, $value );
+		$object = $self->_new_ObjectRef( $token_class, $value );
 	}
 	else {
-
 		#create the object right away
-		$object = $class->new($value);
+		$object = $class->new( $value );
 	}
 
 	$node->{'__VALUE__'} = $object;
