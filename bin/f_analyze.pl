@@ -92,12 +92,53 @@ elsif ( defined $opts{'remove'} ) {
 	print "\n! analyzing...\n\n";	
 	$optimizer->run();
 	print "\n! remove\n\n";	
-	my $remover = Farly::Remove::Rule->new($container);
-	$remover->remove( $optimizer->removed() );
-	display( $remover->result(), \%opts );
+	my $result = replace( $container, $optimizer->optimized(), $optimizer->removed() );
+	display( $result, \%opts );
 }
 else {
 	print "\nPlease specifiy a report type: [--new|--remove] \n";
+}
+
+#replace the configuration rule with the expanded optimised rules
+sub replace {
+	my ($config, $optimised, $remove) = @_;
+
+	my $result = Object::KVC::List->new();
+
+	my $config_index = Object::KVC::Index->new($config);
+	$config_index->make_index('LINE');
+
+	my $optimised_index = Object::KVC::Index->new($optimised);
+	$optimised_index->make_index('LINE');
+
+	my $removed_index = Object::KVC::Index->new($remove);
+	$removed_index->make_index('LINE');
+
+	# get an array of the rule line numbers that have errors
+	my @remove_rules = sort { $a <=> $b } keys %{ $removed_index->get_index };
+
+	# check each config rule to see if it uses a group or not
+	foreach my $line_number (@remove_rules) {
+
+		# get the config rule
+		my $config_rule_set = $config_index->fetch($line_number);
+		my $config_rule = $config_rule_set->[0];
+
+		# are there optimised rules for this line?
+		if ( defined $optimised_index->get_index->{$line_number} ) {
+	
+			my $optimised_rule_set = $optimised_index->fetch($line_number);	
+			
+			foreach my $rule_object ( $optimised_rule_set->iter() ) {
+				$result->add($rule_object);
+			}
+		}
+
+		$config_rule->set( 'REMOVE', Object::KVC::String->new('RULE') );
+		$result->add($config_rule);
+	}
+
+	return $result;
 }
 
 sub display {
