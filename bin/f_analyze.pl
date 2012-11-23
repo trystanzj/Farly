@@ -105,6 +105,9 @@ sub replace {
 
 	my $result = Object::KVC::List->new();
 
+	#return an empty list if not removing anything 
+	return $result if ( $remove->size() == 0 );
+
 	my $config_index = Object::KVC::Index->new($config);
 	$config_index->make_index('LINE');
 
@@ -135,6 +138,8 @@ sub replace {
 		}
 
 		$config_rule->set( 'REMOVE', Object::KVC::String->new('RULE') );
+		$config_rule->delete_key('LINE');
+		
 		$result->add($config_rule);
 	}
 
