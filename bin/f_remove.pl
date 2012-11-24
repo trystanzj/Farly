@@ -98,7 +98,7 @@ sub usage {
 
 Usage:
 
-  f_remove.pl -f <file> [ -h <ip> | -n <network> ]
+  f_remove.pl --file <file> [ --host <ip> | --net <network> ]
 
 Help:
 

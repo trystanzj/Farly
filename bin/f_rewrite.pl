@@ -125,7 +125,7 @@ foreach my $set (@grouped_rules) {
 	if ( ! defined $id ) {
 
 		# the group doesn't have an ID display the first rule
-		print "hint :   ";
+		print "\nhint :   ";
 		display_object( $set->[0] );
 
 		# get a new group ID from the user
