@@ -1,9 +1,12 @@
 Changes
-MANIFEST
+gpl-3.0.txt
 Makefile.PL
+MANIFEST
 README
+README.md
 bin/f_analyze.pl
 bin/f_remove.pl
+bin/f_rewrite.pl
 bin/f_search.pl
 demo/rule_search.pl
 lib/Farly/ASA/Annotator.pm
@@ -24,6 +27,8 @@ lib/Farly/Log/Farly.conf
 lib/Farly/Opts/Search.pm
 lib/Farly/Remove/Address.pm
 lib/Farly/Remove/Rule.pm
+lib/Farly/Rule/Expander.pm
+lib/Farly/Rule/Optimizer.pm
 lib/Farly/Template/Files/ASA
 lib/Farly/Template/Cisco.pm
 lib/Farly/Transport/Object.pm
@@ -44,6 +49,7 @@ t/asa_Generator.t
 t/asa_ICMPFormatter.t
 t/asa_Import.t
 t/asa_Parser.t
+t/asa_parser.results
 t/asa_PortFormatter.t
 t/asa_ProtocolFormatter.t
 t/asa_Rewriter.t
@@ -56,9 +62,10 @@ t/ipv4_icmptype.t
 t/ipv4_network.t
 t/ipv4_range.t
 t/optimizer.t
+t/pod.t
 t/remove_address.t
 t/remove_rule.t
-t/rules.t
+t/rule_expander.t
 t/search.t
 t/template_cisco_asa.t
 t/test.cfg
