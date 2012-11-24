@@ -1,4 +1,4 @@
-package Farly::Optimizer;
+package Farly::Rule::Optimizer;
 
 use 5.008008;
 use strict;
@@ -472,13 +472,13 @@ sub _optimize {
 1;
 =head1 NAME
 
-Farly::Optimizer - Deprecated - is now Farly::Rule::Optimizer
+Farly::Rule::Optimizer - Optimize a raw firewall rule set
 
 =head1 SYNOPSIS
 
   use Farly;
   use Farly::Rules;
-  use Farly::Optimizer;
+  use Farly::Rule::Optimizer;
 
   my $file = "test.cfg";
   my $importer = Farly->new();
@@ -492,7 +492,7 @@ Farly::Optimizer - Deprecated - is now Farly::Rule::Optimizer
   my $search_result = Object::KVC::List->new();
   $expanded_rules->matches( $search, $search_result );
 
-  my $optimizer = Farly::Optimizer->new( $search_result );
+  my $optimizer = Farly::Rule::Optimizer->new( $search_result );
   $optimizer->run();
   my $optimized_ruleset = $optimizer->optimized();
 
@@ -504,17 +504,17 @@ Farly::Optimizer - Deprecated - is now Farly::Rule::Optimizer
 
 =head1 DESCRIPTION
 
-Farly::Optimizer finds duplicate and contained IP, TCP, and UDP firewall
+Farly::Rule::Optimizer finds duplicate and contained IP, TCP, and UDP firewall
 rules in a raw rule set.
 
-Farly::Optimizer stores the list of optimized rules, as well as the list 
+Farly::Rule::Optimizer stores the list of optimized rules, as well as the list 
 of rule entries which can be removed from the rule set without affecting the
 traffic filtering properties of the firewall.
 
 The 'optimized' and 'removed' rule sets are expanded rule entries and may
 not correspond to the actual configuration on the device.
 
-To view Farly::Optimizer actions and results add the following to "Log/Farly.conf"
+To view Farly::Rule::Optimizer actions and results add the following to "Log/Farly.conf"
 
  log4perl.logger.Farly.Optimizer=INFO,Screen
  log4perl.appender.Screen=Log::Log4perl::Appender::Screen 
@@ -530,7 +530,7 @@ Logged rules are currently displayed in Cisco ASA format.
 
 The constructor. A single expanded rule list is required.
 
-  $optimizer = Farly::Optimizer->new( $expanded_rules<Object::KVC::List> );
+  $optimizer = Farly::Rule::Optimizer->new( $expanded_rules<Object::KVC::List> );
 
 =head2 verbose()
 
@@ -573,7 +573,7 @@ duplicate and overlapping firewall rule objects which could be removed.
 
 =head1 ACKNOWLEDGEMENTS
 
-Farly::Optimizer is based on the "optimise" algorithm in the following
+Farly::Rule::Optimizer is based on the "optimise" algorithm in the following
 paper:
 
 Qian, J., Hinrichs, S., Nahrstedt K. ACLA: A Framework for Access
@@ -582,7 +582,7 @@ Multimedia Security, 2001
 
 =head1 COPYRIGHT AND LICENCE
 
-Farly::Optimizer
+Farly::Rule::Optimizer
 Copyright (C) 2012  Trystan Johnson
 
 This program is free software: you can redistribute it and/or modify

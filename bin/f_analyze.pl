@@ -21,8 +21,8 @@ use strict;
 use warnings;
 use Getopt::Long;
 use Farly;
-use Farly::Rules;
-use Farly::Optimizer;
+use Farly::Rule::Expander;
+use Farly::Rule::Optimizer;
 use Farly::Remove::Rule;
 use Farly::Template::Cisco;
 use Farly::ASA::PortFormatter;
@@ -68,7 +68,7 @@ my $importer = Farly->new();
 
 my $container = $importer->process( "ASA", $file );
 
-my $rule_expander = Farly::Rules->new($container);
+my $rule_expander = Farly::Rule::Expander->new($container);
 
 my $expanded_rules = $rule_expander->expand_all();
 
@@ -76,7 +76,7 @@ my $search_result = Object::KVC::List->new();
 
 $expanded_rules->matches( $search, $search_result );
 
-my $optimizer = Farly::Optimizer->new($search_result);
+my $optimizer = Farly::Rule::Optimizer->new($search_result);
 
 if ( defined $opts{'verbose'} ) {
 	$optimizer->verbose(1);

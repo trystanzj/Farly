@@ -21,7 +21,7 @@ use warnings;
 use Getopt::Long;
 use Farly;
 use Farly::ASA::ProtocolFormatter;
-use Farly::Rules;
+use Farly::Rule::Expander;
 use Farly::Template::Cisco;
 use Farly::ASA::PortFormatter;
 use Farly::ASA::ProtocolFormatter;

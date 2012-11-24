@@ -20,7 +20,7 @@ use strict;
 use warnings;
 use Getopt::Long;
 use Farly;
-use Farly::Rules;
+use Farly::Rule::Expander;
 use Farly::Template::Cisco;
 use Farly::ASA::PortFormatter;
 use Farly::ASA::ProtocolFormatter;
@@ -83,7 +83,7 @@ my $importer = Farly->new();
 
 my $container = $importer->process( "ASA", $opts{'file'} );
 
-my $rule_expander = Farly::Rules->new($container);
+my $rule_expander = Farly::Rule::Expander->new($container);
 
 my $expanded_rules = $rule_expander->expand_all();
 
