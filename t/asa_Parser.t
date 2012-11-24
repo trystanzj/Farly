@@ -40,7 +40,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'hostname' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -60,7 +60,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'name' );
 
 if ($review_results) {
-	print "Test $test : \n String :\n";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -82,7 +82,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'interface nameif' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -104,7 +104,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'interface ip' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -126,7 +126,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'interface security-level' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -144,7 +144,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'object host' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -166,7 +166,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'object subnet' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -188,7 +188,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'object range' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -210,7 +210,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'object service src dst' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -232,7 +232,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'object-group service src' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -254,7 +254,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'object-group protocol' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -276,7 +276,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'network-object named host' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -298,7 +298,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'port-object' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -320,7 +320,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'network group-object' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -342,7 +342,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'object-group description' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -364,7 +364,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'object-group service dst' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -386,7 +386,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'object-group service' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -407,7 +407,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'access-list 1' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -428,7 +428,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'access-list 2' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -449,7 +449,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'access-list 3' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -470,7 +470,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'access-list 4' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -491,7 +491,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'access-list 5' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -512,7 +512,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'access-list 6' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -533,7 +533,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'access-list 7' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -554,7 +554,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'access-list 8' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -575,7 +575,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'access-list object service' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -596,7 +596,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'access-list icmp-type' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
@@ -616,7 +616,7 @@ $expected = $results->{$test};
 is_deeply( $expected, $tree, 'access-group' );
 
 if ($review_results) {
-	print "Test $test : \nString :\n$string";
+	print "Test $test \nString :\n $string\n";
 	print Dumper($tree);
 	$results->{$test} = $tree;
 }
