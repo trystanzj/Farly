@@ -66,7 +66,7 @@ else {
 my $property = $opts{'groupby'};
 my $output   = $opts{'output'};
 
-print "\nimporting ", $opts{'file'}, "\n";
+print "\nimporting... ", $opts{'file'}, "\n";
 
 my $importer = Farly->new();
 
@@ -112,8 +112,6 @@ foreach my $set (@grouped_rules) {
 	next if ( $set->size == 1 );
 
 	next if ( $set->[0]->get( $property )->equals($ANY) );
-
-	print "\n";
 
 	# create and object group for the specified property
 	# from the set of rules
