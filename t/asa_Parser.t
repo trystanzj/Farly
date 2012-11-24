@@ -7,13 +7,17 @@ use Log::Log4perl qw(:easy);
 Log::Log4perl->easy_init($ERROR);
 use Farly::ASA::Parser;
 
+my $abs_path = File::Spec->rel2abs( __FILE__ );
+our ($volume,$dir,$file) = File::Spec->splitpath( $abs_path );
+my $path = $volume.$dir;
+
 my $tree;
 my $string;
 my $actual;
 my $expected;
 my $review_results;
 my $store_results;
-my $results = retrieve('asa_parser.results');
+my $results = retrieve("$path/asa_parser.results");
 
 #
 # constructor

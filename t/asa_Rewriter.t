@@ -11,6 +11,10 @@ use Farly::ASA::Rewriter;
  
 Log::Log4perl->easy_init($ERROR);
 
+my $abs_path = File::Spec->rel2abs( __FILE__ );
+our ($volume,$dir,$file) = File::Spec->splitpath( $abs_path );
+my $path = $volume.$dir;
+
 my $parser = Farly::ASA::Parser->new();
 my $annotator = Farly::ASA::Annotator->new();
 my $rewriter = Farly::ASA::Rewriter->new();
@@ -31,7 +35,7 @@ my $ast = $rewriter->rewrite($parse_tree);
 
 #store $ast, 'expected.ast';
 
-my $expected = retrieve('expected.ast');
+my $expected = retrieve("$path/expected.ast");
 
 #print Dumper($expected);
 
