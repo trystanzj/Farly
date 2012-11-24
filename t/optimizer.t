@@ -13,15 +13,15 @@ use Farly;
 my $importer  = Farly->new();
 my $container = $importer->process( "ASA", "$path/test.cfg" );
 
-eval { my $optimizer1 = Farly::Optimizer->new($container); };
+eval { my $optimizer1 = Farly::Rule::Optimizer->new($container); };
 
 ok( $@ =~ /found invalid object/, "not expanded" );
 
 ok( $container->size() == 45, "import" );
 
-use Farly::Rules;
+use Farly::Rule::Expander;
 
-my $rule_expander = Farly::Rules->new($container);
+my $rule_expander = Farly::Rule::Expander->new($container);
 
 ok( defined($rule_expander), "constructor" );
 
@@ -31,11 +31,11 @@ my $expanded_rules = $rule_expander->expand_all();
 
 ok( $expanded_rules->size == 17, "expand_all" );
 
-use Farly::Optimizer;
+use Farly::Rule::Optimizer;
 
 my $optimizer;
 
-eval { $optimizer = Farly::Optimizer->new($expanded_rules); };
+eval { $optimizer = Farly::Rule::Optimizer->new($expanded_rules); };
 
 ok( $@ =~ /found invalid object/, "not single rule set" );
 
@@ -46,7 +46,7 @@ my $search_result = Object::KVC::List->new();
 
 $expanded_rules->matches( $search, $search_result );
 
-$optimizer = Farly::Optimizer->new($search_result);
+$optimizer = Farly::Rule::Optimizer->new($search_result);
 
 $optimizer->run();
 

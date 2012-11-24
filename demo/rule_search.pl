@@ -22,9 +22,9 @@ my $container = $importer->process("ASA",$file);
 # container with all of the firewalls raw rule entries
 # (same as "show access-list" on a Cisco ASA firewall)
 
-use Farly::Rules;
+use Farly::Rule::Expander;
 
-my $rule_expander = Farly::Rules->new( $container );
+my $rule_expander = Farly::Rule::Expander->new( $container );
 
 # get the raw rule entries
 

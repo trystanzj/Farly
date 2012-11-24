@@ -2,8 +2,8 @@ use strict;
 use warnings;
 use Data::Dumper;
 use Farly;
-use Farly::Template::Cisco;
 use Farly::Remove::Rule;
+use Farly::Template::Cisco;
 use Test::Simple tests => 1;
 use File::Spec; 
 
@@ -16,7 +16,7 @@ my $fw = $importer->process( 'ASA', "$path/test.cfg" );
 
 my $remover = Farly::Remove::Rule->new($fw);
 
-my $expander = Farly::Rules->new($fw);
+my $expander = Farly::Rule::Expander->new($fw);
 
 my $entries = $expander->expand_all();
 

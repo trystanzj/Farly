@@ -8,7 +8,7 @@ use Farly;
 use Farly::ASA::Parser;
 use Farly::ASA::Annotator;
 use Farly::ASA::Rewriter;
-
+ 
 Log::Log4perl->easy_init($ERROR);
 
 my $parser = Farly::ASA::Parser->new();
