@@ -83,16 +83,24 @@ if ( defined $opts{'verbose'} ) {
 }
 
 if ( defined $opts{'new'} ) {
+
 	print "\n! analyzing...\n\n";
 	$optimizer->run();
+
 	print "\n! new\n\n";
 	display( $optimizer->optimized() );
 }
 elsif ( defined $opts{'remove'} ) {
+	
+	my $config = Object::KVC::List->new();
+	$container->matches( $search, $config );
+
 	print "\n! analyzing...\n\n";	
 	$optimizer->run();
+
 	print "\n! remove\n\n";	
-	my $result = replace( $container, $optimizer->optimized(), $optimizer->removed() );
+	my $result = replace( $config, $optimizer->optimized(), $optimizer->removed() );
+
 	display( $result, \%opts );
 }
 else {
