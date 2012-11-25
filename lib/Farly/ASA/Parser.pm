@@ -421,6 +421,7 @@ route_interface :
 
 route_dst :
 		IPNETWORK route_nexthop
+	|	NAMED_NET route_nexthop
 	|	DEFAULT_ROUTE route_nexthop
 
 route_nexthop :
