@@ -1,15 +1,15 @@
 use strict;
 use warnings;
-
-use Test::Simple tests => 7;
-
 use File::Spec;
+use Test::Simple tests => 7;
+use Farly;
+use Farly::Rule::Optimizer;
+use Farly::Rule::Expander;
 
 my $abs_path = File::Spec->rel2abs(__FILE__);
 our ( $volume, $dir, $file ) = File::Spec->splitpath($abs_path);
 my $path = $volume . $dir;
 
-use Farly;
 my $importer  = Farly->new();
 my $container = $importer->process( "ASA", "$path/test.cfg" );
 
@@ -18,8 +18,6 @@ eval { my $optimizer1 = Farly::Rule::Optimizer->new($container); };
 ok( $@ =~ /found invalid object/, "not expanded" );
 
 ok( $container->size() == 45, "import" );
-
-use Farly::Rule::Expander;
 
 my $rule_expander = Farly::Rule::Expander->new($container);
 
@@ -30,8 +28,6 @@ ok( defined($rule_expander), "constructor" );
 my $expanded_rules = $rule_expander->expand_all();
 
 ok( $expanded_rules->size == 17, "expand_all" );
-
-use Farly::Rule::Optimizer;
 
 my $optimizer;
 
