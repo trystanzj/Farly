@@ -9,13 +9,9 @@ use Farly::ASA::Generator;
 
 Log::Log4perl->easy_init($ERROR);
 
-my $abs_path = File::Spec->rel2abs( __FILE__ );
-our ($volume,$dir,$file) = File::Spec->splitpath( $abs_path );
-my $path = $volume.$dir;
-
 my $generator = Farly::ASA::Generator->new();
 
-my $ast = retrieve("$path/expected.ast");
+my $ast = retrieve('expected.ast');
 
 $generator->visit($ast);
 
