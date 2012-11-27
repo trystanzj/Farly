@@ -65,4 +65,3 @@
    - updated tests for ::ASA::Parser, ::Rewriter, ::Generator
    - retired ::ASA::TokenPicker
    - fixed broken f_analyze.pl --remove option
-   - removed bin directory
