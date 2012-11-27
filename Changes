@@ -62,5 +62,7 @@
    - added MEMBER_TYPE imaginary token inserts in ::ASA::Parser
    - added ::ASA::Rewriter.pm and ::ASA::Generator.pm
    - changed ::ASA::Builder to use ::ASA::Rewriter and ::ASA::Generator
-   - added names support and updated tests
+   - updated tests for ::ASA::Parser, ::Rewriter, ::Generator
    - retired ::ASA::TokenPicker
+   - fixed broken f_analyze.pl --remove option
+   - removed bin directory
