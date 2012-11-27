@@ -4,10 +4,6 @@ Makefile.PL
 MANIFEST
 README
 README.md
-bin/f_analyze.pl
-bin/f_remove.pl
-bin/f_rewrite.pl
-bin/f_search.pl
 demo/rule_search.pl
 lib/Farly/ASA/Annotator.pm
 lib/Farly/ASA/Builder.pm
