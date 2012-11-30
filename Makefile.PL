@@ -8,6 +8,12 @@ WriteMakefile(
 	NAME               => 'Farly',
 	VERSION_FROM       => 'lib/Farly.pm',
 	LICENSE            => 'gpl',
+    META_MERGE => {
+         resources => {
+            license     => 'http://www.gnu.org/licenses/gpl-3.0.html',
+            repository  => 'https://github.com/trystanzj/Farly',
+        },
+    },
 	BUILD_REQUIRES     => { 'ExtUtils::MakeMaker' => 6.62,
 		                    'Test::Simple'        => 0,
 		                    'Test::More'          => 0,
