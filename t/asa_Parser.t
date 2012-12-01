@@ -30,7 +30,7 @@ $expected = {
 	'STRING'   => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ), "hostname" );
+ok( equals( $expected, $actual ), "hostname" );
 
 #
 # name
@@ -51,7 +51,7 @@ $expected = {
 	'IPADDRESS'    => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ), "name" );
+ok( equals( $expected, $actual ), "name" );
 
 #
 # interface nameif
@@ -73,8 +73,7 @@ $expected = {
 	'STRING'            => 2
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"interface nameif" );
+ok( equals( $expected, $actual ), "interface nameif" );
 
 #
 # interface ip
@@ -101,8 +100,7 @@ $expected = {
 	'STRING'            => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"interface ip" );
+ok( equals( $expected, $actual ), "interface ip" );
 
 #
 # interface security-level
@@ -125,8 +123,7 @@ $expected = {
 	'STRING'            => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"interface security-level" );
+ok( equals( $expected, $actual ), "interface security-level" );
 
 #
 # object host
@@ -152,8 +149,7 @@ $expected = {
 	'IPADDRESS'      => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"object host" );
+ok( equals( $expected, $actual ), "object host" );
 
 #
 # object subnet
@@ -179,8 +175,7 @@ $expected = {
 	'OBJECT_TYPE'    => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"object subnet" );
+ok( equals( $expected, $actual ), "object subnet" );
 
 #
 # object range
@@ -206,8 +201,7 @@ $expected = {
 	'STRING'         => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"object range" );
+ok( equals( $expected, $actual ), "object range" );
 
 #
 # object service src dst
@@ -240,8 +234,7 @@ $expected = {
 	'OBJECT_TYPE'             => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"object service src dst" );
+ok( equals( $expected, $actual ), "object service src dst" );
 
 #
 # object-group service src
@@ -271,8 +264,7 @@ $expected = {
 	'GROUP_TYPE'        => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"object-group service src" );
+ok( equals( $expected, $actual ), "object-group service src" );
 
 #
 # object-group protocol
@@ -298,8 +290,7 @@ $expected = {
 	'STRING'             => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"object-group protocol" );
+ok( equals( $expected, $actual ), "object-group protocol" );
 
 #
 # network-object named host
@@ -325,8 +316,7 @@ $expected = {
 	'GROUP_TYPE'        => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"network-object named host" );
+ok( equals( $expected, $actual ), "network-object named host" );
 
 #
 # port-object
@@ -356,8 +346,7 @@ $expected = {
 	'GROUP_TYPE'     => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"port-object" );
+ok( equals( $expected, $actual ), "port-object" );
 
 #
 # network group-object
@@ -383,8 +372,7 @@ $expected = {
 	'GROUP_TYPE'      => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"network group-object" );
+ok( equals( $expected, $actual ), "network group-object" );
 
 #
 # object-group description
@@ -410,8 +398,7 @@ $expected = {
 	'STRING'         => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"object-group description" );
+ok( equals( $expected, $actual ), "object-group description" );
 
 #
 # object-group service dst
@@ -441,8 +428,7 @@ $expected = {
 	'GROUP_TYPE'        => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"object-group service dst" );
+ok( equals( $expected, $actual ), "object-group service dst" );
 
 #
 # object-group service
@@ -470,8 +456,7 @@ $expected = {
 	'GROUP_TYPE'      => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"object-group service" );
+ok( equals( $expected, $actual ), "object-group service" );
 
 #
 # access-list 1
@@ -507,8 +492,7 @@ $expected = {
 	'acl_src_ip'   => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"access-list 1" );
+ok( equals( $expected, $actual ), "access-list 1" );
 
 #
 # access-list 2
@@ -546,8 +530,7 @@ $expected = {
 	'acl_type'     => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"access-list 2" );
+ok( equals( $expected, $actual ), "access-list 2" );
 
 #
 # access-list 3
@@ -581,8 +564,7 @@ $expected = {
 	'acl_src_ip'   => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"access-list 3" );
+ok( equals( $expected, $actual ), "access-list 3" );
 
 #
 # access-list 4
@@ -615,8 +597,7 @@ $expected = {
 	'acl_src_ip'   => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"access-list 4" );
+ok( equals( $expected, $actual ), "access-list 4" );
 
 #
 # access-list 5
@@ -645,8 +626,7 @@ $expected = {
 	'acl_src_ip'   => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"access-list 5" );
+ok( equals( $expected, $actual ), "access-list 5" );
 
 #
 # access-list 6
@@ -679,8 +659,7 @@ $expected = {
 	'acl_src_ip'   => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"access-list 6" );
+ok( equals( $expected, $actual ), "access-list 6" );
 
 #
 # access-list 7
@@ -716,8 +695,7 @@ $expected = {
 	'acl_src_ip'   => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"access-list 7" );
+ok( equals( $expected, $actual ), "access-list 7" );
 
 #
 # access-list 8
@@ -749,8 +727,7 @@ $expected = {
 	'acl_type'     => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"access-list 8" );
+ok( equals( $expected, $actual ), "access-list 8" );
 
 #
 # access-list object service
@@ -780,8 +757,7 @@ $expected = {
 	'acl_type'     => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"access-list object service" );
+ok( equals( $expected, $actual ), "access-list object service" );
 
 #
 # access-list icmp-type
@@ -815,8 +791,7 @@ $expected = {
 	'acl_type'      => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"access-list icmp-type" );
+ok( equals( $expected, $actual ), "access-list icmp-type" );
 
 #
 # access-group
@@ -840,8 +815,7 @@ $expected = {
 	'ag_id'         => 1
 };
 
-ok( equals( $expected, $actual ) && equals( $actual, $expected ),
-	"access-group" );
+ok(	equals( $expected, $actual ), "access-group" );
 
 #
 # Finished tests
