@@ -8,7 +8,7 @@ use Carp;
 require UNIVERSAL::DOES
   unless defined &UNIVERSAL::DOES;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 sub size {
 	my ($self) = @_;

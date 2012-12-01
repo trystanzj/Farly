@@ -68,3 +68,4 @@
    - Farly::Rules and Farly::Optimizer are deprecated, renamed to Farly::Rule::Expander
      and Farly::Rule::Optimizer
  
+ 0.12 - December 2012

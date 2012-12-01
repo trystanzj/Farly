@@ -10,7 +10,7 @@ use Farly::ASA::PortFormatter;
 use Farly::ASA::ProtocolFormatter;
 use Farly::ASA::ICMPFormatter;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 our $AUTOLOAD;
 
 #each token type maps to a class

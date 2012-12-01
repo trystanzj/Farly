@@ -7,7 +7,7 @@ use Carp;
 use Log::Log4perl qw(get_logger);
 use Parse::RecDescent;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 $::RD_ERRORS = 1; # Make sure the parser dies when it encounters an error
 #$::RD_WARN   = 1; # Enable warnings. This will warn on unused rules &c.
