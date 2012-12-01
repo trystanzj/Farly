@@ -120,7 +120,7 @@ sub expand_all {
 			$self->expand( $clone, $expanded );
 		};
 		if ($@) {
-			confess "$@ \n expand failed for ", Dumper($ce), "\n";
+			confess "$@ \n expand failed for ", $ce->dump(), "\n";
 		}
 	}
 

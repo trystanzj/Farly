@@ -1,6 +1,5 @@
 use strict;
 use warnings;
-use Data::Dumper;
 use Farly;
 use Farly::Remove::Rule;
 use Farly::Template::Cisco;

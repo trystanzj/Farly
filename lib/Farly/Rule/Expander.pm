@@ -4,7 +4,6 @@ use 5.008008;
 use strict;
 use warnings;
 use Carp;
-use Data::Dumper;
 use Log::Log4perl qw(get_logger);
 
 our $VERSION = '0.11';
@@ -120,7 +119,7 @@ sub expand_all {
 			$self->expand( $clone, $expanded );
 		};
 		if ($@) {
-			confess "$@ \n expand failed for ", Dumper($ce), "\n";
+			confess "$@ \n expand failed for ", $ce->dump(), "\n";
 		}
 	}
 

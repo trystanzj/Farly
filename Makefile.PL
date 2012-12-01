@@ -31,7 +31,6 @@ WriteMakefile(
 		'Config'            => 0,		
 		'Cwd'               => 0,
 		'DynaLoader'        => 0,
-		'Data::Dumper'      => 0,
 		'Exporter'          => 0,
 		'Exporter::Heavy'   => 0,
 		'Fcntl'             => 0,
