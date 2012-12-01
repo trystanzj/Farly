@@ -3,7 +3,6 @@ gpl-3.0.txt
 Makefile.PL
 MANIFEST
 README
-README.md
 demo/rule_search.pl
 lib/Farly/ASA/Annotator.pm
 lib/Farly/ASA/Builder.pm
