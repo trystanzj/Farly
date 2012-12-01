@@ -57,12 +57,14 @@
   - Makefile.PL BUILD_REQUIRES Test::Simple and Test::More
 
 0.11 - November 2012
-   - changed route DESTINATION to DST_IP
+   - changed route property DESTINATION to DST_IP
    - ::ASA::Parser acl_logging token type to acl_log_level
    - added MEMBER_TYPE imaginary token inserts in ::ASA::Parser
    - added ::ASA::Rewriter.pm and ::ASA::Generator.pm
    - changed ::ASA::Builder to use ::ASA::Rewriter and ::ASA::Generator
    - updated tests for ::ASA::Parser, ::Rewriter, ::Generator
    - retired ::ASA::TokenPicker
-   - removed bin/
+   - removed bin/ directory
+   - Farly::Rules and Farly::Optimizer are deprecated, renamed to Farly::Rule::Expander
+     and Farly::Rule::Optimizer
  
