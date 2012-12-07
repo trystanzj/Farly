@@ -107,6 +107,7 @@ sub _collect_garbage {
 	my $index = Object::KVC::Index->new( $self->fw );
 	$index->make_index( 'ENTRY', 'ID' );
 
+	my $NAME  = Object::KVC::String->new('NAME');
 	my $GROUP  = Object::KVC::String->new('GROUP');
 	my $RULE   = Object::KVC::String->new('RULE');
 	my $OBJECT = Object::KVC::String->new('OBJECT');
@@ -193,12 +194,16 @@ sub _collect_garbage {
 			$remove->add($object);
 
 		}
+		elsif ( $object->get('ENTRY')->equals($NAME) ) {
+			next;
+		}
 		elsif ( $object->get('ENTRY')->equals($INTERFACE) ) {
 			next;
 		}
 		elsif ( $object->get('ENTRY')->equals($ROUTE) ) {
 			next;
 		}
+
 		else {
 			confess "\nI don't know what this is:\n", $object->dump();
 		}
