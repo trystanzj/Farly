@@ -1,9 +1,6 @@
 use 5.008008;
 use ExtUtils::MakeMaker;
 
-my %prereq = ();
-$prereq{'UNIVERSAL::DOES'} = 0.004 if !defined &UNIVERSAL::DOES;
-
 WriteMakefile(
 	NAME               => 'Farly',
 	VERSION_FROM       => 'lib/Farly.pm',
@@ -20,7 +17,6 @@ WriteMakefile(
 		                  },
 	CONFIGURE_REQUIRES => { 'ExtUtils::MakeMaker' => 6.62, },
 	PREREQ_PM          => {
-		%prereq,
 		#non-core
 		'Object::KVC'       => 0.04,
 		'Parse::RecDescent' => 1.965001,

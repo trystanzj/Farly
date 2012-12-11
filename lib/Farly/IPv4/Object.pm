@@ -5,9 +5,6 @@ use strict;
 use warnings;
 use Carp;
 
-require UNIVERSAL::DOES
-  unless defined &UNIVERSAL::DOES;
-
 our $VERSION = '0.12';
 
 sub size {
@@ -18,7 +15,7 @@ sub size {
 sub equals {
 	my ( $self, $other ) = @_;
 
-	if ( $other->DOES('Farly::IPv4::Object') ) {
+	if ( $other->isa('Farly::IPv4::Object') ) {
 	  
 		return $self->first == $other->first
 		  && $self->last == $other->last
@@ -29,7 +26,7 @@ sub equals {
 sub contains {
 	my ( $self, $other ) = @_;
 
-	if ( $other->DOES('Farly::IPv4::Object') ) {
+	if ( $other->isa('Farly::IPv4::Object') ) {
 
 		return $self->first <= $other->first
 		  && $self->last >= $other->last;
@@ -39,7 +36,7 @@ sub contains {
 sub intersects {
 	my ( $self, $other ) = @_;
 
-	if ( $other->DOES('Farly::IPv4::Object') ) {
+	if ( $other->isa('Farly::IPv4::Object') ) {
 
 		return ( $self->first <= $other->first
 		  && $other->first <= $self->last )
@@ -55,7 +52,7 @@ sub intersects {
 sub gt {
 	my ( $self, $other ) = @_;
 
-	if ( $other->DOES('Farly::IPv4::Object') ) {
+	if ( $other->isa('Farly::IPv4::Object') ) {
 
 		return $self->first > $other->last;
 	}
@@ -64,7 +61,7 @@ sub gt {
 sub lt {
 	my ( $self, $other ) = @_;
 
-	if ( $other->DOES('Farly::IPv4::Object') ) {
+	if ( $other->isa('Farly::IPv4::Object') ) {
 
 		return $self->last < $other->first;
 	}
@@ -73,7 +70,7 @@ sub lt {
 sub adjacent {
 	my ( $self, $other ) = @_;
 
-	if ( $other->DOES('Farly::IPv4::Object') ) {
+	if ( $other->isa('Farly::IPv4::Object') ) {
 
 		return ( ( $self->last + 1 ) == $other->first )
 		  || ( ( $other->last + 1 ) == $self->first );
