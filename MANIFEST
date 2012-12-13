@@ -49,7 +49,6 @@ t/asa_ProtocolFormatter.t
 t/asa_Rewriter.t
 t/builder.t
 t/director.t
-t/expected.ast
 t/filter.txt
 t/ipv4_address.t
 t/ipv4_icmptype.t
