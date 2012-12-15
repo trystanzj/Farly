@@ -48,10 +48,6 @@ sub remove {
 		$self->_add_reversed_list($objects_for_cleanup);
 		$self->_cleanup();
 	}
-	else {
-		die "no configuration found\n";
-		return;
-	}
 }
 
 sub result { return $_[0]->{REMOVE} }
