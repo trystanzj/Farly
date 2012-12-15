@@ -33,6 +33,8 @@ sub new {
 sub run {
 	my ( $self ) = @_;
 
+	my $logger = get_logger(__PACKAGE__);
+
 	my $filter    = Farly::ASA::Filter->new();
 	my $parser    = Farly::ASA::Parser->new();
 	my $annotator = Farly::ASA::Annotator->new();
@@ -65,6 +67,8 @@ sub run {
 			$generator->visit($ast);
 		};
 		if ($@) {
+			my $err = $@;
+			$logger->fatal($self->file(),"\n $line \n $err\n");
 			chomp($line);
 			die "Problem at line :\n$line\nError : $@";
 		}
