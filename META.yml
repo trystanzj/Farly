@@ -1,0 +1,54 @@
+---
+abstract: 'Farly - Firewall Analysis and Rewrite LibrarY'
+author:
+  - 'Trystan Johnson'
+build_requires:
+  ExtUtils::MakeMaker: 6.62
+  Test::More: 0
+  Test::Simple: 0
+configure_requires:
+  ExtUtils::MakeMaker: 6.62
+dynamic_config: 0
+generated_by: 'ExtUtils::MakeMaker version 6.62, CPAN::Meta::Converter version 2.112150'
+license: gpl_3
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Farly
+no_index:
+  directory:
+    - t
+    - inc
+requires:
+  Carp: 0
+  Config: 0
+  Cwd: 0
+  DynaLoader: 0
+  Exporter: 0
+  Exporter::Heavy: 0
+  Fcntl: 0
+  File::Basename: 0
+  File::Path: 0
+  File::Spec: 0
+  File::Spec::Unix: 0
+  File::Spec::Win32: 0
+  IO: 0
+  IO::File: 0
+  IO::Handle: 0
+  IO::Seekable: 0
+  List::Util: 0
+  Log::Log4perl: 1.35
+  Object::KVC: 0.04
+  Parse::RecDescent: 1.965001
+  Scalar::Util: 0
+  SelectSaver: 0
+  SelfLoader: 0
+  Symbol: 0
+  Sys::Hostname: 0
+  Template: 2.22
+  Text::Balanced: 0
+  Time::HiRes: 0
+resources:
+  license: http://www.gnu.org/licenses/gpl-3.0.html
+  repository: https://github.com/trystanzj/Farly
+version: 0.12
