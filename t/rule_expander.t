@@ -23,7 +23,7 @@ my $rule_expander = Farly::Rule::Expander->new( $container );
 
 ok( defined($rule_expander), "constructor" );
 
-# get the raw rule entries
+# get the expanded entries
 
 my $expanded_rules = $rule_expander->expand_all();
 

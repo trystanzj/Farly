@@ -1,6 +1,5 @@
 use strict;
 use warnings;
-use Getopt::Std;
 use Farly;
 use Farly::Template::Cisco;
 use Farly::Remove::Address;
