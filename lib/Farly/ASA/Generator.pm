@@ -7,7 +7,7 @@ use Carp;
 use Scalar::Util qw(blessed);
 use Log::Log4perl qw(get_logger);
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 #our $AUTOLOAD;
 
