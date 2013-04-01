@@ -24,7 +24,7 @@ Version 0.13
 Current Release
 ===============
 
-http://search.cpan.org/~tjohnson/Farly-0.13/
+http://search.cpan.org/~tjohnson/Farly-0.12/
 
 LICENSING
 =========
