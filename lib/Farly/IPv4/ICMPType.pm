@@ -61,6 +61,14 @@ sub intersects {
 	}
 }
 
+sub compare {
+	my ( $self, $other ) = @_;
+
+	if ( $other->isa('Farly::IPv4::ICMPType') ) {
+		return $self->type() <=> $other->type();
+	}
+}
+
 1;
 __END__
 

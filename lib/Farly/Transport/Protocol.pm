@@ -61,6 +61,15 @@ sub intersects {
 	}
 }
 
+sub compare {
+	my ( $self, $other ) = @_;
+
+	if ( $other->isa('Farly::Transport::Protocol') ) {
+		return $self->protocol() <=> $other->protocol();
+	}
+}
+
+
 1;
 __END__
 

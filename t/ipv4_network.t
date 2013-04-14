@@ -72,3 +72,10 @@ ok ( ! $net5->adjacent($net15), "! adjacent net" );
 ok ( $net15->adjacent($ip5), " adjacent ip");
 
 ok ( $net18->as_string() eq "10.20.31.0 255.255.255.128", "wild card mask in");
+
+print $net11->compare( $net12 ),"\n";
+print $net12->compare( $net11 ),"\n";
+
+print $net13->compare( $net3 ),"\n";
+print $net3->compare( $net13 ),"\n";
+

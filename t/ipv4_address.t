@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::Simple tests => 21;
+use Test::Simple tests => 24;
 
 use Farly::IPv4::Address;
 use Farly::IPv4::Network;
@@ -11,6 +11,12 @@ my $ip2 = Farly::IPv4::Address->new("10.1.2.3");
 my $ip3 = Farly::IPv4::Address->new("10.1.1.3");
 my $ip4 = Farly::IPv4::Address->new("10.1.3.3");
 my $ip5 = Farly::IPv4::Address->new("10.1.3.4");
+
+ok ( $ip1->compare( $ip2 ) == 0, "compare equal");
+
+ok ( $ip4->compare( $ip5 ) == -1, "compare less than");
+
+ok ( $ip4->compare( $ip3 ) == 1, "compare greater than");
 
 eval { my $ip6 = Farly::IPv4::Address->new("ip10.1.3.4"); };
 

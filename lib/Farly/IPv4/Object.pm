@@ -77,6 +77,16 @@ sub adjacent {
 	}
 }
 
+sub compare {
+	my ( $self, $other ) = @_;
+
+	if ( $other->isa('Farly::IPv4::Object') ) {
+
+		return ( $self->first() <=> $other->first()
+          || $other->last() <=> $self->last() );
+	}
+}
+
 1;
 __END__
 

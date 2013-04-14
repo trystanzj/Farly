@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::Simple tests => 28;
+use Test::Simple tests => 38;
 
 use Farly::Transport::Port;
 use Farly::Transport::PortGT;
@@ -12,6 +12,12 @@ my $p1 = Farly::Transport::Port->new("80");
 my $p2 = Farly::Transport::Port->new("80");
 my $p3 = Farly::Transport::Port->new("443");
 my $p4 = Farly::Transport::Port->new("5060");
+
+ok ( $p1->compare( $p1 ) == 0, "port compare equal");
+
+ok ( $p1->compare( $p3 ) == -1, "port compare less than");
+
+ok ( $p4->compare( $p3 ) == 1, "port compare greater than");
 
 eval { my $p5 = Farly::Transport::Port->new("www"); };
 
@@ -27,6 +33,12 @@ my $portRange2 = Farly::Transport::PortRange->new("1-1024");
 my $portRange3 = Farly::Transport::PortRange->new("1024 65535");
 my $portRange4 = Farly::Transport::PortRange->new("16384 32768");
 my $portRange5 = Farly::Transport::PortRange->new("10000 20000");
+
+ok( $portRange1->compare($portRange2) == 0, "range compare equal");
+ok( $portRange2->compare($portRange3) == -1, "range compare lt");
+ok( $portRange3->compare($portRange2) == 1, "range compare gt");
+ok( $portRange1->compare($portRange0) == 1, "range compare larger first 1");
+ok( $portRange3->compare($portRange4) == -1, "range compare larger first -1");
 
 ok ( $portRange4->intersects($portRange3), "intersects 1");
 ok ( $portRange4->intersects($portRange3), "intersects 2");
@@ -83,4 +95,6 @@ ok ( $lt1->intersects($portRange0), "lt 1024 - intersects range");
 
 ok ( $portRange0->contains($lt1), "port range contains lt");
 
+ok( $portRange4->compare($lt1) == 1, "compare range lt");
 
+ok( $gt1->compare($portRange4) == -1, "compare gt range");
