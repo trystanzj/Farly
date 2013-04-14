@@ -72,5 +72,5 @@
    - translate failure logs to file
    - added META.YML, LICENSE, repository link
 
-0.13 - January 2012
-   - next version
+0.13 - April 2013
+   - added compare method
