@@ -6,7 +6,7 @@ use warnings;
 use Carp;
 use Farly::Rule::Expander;
 
-our $VERSION = '0.13';
+our $VERSION = '0.20';
 
 # one object per firewall
 sub new {

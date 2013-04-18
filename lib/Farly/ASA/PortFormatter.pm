@@ -4,7 +4,7 @@ use 5.008008;
 use strict;
 use warnings;
 
-our $VERSION = '0.13';
+our $VERSION = '0.20';
 
 our $String_To_Int = {
 	"aol"               => 5190,

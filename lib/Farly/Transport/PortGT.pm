@@ -7,7 +7,7 @@ use Carp;
 use Farly::Transport::Port;
 
 our @ISA = qw(Farly::Transport::Port);
-our $VERSION = '0.13';
+our $VERSION = '0.20';
 
 sub last {
 	return 65535;
