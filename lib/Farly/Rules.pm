@@ -35,7 +35,6 @@ sub new {
 }
 
 sub config { return $_[0]->{CONFIG}; }
-sub _index { return $_[0]->{AGGREGATE}; }
 sub _agg { return $_[0]->{AGGREGATE}; }
 
 sub _init {
@@ -281,7 +280,7 @@ __END__
 
 =head1 NAME
 
-Farly::Rules - - Deprecated - is now Farly::Rule::Expander
+Farly::Rules - Deprecated - is now Farly::Rule::Expander
 
 =head1 DESCRIPTION
 

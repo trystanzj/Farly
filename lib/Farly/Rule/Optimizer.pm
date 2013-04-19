@@ -420,7 +420,7 @@ sub _optimize {
 	my %remove;    # %remove<index, Farly::Object>
 
 	# find permit rules that contain deny rules
-	# that are defined further down in the rule set
+	# which are defined further down in the rule set
 	$logger->info("Checking for deny rule inconsistencies...");
 	%remove = $self->_inconsistent( \@arr_permits, \@arr_denys );
 
@@ -505,7 +505,7 @@ Farly::Rule::Optimizer - Optimize a raw firewall rule set
 =head1 DESCRIPTION
 
 Farly::Rule::Optimizer finds duplicate and contained IP, TCP, and UDP firewall
-rules in a raw rule set.
+rules in an expanded rule set.
 
 Farly::Rule::Optimizer stores the list of optimized rules, as well as the list 
 of rule entries which can be removed from the rule set without affecting the

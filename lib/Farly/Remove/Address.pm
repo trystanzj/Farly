@@ -100,8 +100,8 @@ sub _collect_garbage {
 
 	my $fw = $self->{CONFIG};
 
-	my $index = Object::KVC::Index->new( $self->fw );
-	$index->make_index( 'ENTRY', 'ID' );
+	my $agg = Farly::Object::Aggregate->new( $self->fw );
+	$agg->groupby( 'ENTRY', 'ID' );
 
 	my $NAME  = Farly::Value::String->new('NAME');
 	my $GROUP  = Farly::Value::String->new('GROUP');
@@ -121,11 +121,11 @@ sub _collect_garbage {
 
 		if ( $object->get('ENTRY')->equals($GROUP) ) {
 
+			# convert the $object to a reference object
+            my $ref_obj = $self->_create_reference($object);
+
 			#it's a group, check the size
-			my $actual = $index->fetch(
-				$object->get('ENTRY')->as_string(),
-				$object->get('ID')->as_string()
-			);
+			my $actual = $agg->matches( $ref_obj );
 
 			if ( !defined $actual ) {
 				confess "error ", $object->dump(), " actual not found";
@@ -135,21 +135,19 @@ sub _collect_garbage {
 			# group must be removed first
 			if ( $actual->size == 1 ) {
 
-				# convert the $object to a reference object
-				my $ref = $self->_create_reference($object);
-
 				# if the group can be removed no members of that group
 				# should be in $remove, i.e. the group has already been
-				# emptied out
-				$remove = $self->_remove_copy( $remove, $ref );
+				# emptied out so take all other group member objects out 
+				# of remove
+				$remove = $self->_remove_copy( $remove, $ref_obj );
 
 				$object->set( 'REMOVE', Farly::Value::String->new('GROUP') );
 				$remove->add($object);
 
-			 # each referring object must be checked to see if it can be removed
-			 # all references to 'object' will be in @remove after 'object'
+			     # each referring object must be checked to see if it can be removed
+			     # all references to 'object' will be in @remove after 'object'
 
-				my @result = $self->_reference_search($ref);
+				my @result = $self->_reference_search($ref_obj);
 				push @stack, @result;
 			}
 			else {
@@ -161,7 +159,7 @@ sub _collect_garbage {
 
 				# update the index to reflect that $object is removed
 				# because more objects could be removed from the group later on
-				$self->_update_index( $index, $new_set );
+				$agg->update( $ref_obj, $new_set );
 
 				$object->set( 'REMOVE', Farly::Value::String->new('OBJECT') );
 				$remove->add($object);
@@ -175,10 +173,10 @@ sub _collect_garbage {
 			$remove->add($object);
 
 			# reformat the object into a reference object
-			my $ref = $self->_create_reference($object);
+			my $ref_obj = $self->_create_reference($object);
 
 			# find everything that references the removed object
-			my @result = $self->_reference_search($ref);
+			my @result = $self->_reference_search($ref_obj);
 			push @stack, @result;
 
 		}
@@ -213,8 +211,8 @@ sub _create_reference {
 	my ( $self, $object ) = @_;
 
 	my $ref = Farly::Object::Ref->new();
-	$ref->set( 'ENTRY', $object->{'ENTRY'} );
-	$ref->set( 'ID',    $object->{'ID'} );
+	$ref->set( 'ENTRY', $object->get('ENTRY') );
+	$ref->set( 'ID',    $object->get('ID') );
 
 	return $ref;
 }
@@ -250,20 +248,6 @@ sub _remove_copy {
 	}
 
 	return $r;
-}
-
-sub _update_index {
-	my ( $self, $index, $set ) = @_;
-
-	my $entry = $set->[0]->get('ENTRY')->as_string();
-	my $id    = $set->[0]->get('ID')->as_string();
-
-	my $hash = $index->get_index();
-
-	die "$entry $id not found in index"
-	  unless defined( $hash->{$entry}->{$id} );
-
-	$hash->{$entry}->{$id} = $set;
 }
 
 # reverse the order of the remove list

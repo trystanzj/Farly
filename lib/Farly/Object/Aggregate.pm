@@ -73,7 +73,7 @@ sub _has_defined_keys {
                 last;
             }
             if ( !$obj->get($key)->can('compare') ) {
-                warn "$self skipped ", ref($obj), " in groupby\n";
+                #warn "$self skipped ", $obj->dump(), " in groupby\n";
                 $all_keys_defined = undef;
                 last;
             }
@@ -178,6 +178,8 @@ sub update {
             return;
         }
     }
+    
+    confess $search->dump()," not found";
 }
 
 1;
