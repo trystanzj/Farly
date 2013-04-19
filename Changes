@@ -81,4 +81,6 @@
 		Farly::Object::Set = Farly::Object::Set
 		Farly::Value::String = Farly::Value::String
 		Farly::Value::Integer = Farly::Value::Integer
-   - added Farly::Object::Aggregate   
+   - added Farly::Object::Aggregate
+   - optimised Farly::Rule::Optimizer
+   - fixing broken Farly::Remove::Rule
