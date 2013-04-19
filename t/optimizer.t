@@ -49,5 +49,3 @@ $optimizer->run();
 ok( $optimizer->optimized->size() == 15, "optimized" );
 
 ok( $optimizer->removed->size() == 1, "removed" );
-
-my $template = Farly::Template::Cisco->new('ASA');

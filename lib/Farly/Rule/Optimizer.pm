@@ -11,198 +11,161 @@ use Farly::Template::Cisco;
 our $VERSION = '0.20';
 
 sub new {
-	my ( $class, $rule_list ) = @_;
+    my ( $class, $rules ) = @_;
 
-	confess "configuration container object required"
-	  unless ( defined($rule_list) );
+    confess "Farly::Object::List object required"
+      unless ( defined($rules) );
 
-	confess "Farly::Object::List object required"
-	  unless ( $rule_list->isa("Farly::Object::List") );
+    confess "Farly::Object::List object required"
+      unless ( $rules->isa("Farly::Object::List") );
 
-	my $self = {
-		ORIGINAL  => $rule_list,
-		PERMITS   => Farly::Object::List->new(),
-		DENIES    => Farly::Object::List->new(),
-		OPTIMIZED => Farly::Object::List->new(),
-		REMOVED   => Farly::Object::List->new(),
-		P_ACTION  => "permit",
-		D_ACTION  => "deny",
-		PROTOCOLS => [ 0, 6, 17 ],
-		VERBOSE   => undef,
-	};
+    my $self = {
+        RULES  => $rules,
+        PERMITS   => Farly::Object::List->new(),
+        DENIES    => Farly::Object::List->new(),
+        OPTIMIZED => Farly::Object::List->new(),
+        REMOVED   => Farly::Object::List->new(),
+        P_ACTION  => "permit",
+        D_ACTION  => "deny",
+        PROTOCOLS => [ 0, 6, 17 ],
+        VERBOSE   => undef,
+        TEMPLATE  => Farly::Template::Cisco->new( 'ASA' ),
+    };
 
-	bless $self, $class;
+    bless $self, $class;
 
-	my $logger = get_logger(__PACKAGE__);
-	$logger->info("$self NEW");
-	$logger->info("$self ORIGINAL ", $self->{ORIGINAL});
+    my $logger = get_logger(__PACKAGE__);
+    $logger->info("$self NEW");
+    $logger->info( "$self RULES ", $self->{RULES} );
 
-	#validate input rule set
-	$self->_is_valid_rule_set();
-	$self->_is_expanded();
+    #validate input rule set
+    $self->_is_valid_rule_set();
+    $self->_is_expanded();
 
-	return $self;
+    return $self;
 }
 
-sub original  { return $_[0]->{ORIGINAL}; }
-sub _permits  { return $_[0]->{PERMITS}; }
-sub _denies   { return $_[0]->{DENIES}; }
-sub optimized { return $_[0]->{OPTIMIZED}; }
-sub removed   { return $_[0]->{REMOVED}; }
-sub p_action  { return $_[0]->{P_ACTION}; }
-sub d_action  { return $_[0]->{D_ACTION}; }
-sub protocols { return $_[0]->{PROTOCOLS}; }
+sub rules       { return $_[0]->{RULES}; }
+sub _permits    { return $_[0]->{PERMITS}; }
+sub _denies     { return $_[0]->{DENIES}; }
+sub optimized   { return $_[0]->{OPTIMIZED}; }
+sub removed     { return $_[0]->{REMOVED}; }
+sub p_action    { return $_[0]->{P_ACTION}; }
+sub d_action    { return $_[0]->{D_ACTION}; }
+sub protocols   { return $_[0]->{PROTOCOLS}; }
 sub _is_verbose { return $_[0]->{VERBOSE}; }
+sub _template   { return $_[0]->{TEMPLATE}; }
 
-sub verbose { 
-	my ( $self, $flag ) = @_;
-	$self->{VERBOSE} = $flag; 
+sub verbose {
+    my ( $self, $flag ) = @_;
+    $self->{VERBOSE} = $flag;
 }
 
 sub set_permit_action {
-	my ( $self, $action ) = @_;
-	confess "invalid action" unless ( defined($action) && length($action) );
-	$self->{P_ACTION} = $action;
-	my $logger = get_logger(__PACKAGE__);
-	$logger->debug("set permit action to $action");
+    my ( $self, $action ) = @_;
+    confess "invalid action" unless ( defined($action) && length($action) );
+    $self->{P_ACTION} = $action;
+    my $logger = get_logger(__PACKAGE__);
+    $logger->debug("set permit action to $action");
 }
 
 sub set_deny_action {
-	my ( $self, $action ) = @_;
-	confess "invalid action" unless ( defined($action) && length($action) );
-	$self->{D_ACTION} = $action;
-	my $logger = get_logger(__PACKAGE__);
-	$logger->debug("set deny action to $action");
+    my ( $self, $action ) = @_;
+    confess "invalid action" unless ( defined($action) && length($action) );
+    $self->{D_ACTION} = $action;
+    my $logger = get_logger(__PACKAGE__);
+    $logger->debug("set deny action to $action");
 }
 
 #check if its a single acl
 sub run {
-	my ($self) = @_;
-	
-	$self->_do_search();
-	$self->_optimize();
+    my ($self) = @_;
 
-	$self->{OPTIMIZED} = $self->_re_add();
+    $self->_optimize();
+
+    $self->{OPTIMIZED} = $self->_keep( $self->rules );
+    $self->{REMOVED} = $self->_remove( $self->rules );
 }
 
 sub _is_valid_rule_set {
-	my ($self) = @_;
+    my ($self) = @_;
 
-	my $id = $self->original->[0]->get("ID");
-		
-	my $search = Farly::Object->new();
-	$search->set( "ENTRY", Farly::Value::String->new("RULE") );
-	$search->set( "ID", $id );
+    my $id = $self->rules->[0]->get("ID");
 
-	foreach my $rule ( $self->original->iter() ) {
-		if ( ! $rule->matches( $search) ) {
-			die "found invalid object in firewall ruleset ",$rule->dump();
-		}
-	}
+    my $search = Farly::Object->new();
+    $search->set( "ENTRY", Farly::Value::String->new("RULE") );
+    $search->set( "ID",    $id );
+
+    foreach my $rule ( $self->rules->iter() ) {
+        if ( !$rule->matches($search) ) {
+            die "found invalid object in firewall ruleset ", $rule->dump();
+        }
+    }
 }
 
 sub _is_expanded {
-	my ($self) = @_;
-	foreach my $rule ( $self->original->iter() ) {
-		foreach my $key ( $rule->get_keys() ) {
-			if ( $rule->get($key)->isa("Farly::Object::Ref") ) {
-				die "an expanded firewall ruleset is required";
-			}
-		}
-	}
+    my ($self) = @_;
+    foreach my $rule ( $self->rules->iter() ) {
+        foreach my $key ( $rule->get_keys() ) {
+            if ( $rule->get($key)->isa("Farly::Object::Ref") ) {
+                die "an expanded firewall ruleset is required";
+            }
+        }
+    }
 }
 
 sub _do_search {
-	my ($self) = @_;
+    my ($self) = @_;
 
-	my $search = Farly::Object->new();
+    my $search = Farly::Object->new();
 
-	# 0, 6, 17 or ip, tcp, udp
-	foreach my $protocol ( @{ $self->protocols } ) {
+    # 0, 6, 17 or ip, tcp, udp
+    foreach my $protocol ( @{ $self->protocols } ) {
 
-		$search->set( "PROTOCOL", Farly::Transport::Protocol->new($protocol) );
+        $search->set( "PROTOCOL", Farly::Transport::Protocol->new($protocol) );
 
-		$search->set( "ACTION", Farly::Value::String->new( $self->p_action ) );
-		$self->original->matches( $search, $self->_permits );
+        $search->set( "ACTION", Farly::Value::String->new( $self->p_action ) );
+        $self->rules->matches( $search, $self->_permits );
 
-		$search->set( "ACTION", Farly::Value::String->new( $self->d_action ) );
-		$self->original->matches( $search, $self->_denies );
-	}
-}
-
-sub _re_add {
-	my ($self) = @_;
-
-	my $IP   = Farly::Transport::Protocol->new('0');
-	my $TCP  = Farly::Transport::Protocol->new('6');
-	my $UDP  = Farly::Transport::Protocol->new('17');
-	
-	#add non ip, tcp, and udp rules back in
-	foreach my $rule ( $self->original->iter() ) {
-	
-		if ( $rule->has_defined('COMMENT') ) {
-			$self->optimized->add( $rule );
-		 	next;
-		}
-
-		if ( ! ( $rule->get('PROTOCOL')->equals($IP) ||
-			  $rule->get('PROTOCOL')->equals($TCP) ||
-			 $rule->get('PROTOCOL')->equals($UDP) ) )
-		{
-			$self->optimized->add( $rule );
-		 	next;
-		}
-	}
-
-	my @full_list = sort _ascending_LINE $self->optimized->iter();
-	
-	my $new_optimized = Farly::Object::List->new();
-	
-	foreach my $rule ( @full_list ) {
-		$new_optimized->add($rule);
-	}	
-
-	return $new_optimized;
+        $search->set( "ACTION", Farly::Value::String->new( $self->d_action ) );
+        $self->rules->matches( $search, $self->_denies );
+    }
 }
 
 # sort rules in ascending order by line number
 sub _ascending_LINE {
-	$a->get("LINE")->number() <=> $b->get("LINE")->number();
+    $a->get('LINE')->compare( $b->get('LINE') );
 }
 
 # sort rules in ascending order so that current can contain next
 # but next can't contain current
 sub _ascending_l4 {
-	     $a->get("DST_IP")->first() <=> $b->get("DST_IP")->first()
-	  || $b->get("DST_IP")->last() <=> $a->get("DST_IP")->last()
-	  || $a->get("SRC_IP")->first() <=> $b->get("SRC_IP")->first()
-	  || $b->get("SRC_IP")->last() <=> $a->get("SRC_IP")->last()
-	  || $a->get("DST_PORT")->first() <=> $b->get("DST_PORT")->first()
-	  || $b->get("DST_PORT")->last() <=> $a->get("DST_PORT")->last()
-	  || $a->get("SRC_PORT")->first() <=> $b->get("SRC_PORT")->first()
-	  || $b->get("SRC_PORT")->last() <=> $a->get("SRC_PORT")->last()
-	  || $a->get("PROTOCOL")->protocol() <=> $b->get("PROTOCOL")->protocol();
+         $a->get('DST_IP')->compare( $b->get('DST_IP') )
+      || $a->get('SRC_IP')->compare( $b->get('SRC_IP') )
+      || $a->get('DST_PORT')->compare( $b->get('DST_PORT') )
+      || $a->get('SRC_PORT')->compare( $b->get('SRC_PORT') )
+      || $a->get('PROTOCOL')->compare( $b->get('PROTOCOL') );
 }
 
 sub _five_tuple {
-	my ( $self, $rule ) = @_;
+    my ( $self, $rule ) = @_;
 
-	my $logger = get_logger(__PACKAGE__);
+    my $logger = get_logger(__PACKAGE__);
 
-	my $r = Farly::Object->new();
+    my $r = Farly::Object->new();
 
-	my @rule_properties = qw(PROTOCOL SRC_IP SRC_PORT DST_IP DST_PORT);
+    my @rule_properties = qw(PROTOCOL SRC_IP SRC_PORT DST_IP DST_PORT);
 
-	foreach my $property (@rule_properties) {
-		if ( $rule->has_defined($property) ) {
-			$r->set( $property, $rule->get($property) );
-		}
-		else {
-			$logger->warn("property $property not defined in ", $rule->dump());
-		}
-	}
+    foreach my $property (@rule_properties) {
+        if ( $rule->has_defined($property) ) {
+            $r->set( $property, $rule->get($property) );
+        }
+        else {
+            $logger->warn( "property $property not defined in ", $rule->dump() );
+        }
+    }
 
-	return $r;
+    return $r;
 }
 
 # Given rule X, Y, where X precedes Y in the ACL
@@ -211,52 +174,47 @@ sub _five_tuple {
 # Xd contains Yp
 
 sub _inconsistent {
-	my ( $self, $s_a, $s_an ) = @_;
+    my ( $self, $s_a, $s_an ) = @_;
 
-	# $s_a = ARRAY ref of rules of action a
-	# $s_an = ARRAY ref of rules of action !a
-	# $s_a and $s_an are sorted by line number and must be readonly
+    # $s_a = ARRAY ref of rules of action a
+    # $s_an = ARRAY ref of rules of action !a
+    # $s_a and $s_an are sorted by line number and must be readonly
 
-	# hash of rule indexes to keep or remove
-	my %remove;
+    my $rule_x;
+    my $rule_y;
 
-	my $rule_x;
-	my $rule_y;
+    # iterate over rules of action a
+    for ( my $x = 0 ; $x != scalar( @{$s_a} ) ; $x++ ) {
 
-	# iterate over rules of action a
-	for ( my $x = 0 ; $x != scalar( @{$s_a} ) ; $x++ ) {
+        $rule_x = $s_a->[$x];
 
-		$rule_x = $s_a->[$x];
+        # iterate over rules of action !a
+        for ( my $y = 0 ; $y != scalar( @{$s_an} ) ; $y++ ) {
 
-		# iterate over rules of action !a
-		for ( my $y = 0 ; $y != scalar( @{$s_an} ) ; $y++ ) {
+            $rule_y = $s_an->[$y];
 
-			#skip check if rule_y is already removed
-			next if $remove{$y};
+            #skip check if rule_y is already removed
+            next if $rule_y->has_defined('REMOVE');
 
-			$rule_y = $s_an->[$y];
+            # if $rule_x comes before $rule_y in the rule set
+            # then check if $rule_x contains $rule_y
 
-			# if $rule_x comes before $rule_y in the rule set
-			# then check if $rule_x contains $rule_y
+            if ( $rule_x->get('LINE')->number() <= $rule_y->get('LINE')->number() )
+            {
 
-			if ( $rule_x->get('LINE')->number() <= $rule_y->get('LINE')->number() )
-			{
+                # $rule_x1 is rule_x with layer 3 and 4 properties only
+                my $rule_x1 = $self->_five_tuple($rule_x);
 
-				# $rule_x1 is rule_x with layer 3 and 4 properties only
-				my $rule_x1 = $self->_five_tuple($rule_x);
+                if ( $rule_y->contained_by($rule_x1) ) {
 
-				if ( $rule_y->contained_by($rule_x1) ) {
-
-					# note removal of rule_y and the
-					# rule_x which caused the inconsistency
-					$remove{$y} = $rule_x;
-				}
-			}
-		}
-	}
-
-	# list of action !a rules to be removed
-	return %remove;
+                    # note removal of rule_y and the
+                    # rule_x which caused the inconsistency
+                    $rule_y->set( 'REMOVE', Farly::Value::String->new('RULE') );
+                    $self->_log_remove( $rule_x, $rule_y );
+                }
+            }
+        }
+    }
 }
 
 # Given rule X, Y, where X precedes Y in the ACL
@@ -264,38 +222,41 @@ sub _inconsistent {
 # Xp and Yp such that Zd intersect Xp and Xp !contains Zd
 
 sub _can_remove {
-	my ( $self, $rule_x, $rule_y, $s_an ) = @_;
+    my ( $self, $rule_x, $rule_y, $s_an ) = @_;
 
-	# $rule_x = the rule contained by $rule_y
-	# $s_an = rules of action !a sorted by ascending DST_IP
+    # $rule_x = the rule contained by $rule_y
+    # $s_an = rules of action !a sorted by ascending DST_IP
 
-	# $rule_x1 is rule_x with layer 3 and 4 properties only
-	my $rule_x1 = $self->_five_tuple($rule_x);
+    # $rule_x1 is rule_x with layer 3 and 4 properties only
+    my $rule_x1 = $self->_five_tuple($rule_x);
 
-	foreach my $rule_z ( @{$s_an} ) {
+    foreach my $rule_z ( @{$s_an} ) {
 
-		if ( ! $rule_z->get("DST_IP")->gt( $rule_x1->get("DST_IP") ) ) {
+        if ( !$rule_z->get('DST_IP')->gt( $rule_x1->get('DST_IP') ) ) {
 
-			#is Z between X and Y?
-			if ( ( $rule_z->get('LINE')->number() >= $rule_x->get('LINE')->number() )
-				&& ( $rule_z->get('LINE')->number() <= $rule_y->get('LINE')->number() ) )
-			{
-				# Zd intersect Xp?
-				if ( $rule_z->intersects($rule_x1) ) {
-					# Xp ! contain Zd
-					if ( !$rule_z->contained_by($rule_x1) ) {
-						return undef;
-					}
-				}
-			}
-		}
-		else {
-			# $rule_z is greater than $rule_x1 therefore rule_x and rule_z are disjoint
-			last;
-		}
-	}
+            #is Z between X and Y?
+            if ( ( $rule_z->get('LINE')->number() >= $rule_x->get('LINE')->number() )
+                && ( $rule_z->get('LINE')->number() <= $rule_y->get('LINE')->number() ) )
+            {
 
-	return 1;
+                # Zd intersect Xp?
+                if ( $rule_z->intersects($rule_x1) ) {
+
+                    # Xp ! contain Zd
+                    if ( !$rule_z->contained_by($rule_x1) ) {
+                        return undef;
+                    }
+                }
+            }
+        }
+        else {
+
+            # $rule_z is greater than $rule_x1 therefore rule_x and rule_z are disjoint
+            last;
+        }
+    }
+
+    return 1;
 }
 
 # Given rule X, Y, where X precedes Y in the ACL
@@ -305,171 +266,152 @@ sub _can_remove {
 # in $s_an that intersect X and exist between X and Y in the ACL
 
 sub _redundant {
-	my ( $self, $s_a, $s_an ) = @_;
+    my ( $self, $s_a, $s_an ) = @_;
 
-	# $s_a = ARRAY ref of rules of action a to be validated
-	# $s_an = ARRAY ref of rules of action !a
-	# $s_a and $s_an are sorted by ascending and must be readonly
+    # $s_a = ARRAY ref of rules of action a to be validated
+    # $s_an = ARRAY ref of rules of action !a
+    # $s_a and $s_an are sorted by ascending and must be readonly
 
-	# hash of rules to keep or remove
-	my %remove;
+    # iterate over rules of action a
+    for ( my $x = 0 ; $x != scalar( @{$s_a} ) ; $x++ ) {
 
-	# iterate over rules of action a
-	for ( my $x = 0 ; $x != scalar( @{$s_a} ) ; $x++ ) {
+        # $rule_x1 is rule_x with layer 3 and 4 properties only
+        my $rule_x = $s_a->[$x];
 
-		#skip check if rule_y is already removed
-		next if $remove{$x};
+        #skip check if rule_x is already being removed
+        next if $rule_x->has_defined('REMOVE');
 
-		# $rule_x1 is rule_x with layer 3 and 4 properties only
-		my $rule_x = $s_a->[$x];
+        # remove non layer 3/4 rule properties
+        my $rule_x1 = $self->_five_tuple( $s_a->[$x] );
 
-		# remove non layer 3/4 rule properties
-		my $rule_x1 = $self->_five_tuple( $s_a->[$x] );
+        for ( my $y = $x + 1 ; $y != scalar( @{$s_a} ) ; $y++ ) {
 
-		for ( my $y = $x + 1 ; $y != scalar( @{$s_a} ) ; $y++ ) {
+            my $rule_y = $s_a->[$y];
 
-			my $rule_y = $s_a->[$y];
+            if ( !$rule_y->get('DST_IP')->gt( $rule_x->get('DST_IP') ) ) {
 
-			if ( !$rule_y->get("DST_IP")->gt( $rule_x->get("DST_IP") ) ) {
+                # $rule_x comes before rule_y in the rule array
+                # therefore x might contain y
 
-				# $rule_x comes before rule_y in the rule array
-				# therefore x might contain y
+                if ( $rule_y->contained_by($rule_x1) ) {
 
-				if ( $rule_y->contained_by($rule_x1) ) {
+                    # rule_x is before rule_y in the rule set so remove rule_y
+                    if ( $rule_x->get('LINE')->number() <= $rule_y->get('LINE')->number() )
+                    {
+                        $rule_y->set( 'REMOVE', Farly::Value::String->new('RULE') );
+                        $self->_log_remove( $rule_x, $rule_y );
+                    }
+                    else {
 
-					# rule_x is before rule_y in the rule set so remove rule_y
-					if ( $rule_x->get('LINE')->number() <= $rule_y->get('LINE')->number() )	{
-						$remove{$y} = $rule_x;
-					}
-					else {
-						# rule_y is actually after rule_x in the rule set
-						if ( $self->_can_remove( $rule_y, $rule_x, $s_an ) ) {
-							$remove{$y} = $rule_x;
-						}
-					}
-				}
-			}
-			else {
-				# rule_y DST_IP is greater than rule_x DST_IP then rule_x can't
-				# contain rule_y or any rules after rule_y (they are disjoint)
-				last;
-			}
-		}
-	}
+                        # rule_y is actually after rule_x in the rule set
+                        if ( $self->_can_remove( $rule_y, $rule_x, $s_an ) ) {
+                            $rule_y->set( 'REMOVE', Farly::Value::String->new('RULE') );
+                            $self->_log_remove( $rule_x, $rule_y );
+                        }
+                    }
+                }
+            }
+            else {
 
-	return %remove;
+                # rule_y DST_IP is greater than rule_x DST_IP therefore rule_x can't
+                # contain rule_y or any rules after rule_y (they are disjoint)
+                last;
+            }
+        }
+    }
 }
 
-# copies rules in @{$a_ref} except for the rules
-# whose index exists in remove, which are not copied
-sub _remove_copy_exists {
-	my ( $self, $a_ref, $remove ) = @_;
+sub _remove {
+    my ( $self, $a_ref ) = @_;
 
-	my $r = Farly::Object::List->new();
+    my $remove = Farly::Object::List->new();
 
-	for ( my $i = 0 ; $i != scalar( @{$a_ref} ) ; $i++ ) {
-		if ( !exists( $remove->{$i} ) ) {
-			$r->add( $a_ref->[$i] );
-		}
-		else {
-			$self->removed->add( $a_ref->[$i] );
-		}
-	}
+    foreach my $rule (@$a_ref) {
+        if ( $rule->has_defined('REMOVE') ) {
+            $remove->add($rule);
+        }
+    }
 
-	return $r;
+    return $remove;
+}
+
+sub _keep {
+    my ( $self, $a_ref ) = @_;
+
+    my $keep = Farly::Object::List->new();
+
+    foreach my $rule (@$a_ref) {
+        if ( !$rule->has_defined('REMOVE') ) {
+            $keep->add($rule);
+        }
+    }
+
+    return $keep;
 }
 
 sub _log_remove {
-	my ( $self, $keep, $remove ) = @_;
+    my ( $self, $keep, $remove ) = @_;
 
-	my $logger = get_logger(__PACKAGE__);
-
-	my $string = '';
-	my $template = Farly::Template::Cisco->new( 'ASA', 'OUTPUT' => \$string );
-
-	foreach my $i ( sort keys %$remove ) {
-		$string .= " ! ";
-		$template->as_string( $remove->{$i} );
-		$string .= "\n";
-		$string .= "no ";
-		$template->as_string( $keep->[$i] );
-		$string .= "\n";
-	}
-
-	if ( $self->_is_verbose() ) {
-		print $string;
-	}
-
-	$logger->info("analysis result :\n$string");
+    if ( $self->_is_verbose() ) {
+        print " ! ";
+        $self->_template->as_string($keep);
+        print "\n";
+        $self->_template->as_string($remove);
+        print "\n";
+    }
 }
 
 sub _optimize {
-	my ($self) = @_;
+    my ($self) = @_;
 
-	my $logger = get_logger(__PACKAGE__);
-	
-	my @arr_permits;
-	my @arr_denys;
+    my $logger = get_logger(__PACKAGE__);
 
-	@arr_permits = sort _ascending_LINE $self->_permits->iter();
-	@arr_denys   = sort _ascending_LINE $self->_denies->iter();
+    $self->_do_search();
 
-	# remove is a hash with the index number of
-	# rules which are to be removed. the value is the
-	# rule object causing the redundancy
-	my %remove;    # %remove<index, Farly::Object>
+    my @arr_permits;
+    my @arr_denys;
 
-	# find permit rules that contain deny rules
-	# which are defined further down in the rule set
-	$logger->info("Checking for deny rule inconsistencies...");
-	%remove = $self->_inconsistent( \@arr_permits, \@arr_denys );
+    @arr_permits = sort _ascending_LINE $self->_permits->iter();
+    @arr_denys   = sort _ascending_LINE $self->_denies->iter();
 
-	# create a new list of deny rules which are being kept
-	$self->{DENIES} = $self->_remove_copy_exists( \@arr_denys, \%remove );
-	$self->_log_remove( \@arr_denys, \%remove );
+    # find permit rules that contain deny rules
+    # which are defined further down in the rule set
+    $logger->info("Checking for deny rule inconsistencies...");
+    $self->_inconsistent( \@arr_permits, \@arr_denys );
 
-	# the consistent deny list sorted by LINE again
-	@arr_denys = sort _ascending_LINE $self->_denies->iter();
+    # create a new list of deny rules which are being kept
+    my $denies = $self->_keep( \@arr_denys );
 
-	# find deny rules which contain permit
-	# rules further down in the rule set
-	$logger->info("Checking for permit rule inconsistencies...");
-	%remove = $self->_inconsistent( \@arr_denys, \@arr_permits );
+    # the consistent deny list sorted by LINE again
+    @arr_denys = sort _ascending_LINE $denies->iter();
 
-	# create the list of permit rules which are being kept
-	$self->{PERMITS} = $self->_remove_copy_exists( \@arr_permits, \%remove );
-	$self->_log_remove( \@arr_permits, \%remove );
+    # find deny rules which contain permit
+    # rules further down in the rule set
+    $logger->info("Checking for permit rule inconsistencies...");
+    $self->_inconsistent( \@arr_denys, \@arr_permits );
 
-	# sort the rule in ascending order
-	@arr_permits = sort _ascending_l4 $self->_permits->iter();
-	@arr_denys   = sort _ascending_l4 $self->_denies->iter();
+    # create the list of permit rules which are being kept
+    my $permits = $self->_keep( \@arr_permits );
 
-	$logger->info("Checking for permit rule redundancies...");
-	%remove = $self->_redundant( \@arr_permits, \@arr_denys );
+    # sort the rule in ascending order
+    @arr_permits = sort _ascending_l4 $permits->iter();
+    @arr_denys   = sort _ascending_l4 $denies->iter();
 
-	$self->{PERMITS} = $self->_remove_copy_exists( \@arr_permits, \%remove );
-	$self->_log_remove( \@arr_permits, \%remove );
+    $logger->info("Checking for permit rule redundancies...");
+    $self->_redundant( \@arr_permits, \@arr_denys );
 
-	# sort the permits again
-	@arr_permits = sort _ascending_l4 $self->_permits->iter();
+    $permits = $self->_keep( \@arr_permits );
 
-	$logger->info("Checking for deny rule redundancies...");
-	%remove = $self->_redundant( \@arr_denys, \@arr_permits );
+    # sort the permits again
+    @arr_permits = sort _ascending_l4 $self->_permits->iter();
 
-	$self->{DENIES} = $self->_remove_copy_exists( \@arr_denys, \%remove );
-	$self->_log_remove( \@arr_denys, \%remove );
+    $logger->info("Checking for deny rule redundancies...");
+    $self->_redundant( \@arr_denys, \@arr_permits );
 
-	# combine the permit and deny rules into the optimized rule set
-	foreach my $rule ( $self->_permits->iter() ) {
-		$self->optimized->add( $rule->clone() );
-	}
-
-	foreach my $rule ( $self->_denies->iter() ) {
-		$self->optimized->add( $rule->clone() );
-	}
 }
 
 1;
+
 =head1 NAME
 
 Farly::Rule::Optimizer - Optimize a raw firewall rule set
