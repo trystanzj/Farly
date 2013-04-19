@@ -49,3 +49,10 @@ $optimizer->run();
 ok( $optimizer->optimized->size() == 15, "optimized" );
 
 ok( $optimizer->removed->size() == 1, "removed" );
+
+my $t = Farly::Template::Cisco->new('ASA');
+
+foreach my $o ( $optimizer->optimized->iter() ) {
+   $t->as_string( $o );
+   print "\n"; 
+}
