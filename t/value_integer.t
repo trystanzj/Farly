@@ -3,12 +3,12 @@ use warnings;
 
 use Test::Simple tests => 16;
 
-use Object::KVC::Integer;
+use Farly::Value::Integer;
 
-my $i1 = Object::KVC::Integer->new("1");
-my $i2 = Object::KVC::Integer->new("1");
-my $i3 = Object::KVC::Integer->new("3");
-my $i4 = Object::KVC::Integer->new("3");
+my $i1 = Farly::Value::Integer->new("1");
+my $i2 = Farly::Value::Integer->new("1");
+my $i3 = Farly::Value::Integer->new("3");
+my $i4 = Farly::Value::Integer->new("3");
 
 ok( $i1->equals($i2), "equals" );
 
@@ -32,17 +32,17 @@ $i1->decr();
 
 ok ( $i1->number() == 1, "decr");
 
-eval { my $i4 = Object::KVC::Integer->new("string"); };
+eval { my $i4 = Farly::Value::Integer->new("string"); };
 
 ok ( $@ =~ /not an integer/, "string");
 
-eval { my $i4 = Object::KVC::Integer->new(); };
+eval { my $i4 = Farly::Value::Integer->new(); };
 
 ok ( $@ =~ /integer required/, "null");
 
-my $i5 = Object::KVC::Integer->new("31");
+my $i5 = Farly::Value::Integer->new("31");
 
-my $i6 = Object::KVC::Integer->new("11");
+my $i6 = Farly::Value::Integer->new("11");
 
 ok ( $i1->intersects($i2), "intersects");
 

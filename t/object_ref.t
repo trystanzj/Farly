@@ -3,22 +3,22 @@ use warnings;
 
 use Test::Simple tests => 11;
 
-use Object::KVC::HashRef;
-use Object::KVC::String;
+use Farly::Object::Ref;
+use Farly::Value::String;
 
 my $keys;
 
 # ce = configuration element or container element
 
-my $ce = Object::KVC::HashRef->new();
+my $ce = Farly::Object::Ref->new();
 	
-$ce->set( "S1", Object::KVC::String->new("stringA1"));
-$ce->set( "D1", Object::KVC::String->new("stringB2") );
+$ce->set( "S1", Farly::Value::String->new("stringA1"));
+$ce->set( "D1", Farly::Value::String->new("stringB2") );
 
-my $search = Object::KVC::HashRef->new();
+my $search = Farly::Object::Ref->new();
 	
-$search->set( "S1", Object::KVC::String->new("stringA1"));
-$search->set( "D1", Object::KVC::String->new("stringB2") );
+$search->set( "S1", Farly::Value::String->new("stringA1"));
+$search->set( "D1", Farly::Value::String->new("stringB2") );
 
 ok( $ce->matches($search), "matches");
 ok( $ce->equals($search), "equals");

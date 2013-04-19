@@ -14,12 +14,12 @@ sub new {
 	confess "configuration container object required"
 	  unless ( defined($fw) );
 
-	confess "Object::KVC::List object required"
-	  unless ( $fw->isa("Object::KVC::List") );
+	confess "Farly::Object::List object required"
+	  unless ( $fw->isa("Farly::Object::List") );
 
 	my $self = {
 		CONFIG => $fw,
-		INDEX  => undef,
+		AGGREGATE  => undef,
 	};
 
 	bless $self, $class;
@@ -34,12 +34,12 @@ sub new {
 }
 
 sub config { return $_[0]->{CONFIG}; }
-sub _index { return $_[0]->{INDEX}; }
+sub _agg { return $_[0]->{AGGREGATE}; }
 
 sub _init {
 	my ($self) = @_;
-	$self->{INDEX} = Object::KVC::Index->new( $self->config );
-	$self->{INDEX}->make_index( "ENTRY", "ID" );
+	$self->{AGGREGATE} = Farly::Object::Aggregate->new( $self->config );
+	$self->{AGGREGATE}->groupby( 'ENTRY', 'ID' );
 }
 
 sub _set_defaults {
@@ -47,8 +47,8 @@ sub _set_defaults {
 
 	my $logger = get_logger(__PACKAGE__);
 
-	my $RULE = Object::KVC::Hash->new();
-	$RULE->set( 'ENTRY', Object::KVC::String->new('RULE') );
+	my $RULE = Farly::Object->new();
+	$RULE->set( 'ENTRY', Farly::Value::String->new('RULE') );
 
 	my $IP   = Farly::Transport::Protocol->new('0');
 	my $TCP  = Farly::Transport::Protocol->new('6');
@@ -102,14 +102,14 @@ sub expand_all {
 	my ($self) = @_;
 	my $logger = get_logger(__PACKAGE__);
 
-	my $expanded = Object::KVC::List->new();
+	my $expanded = Farly::Object::List->new();
 
-	my $RULE = Object::KVC::String->new('RULE');
+	my $RULE = Farly::Value::String->new('RULE');
 
-	my $RULE_SEARCH = Object::KVC::Hash->new();
+	my $RULE_SEARCH = Farly::Object->new();
 	$RULE_SEARCH->set( 'ENTRY', $RULE );
 
-	my $rules = Object::KVC::List->new();
+	my $rules = Farly::Object::List->new();
 
 	$self->config->matches( $RULE_SEARCH, $rules );
 
@@ -132,7 +132,7 @@ sub expand_all {
 # { 'key' => ::Set } is a list of config ::Hash or ::HashRef's.
 #   For every object in the Set clone the RULE object
 #   and replace the RULE value with the object from the ::Set
-# { 'key' => Object::KVC::Hash }
+# { 'key' => Farly::Object }
 #   use "OBJECT" key/value in the raw RULE object
 
 sub expand {
@@ -143,14 +143,14 @@ sub expand {
 	my @stack;
 	push @stack, $rule;
 
-	my $COMMENT = Object::KVC::Hash->new();
-	$COMMENT->set( "OBJECT_TYPE", Object::KVC::String->new("COMMENT") );
+	my $COMMENT = Farly::Object->new();
+	$COMMENT->set( "OBJECT_TYPE", Farly::Value::String->new("COMMENT") );
 
-	my $SERVICE = Object::KVC::Hash->new();
-	$SERVICE->set( "OBJECT_TYPE", Object::KVC::String->new("SERVICE") );
+	my $SERVICE = Farly::Object->new();
+	$SERVICE->set( "OBJECT_TYPE", Farly::Value::String->new("SERVICE") );
 
-	my $VIP = Object::KVC::Hash->new();
-	$VIP->set( "OBJECT_TYPE", Object::KVC::String->new("VIP") );
+	my $VIP = Farly::Object->new();
+	$VIP->set( "OBJECT_TYPE", Farly::Value::String->new("VIP") );
 
 	while (@stack) {
 		my $ce = pop @stack;
@@ -163,14 +163,11 @@ sub expand {
 
 			$is_expanded = 1;
 
-			if ( $value->isa("Object::KVC::HashRef") ) {
+			if ( $value->isa("Farly::Object::Ref") ) {
 
 				$is_expanded = 0;
 
-				my $actual = $self->_index->fetch(
-					$value->get('ENTRY')->as_string(),
-					$value->get('ID')->as_string()
-				);
+				my $actual = $self->_agg->matches( $value );
 
 				if ( !defined $actual ) {
 					confess "actual not found for $key";
@@ -182,7 +179,7 @@ sub expand {
 				
 				last;
 			}
-			elsif ( $value->isa("Object::KVC::Set") ) {
+			elsif ( $value->isa("Farly::Object::Set") ) {
 
 				$is_expanded = 0;
 
@@ -199,7 +196,7 @@ sub expand {
 				
 				last;
 			}
-			elsif ( $value->isa("Object::KVC::Hash") ) {
+			elsif ( $value->isa("Farly::Object") ) {
 
 				$is_expanded = 0;
 
@@ -287,7 +284,7 @@ Farly::Rule::Expander - Convert a firewall rule configuration into a raw rule se
 =head1 DESCRIPTION
 
 Farly::Rule::Expander converts a firewall rule configuration into a raw rule set.
-The raw ruleset is an Object::KVC::List<Object::KVC::Hash> containing
+The raw ruleset is an Farly::Object::List<Farly::Object> containing
 all firewall rules.  
 
 A raw rule set has no references to other firewall objects.  The expanded 
@@ -299,16 +296,16 @@ firewall rule is for specific packet to firewall rule matching.
 
 The constructor. The firewall configuration is provided.
 
-  $rule_expander = Farly::Rule::Expander->new( <Object::KVC::List> );
+  $rule_expander = Farly::Rule::Expander->new( <Farly::Object::List> );
 
 =head2 expand_all()
 
-Returns an Object::KVC::List<Object::KVC::Hash> container of all
+Returns an Farly::Object::List<Farly::Object> container of all
 raw expanded firewall rules in the current Farly firewall model.
 
   $expanded_ruleset = $rule_expander->expand_all();
 
-=head2 expand( $rule<Object::KVC::Hash>, $result<Object::KVC::List|Object::KVC::Set>)
+=head2 expand( $rule<Farly::Object>, $result<Farly::Object::List|Farly::Object::Set>)
 
 Returns the expanded version of the given firewall rule in the
 provided result container.

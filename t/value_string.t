@@ -3,13 +3,13 @@ use warnings;
 
 use Test::Simple tests => 11;
 
-use Object::KVC::String;
+use Farly::Value::String;
 
-my $s1 = Object::KVC::String->new(" x");
-my $s2 = Object::KVC::String->new("x");
-my $s3 = Object::KVC::String->new("y");
+my $s1 = Farly::Value::String->new(" x");
+my $s2 = Farly::Value::String->new("x");
+my $s3 = Farly::Value::String->new("y");
 
-eval { my $s4 = Object::KVC::String->new(); };
+eval { my $s4 = Farly::Value::String->new(); };
 
 ok ( $@ =~ /string required/, "null input" );
 
@@ -25,14 +25,14 @@ ok ( $s1->intersects($s2), "intersects");
 
 ok ( ! $s1->intersects($s3), "!intersects");
 
-my $s4 = Object::KVC::String->new("string31");
+my $s4 = Farly::Value::String->new("string31");
 
-my $s5 = Object::KVC::String->new("string11");
+my $s5 = Farly::Value::String->new("string11");
 
 ok ( ! $s4->intersects($s5), "!intersects");
 
-my $s6 = Object::KVC::String->new("x");
-my $s7 = Object::KVC::String->new("y");
+my $s6 = Farly::Value::String->new("x");
+my $s7 = Farly::Value::String->new("y");
 
 ok( $s6->compare( $s2 ) == 0, "compare equal");
 

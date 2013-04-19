@@ -67,7 +67,7 @@ Farly::Value::String - String wrapper class
 =head1 DESCRIPTION
 
 Farly::Value::String is a string wrapper class for use as a value
-in an Object::KVC::Hash object.
+in an Farly::Object object.
 
 =head1 METHODS
 

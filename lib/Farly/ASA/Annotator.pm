@@ -15,44 +15,44 @@ our $AUTOLOAD;
 
 #each token type maps to a class
 our $Token_Class_Map = {
-	'STRING'      => 'Object::KVC::String',
-	'DIGIT'       => 'Object::KVC::Integer',
-	'NAME'        => 'Object::KVC::String',            #method replaces name with IP
-	'NAME_ID'     => 'Object::KVC::String',            #this is just the name string	
-	'IF_REF'      => 'Object::KVC::HashRef',
-	'OBJECT_REF'  => 'Object::KVC::HashRef',
-	'GROUP_REF'   => 'Object::KVC::HashRef',
-	'RULE_REF'    => 'Object::KVC::HashRef',
-	'GROUP_TYPE'  => 'Object::KVC::String',
-	'MEMBER_TYPE' => 'Object::KVC::String',
-	'OBJECT_TYPE' => 'Object::KVC::String',
+	'STRING'      => 'Farly::Value::String',
+	'DIGIT'       => 'Farly::Value::Integer',
+	'NAME'        => 'Farly::Value::String',            #method replaces name with IP
+	'NAME_ID'     => 'Farly::Value::String',            #this is just the name string	
+	'IF_REF'      => 'Farly::Object::Ref',
+	'OBJECT_REF'  => 'Farly::Object::Ref',
+	'GROUP_REF'   => 'Farly::Object::Ref',
+	'RULE_REF'    => 'Farly::Object::Ref',
+	'GROUP_TYPE'  => 'Farly::Value::String',
+	'MEMBER_TYPE' => 'Farly::Value::String',
+	'OBJECT_TYPE' => 'Farly::Value::String',
 	'ANY'         => 'Farly::IPv4::Network',			#method ANY = '0.0.0.0 0.0.0.0'
 	'IPADDRESS'   => 'Farly::IPv4::Address',
 	'MASK'        => 'Farly::IPv4::Address',
 	'IPNETWORK'   => 'Farly::IPv4::Network',
 	'IPRANGE'     => 'Farly::IPv4::Range',
-	'NAMED_NET'   => 'Object::KVC::String',             #method replaces name with IP
+	'NAMED_NET'   => 'Farly::Value::String',             #method replaces name with IP
 	'PROTOCOL'    => 'Farly::Transport::Protocol',
-	'GROUP_PROTOCOL' => 'Object::KVC::String',          #not ::Protocol because of 'tcp-udp'
+	'GROUP_PROTOCOL' => 'Farly::Value::String',          #not ::Protocol because of 'tcp-udp'
 	'ICMP_TYPE'      => 'Farly::IPv4::ICMPType',        #method maps string to int
 	'PORT_ID'       => 'Farly::Transport::Port',      	#method maps string to int
 	'PORT_RANGE'    => 'Farly::Transport::PortRange',   #method maps string to int
 	'PORT_GT'       => 'Farly::Transport::PortGT',      #method maps string to int
 	'PORT_LT'       => 'Farly::Transport::PortLT',      #method maps string to int
-	'ACTIONS'       => 'Object::KVC::String',
-	'ACL_TYPES'     => 'Object::KVC::String',
-	'REMARKS'       => 'Object::KVC::String',
-	'ACL_DIRECTION' => 'Object::KVC::String',
-	'ACL_GLOBAL'    => 'Object::KVC::String',
-	'STATE'         => 'Object::KVC::String',
-	'ACL_STATUS'    => 'Object::KVC::String',
-	'LOG_LEVEL'     => 'Object::KVC::String',
+	'ACTIONS'       => 'Farly::Value::String',
+	'ACL_TYPES'     => 'Farly::Value::String',
+	'REMARKS'       => 'Farly::Value::String',
+	'ACL_DIRECTION' => 'Farly::Value::String',
+	'ACL_GLOBAL'    => 'Farly::Value::String',
+	'STATE'         => 'Farly::Value::String',
+	'ACL_STATUS'    => 'Farly::Value::String',
+	'LOG_LEVEL'     => 'Farly::Value::String',
 	'DEFAULT_ROUTE' => 'Farly::IPv4::Network',			#method DEFAULT_ROUTE = '0.0.0.0 0.0.0.0'
-	'TUNNELED'      => 'Object::KVC::String'
+	'TUNNELED'      => 'Farly::Value::String'
 };
 
 # 'ENTRY' is like a namespace in which an ID must be unique
-# A <type>_REF refers to a Object::KVC::Hash by ENTRY and ID
+# A <type>_REF refers to a Farly::Object by ENTRY and ID
 our $Entry_Map = {
 	'IF_REF'     => 'INTERFACE',
 	'OBJECT_REF' => 'OBJECT',
@@ -260,10 +260,10 @@ sub _new_ObjectRef {
 	my $entry = $Entry_Map->{$token_class}
 	  or confess "No token type to ENTRY mapping for token $token_class\n";
 
-	my $ce = Object::KVC::HashRef->new();
+	my $ce = Farly::Object::Ref->new();
 
-	$ce->set( 'ENTRY', Object::KVC::String->new($entry) );
-	$ce->set( 'ID',    Object::KVC::String->new($value) );
+	$ce->set( 'ENTRY', Farly::Value::String->new($entry) );
+	$ce->set( 'ID',    Farly::Value::String->new($value) );
 
 	return $ce;
 }
@@ -289,7 +289,7 @@ sub AUTOLOAD {
 
 	my $value = $node->{'__VALUE__'};
 
-	if ( $class eq 'Object::KVC::HashRef' ) {
+	if ( $class eq 'Farly::Object::Ref' ) {
 		#need to set 'ENTRY' and 'ID' properties
 		$object = $self->_new_ObjectRef( $token_class, $value );
 	}

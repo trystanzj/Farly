@@ -15,12 +15,12 @@ sub new {
 	confess "firewall configuration container object required"
 	  unless ( defined($container) );
 
-	confess "Object::KVC::List object required"
-	  unless ( $container->isa("Object::KVC::List") );
+	confess "Farly::Object::List object required"
+	  unless ( $container->isa("Farly::Object::List") );
 
 	my $self = {
 		CONFIG => $container,
-		RESULT => Object::KVC::List->new(),
+		RESULT => Farly::Object::List->new(),
 	};
 	bless $self, $class;
 
@@ -38,11 +38,11 @@ sub result { return $_[0]->{RESULT} }
 sub _fetch_config_acl {
 	my ( $self, $id ) = @_;
 
-	my $search = Object::KVC::Hash->new();
-	$search->set( 'ENTRY', Object::KVC::String->new('RULE') );
+	my $search = Farly::Object->new();
+	$search->set( 'ENTRY', Farly::Value::String->new('RULE') );
 	$search->set( 'ID',    $id );
 
-	my $search_result = Object::KVC::List->new();
+	my $search_result = Farly::Object::List->new();
 
 	$self->config->matches( $search, $search_result );
 
@@ -52,11 +52,11 @@ sub _fetch_config_acl {
 sub _has_group {
 	my ( $self, $rule_object ) = @_;
 
-	my $GROUP = Object::KVC::HashRef->new();
-	$GROUP->set( 'ENTRY', Object::KVC::String->new('GROUP') );
+	my $GROUP = Farly::Object::Ref->new();
+	$GROUP->set( 'ENTRY', Farly::Value::String->new('GROUP') );
 
 	foreach my $property ( $rule_object->get_keys() ) {
-		if ( $rule_object->get($property)->isa('Object::KVC::HashRef') ) {
+		if ( $rule_object->get($property)->isa('Farly::Object::Ref') ) {
 			if ( $rule_object->get($property)->matches($GROUP) ) {
 				return 1;
 			}
@@ -89,12 +89,12 @@ sub _is_expanded {
 sub remove {
 	my ( $self, $remove_list ) = @_;
 
-	# $remove_list isa Object::KVC::List of expanded Rules (not config rules)
+	# $remove_list isa Farly::Object::List of expanded Rules (not config rules)
 	confess "remove list of rules container object required"
 	  unless ( defined($remove_list) );
 
-	confess "Object::KVC::List object required"
-	  unless ( $remove_list->isa("Object::KVC::List") );
+	confess "Farly::Object::List object required"
+	  unless ( $remove_list->isa("Farly::Object::List") );
 
 	#$remove_list must contain one expanded rule set only
 	my $id = $remove_list->[0]->get('ID');
@@ -140,7 +140,7 @@ sub remove {
 			# entries into a ::Set
 			my $clone = $config_rule->clone();
 
-			my $exp_config_rule_set = Object::KVC::Set->new();
+			my $exp_config_rule_set = Farly::Object::Set->new();
 			$rule_expander->expand( $clone, $exp_config_rule_set );
 
 			# ::Set difference is all rule entries in the config that
@@ -158,7 +158,7 @@ sub remove {
 		#the running config rule had an error, so remove it
 		#use the expanded rule entries instead
 		my $r = $config_rule->clone();
-		$r->set( 'REMOVE', Object::KVC::String->new('RULE') );
+		$r->set( 'REMOVE', Farly::Value::String->new('RULE') );
 		$r->delete_key('LINE');
 		$self->result->add($r);
 	}
@@ -174,7 +174,7 @@ Farly::Remove::Rule - Removes a list of firewall rule entries
 =head1 DESCRIPTION
 
 Farly::Remove::Rule calculates dependencies and generates the commands needed
-to remove a $list<Object::KVC::List<Object::KVC::Hash>> of firewall rule entries
+to remove a $list<Farly::Object::List<Farly::Object>> of firewall rule entries
 from the given firewall configuration.
 
 If the firewall configuration rule uses a group, then the configuration rule is removed
@@ -182,13 +182,13 @@ and the expanded firewall rule entries are used in the configuration.
 
 =head1 METHODS
 
-=head2 new( $list<Object::KVC::List<Object::KVC::Hash>> )
+=head2 new( $list<Farly::Object::List<Farly::Object>> )
 
 The constructor. A firewall configuration $list must be provided.
 
   $rule_remover = Farly::Remove::Rule->new( $list );
 
-=head2 remove( $list<Object::KVC::List<Object::KVC::Hash>> )
+=head2 remove( $list<Farly::Object::List<Farly::Object>> )
 
 Resolves dependencies and removes the list of firewall rule entries from the 
 current Farly firewall model.
@@ -197,7 +197,7 @@ current Farly firewall model.
 
 =head2 result()
 
-Returns an Object::KVC::Set<Object::KVC::Hash> object containing all objects
+Returns an Farly::Object::Set<Farly::Object> object containing all objects
 which need to be removed or added to the current Farly firewall model in order
 to remove all references to the list of removed firewall rule entries.
 
@@ -205,7 +205,7 @@ to remove all references to the list of removed firewall rule entries.
 
 =head2 config()
 
-Return the current configuration Object::KVC::List<Object::KVC::Hash> object.
+Return the current configuration Farly::Object::List<Farly::Object> object.
 
   $fw_config = $remover->config();
   

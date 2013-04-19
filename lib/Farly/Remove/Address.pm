@@ -13,12 +13,12 @@ sub new {
 	confess "firewall configuration container object required"
 	  unless ( defined($container) );
 
-	confess "Object::KVC::List object required"
-	  unless ( $container->isa("Object::KVC::List") );
+	confess "Farly::Object::List object required"
+	  unless ( $container->isa("Farly::Object::List") );
 
 	my $self = {
 		FW     => $container,
-		REMOVE => Object::KVC::Set->new(),
+		REMOVE => Farly::Object::Set->new(),
 	};
 	bless $self, $class;
 
@@ -60,7 +60,7 @@ sub result { return $_[0]->{REMOVE} }
 sub _cleanup {
 	my ($self) = @_;
 
-	my $new_list = Object::KVC::List->new();
+	my $new_list = Farly::Object::List->new();
 
 	foreach my $object ( $self->fw->iter() ) {
 
@@ -78,8 +78,8 @@ sub _address_search {
 
 	my $fw = $self->{FW};
 
-	my $search        = Object::KVC::Hash->new();
-	my $search_result = Object::KVC::List->new();
+	my $search        = Farly::Object->new();
+	my $search_result = Farly::Object::List->new();
 
 	$search->set( "OBJECT", $ip );
 	$fw->contained_by( $search, $search_result );
@@ -103,15 +103,15 @@ sub _collect_garbage {
 	my $index = Object::KVC::Index->new( $self->fw );
 	$index->make_index( 'ENTRY', 'ID' );
 
-	my $NAME  = Object::KVC::String->new('NAME');
-	my $GROUP  = Object::KVC::String->new('GROUP');
-	my $RULE   = Object::KVC::String->new('RULE');
-	my $OBJECT = Object::KVC::String->new('OBJECT');
-	my $INTERFACE = Object::KVC::String->new('INTERFACE');
-	my $ROUTE = Object::KVC::String->new('ROUTE');
+	my $NAME  = Farly::Value::String->new('NAME');
+	my $GROUP  = Farly::Value::String->new('GROUP');
+	my $RULE   = Farly::Value::String->new('RULE');
+	my $OBJECT = Farly::Value::String->new('OBJECT');
+	my $INTERFACE = Farly::Value::String->new('INTERFACE');
+	my $ROUTE = Farly::Value::String->new('ROUTE');
 
 	my @stack;
-	my $remove = Object::KVC::Set->new();
+	my $remove = Farly::Object::Set->new();
 
 	push @stack, $garbage_list->iter();
 
@@ -143,7 +143,7 @@ sub _collect_garbage {
 				# emptied out
 				$remove = $self->_remove_copy( $remove, $ref );
 
-				$object->set( 'REMOVE', Object::KVC::String->new('GROUP') );
+				$object->set( 'REMOVE', Farly::Value::String->new('GROUP') );
 				$remove->add($object);
 
 			 # each referring object must be checked to see if it can be removed
@@ -163,7 +163,7 @@ sub _collect_garbage {
 				# because more objects could be removed from the group later on
 				$self->_update_index( $index, $new_set );
 
-				$object->set( 'REMOVE', Object::KVC::String->new('OBJECT') );
+				$object->set( 'REMOVE', Farly::Value::String->new('OBJECT') );
 				$remove->add($object);
 			}
 
@@ -171,7 +171,7 @@ sub _collect_garbage {
 		elsif ( $object->get('ENTRY')->equals($OBJECT) ) {
 
 			# set the object to be removed
-			$object->set( 'REMOVE', Object::KVC::String->new('OBJECT') );
+			$object->set( 'REMOVE', Farly::Value::String->new('OBJECT') );
 			$remove->add($object);
 
 			# reformat the object into a reference object
@@ -186,7 +186,7 @@ sub _collect_garbage {
 
 			# rules which refer to the Address directly can be removed
 			# immediately
-			$object->set( 'REMOVE', Object::KVC::String->new('RULE') );
+			$object->set( 'REMOVE', Farly::Value::String->new('RULE') );
 			$remove->add($object);
 
 		}
@@ -212,7 +212,7 @@ sub _collect_garbage {
 sub _create_reference {
 	my ( $self, $object ) = @_;
 
-	my $ref = Object::KVC::HashRef->new();
+	my $ref = Farly::Object::Ref->new();
 	$ref->set( 'ENTRY', $object->{'ENTRY'} );
 	$ref->set( 'ID',    $object->{'ID'} );
 
@@ -241,7 +241,7 @@ sub _reference_search {
 sub _remove_copy {
 	my ( $self, $set, $remove ) = @_;
 
-	my $r = Object::KVC::Set->new();
+	my $r = Farly::Object::Set->new();
 
 	foreach my $object ( $set->iter ) {
 		if ( !$object->matches($remove) ) {
@@ -295,7 +295,7 @@ group is removed.
 
 =head1 METHODS
 
-=head2 new( $list<Object::KVC::List<Object::KVC::Hash>> )
+=head2 new( $list<Farly::Object::List<Farly::Object>> )
 
 The constructor. A firewall configuration $list must be provided.
 
@@ -312,7 +312,7 @@ The remove method may be called for multiple IP addresses.
 
 =head2 result()
 
-Returns an Object::KVC::Set<Object::KVC::Hash> object containing all objects
+Returns an Farly::Object::Set<Farly::Object> object containing all objects
 which need to be removed from the current Farly firewall model in order to
 remove all references to the removed addresses.
 

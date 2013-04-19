@@ -45,15 +45,15 @@ sub iterator {
     my ($self) = @_;
 
     my @arr = $self->iter();
-    my $i = 0;
+    my $i   = 0;
 
     # the iterator code ref
     return sub {
         return undef if ( $i == scalar(@arr) );
         my $set = $arr[$i]->get('__SET__');
         $i++;
-        return $set;    
-    }
+        return $set;
+      }
 }
 
 # CONTAINER objects which have defined all keys
@@ -72,6 +72,11 @@ sub _has_defined_keys {
                 $all_keys_defined = undef;
                 last;
             }
+            if ( !$obj->get($key)->can('compare') ) {
+                warn "$self skipped ", ref($obj), " in groupby\n";
+                $all_keys_defined = undef;
+                last;
+            }
         }
 
         if ($all_keys_defined) {
@@ -87,7 +92,7 @@ sub _has_defined_keys {
 #   __SET__ => Farly::Object::Set }, ]
 # __SET__ is a set of all objects sharing the
 # common identity formed by KEY1 and KEY2,
-# i.e $obj1->{KEY1} equals $obj2->{KEY1} 
+# i.e $obj1->{KEY1} equals $obj2->{KEY1}
 # and $obj1->{KEY2} equals $obj2->{KEY2}
 # for all objects in __SET__
 
@@ -96,7 +101,7 @@ sub groupby {
     my @keys = @_;
 
     confess "a list of keys is required"
-      unless (scalar(@keys) > 0);
+      unless ( scalar(@keys) > 0 );
 
     # $list will include objects that have defined all @keys
     my $list = $self->_has_defined_keys( \@keys );
@@ -125,16 +130,16 @@ sub groupby {
         my $set = Farly::Object::Set->new();
 
         my $j = $i;
-                  
+
         while ( $sorted[$j]->matches($root) ) {
 
             $set->add( $sorted[$j] );
 
             $j++;
-            
+
             last() if $j == scalar(@sorted);
         }
-        
+
         $i = $j - 1;
 
         $root->set( '__SET__', $set );

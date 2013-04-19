@@ -3,26 +3,26 @@ use warnings;
 
 use Test::Simple tests => 13;
 
-use Object::KVC::Set;
-use Object::KVC::Hash;
-use Object::KVC::String;
+use Farly::Object::Set;
+use Farly::Object;
+use Farly::Value::String;
 
-my $s1 = Object::KVC::Hash->new();
-my $s2 = Object::KVC::Hash->new();
-my $s3 = Object::KVC::Hash->new();
-my $s4 = Object::KVC::Hash->new();
-my $s5 = Object::KVC::Hash->new();
+my $s1 = Farly::Object->new();
+my $s2 = Farly::Object->new();
+my $s3 = Farly::Object->new();
+my $s4 = Farly::Object->new();
+my $s5 = Farly::Object->new();
 
-$s1->set( "OBJECT", Object::KVC::String->new("10.1.2.3") );
-$s2->set( "OBJECT", Object::KVC::String->new("10.1.2.3") );
-$s3->set( "OBJECT", Object::KVC::String->new("10.1.1.3") );
-$s4->set( "OBJECT", Object::KVC::String->new("10.1.3.3") );
-$s5->set( "OBJECT", Object::KVC::String->new("10.1.3.4") );
+$s1->set( "OBJECT", Farly::Value::String->new("10.1.2.3") );
+$s2->set( "OBJECT", Farly::Value::String->new("10.1.2.3") );
+$s3->set( "OBJECT", Farly::Value::String->new("10.1.1.3") );
+$s4->set( "OBJECT", Farly::Value::String->new("10.1.3.3") );
+$s5->set( "OBJECT", Farly::Value::String->new("10.1.3.4") );
 
 ok( $s1->equals($s2), "equals" );
 
-my $set1 = Object::KVC::Set->new();
-my $set2 = Object::KVC::Set->new();
+my $set1 = Farly::Object::Set->new();
+my $set2 = Farly::Object::Set->new();
 
 $set1->add($s1);
 $set2->add($s2);
@@ -51,7 +51,7 @@ my $diff = $set2->difference($set1);
 
 ok( $diff->includes($s3) && $diff->size() == 1, "difference" );
 
-my $set3 = Object::KVC::Set->new();
+my $set3 = Farly::Object::Set->new();
 
 $set3->add($s4);
 $set3->add($s5);

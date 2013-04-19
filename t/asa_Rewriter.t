@@ -27,13 +27,13 @@ my $ast = $rewriter->rewrite($parse_tree);
 
 my $expected = bless( {
                  'ID' => bless( {
-                                  '__VALUE__' => bless( do{\(my $o = 'acl-outside')}, 'Object::KVC::String' ),
+                                  '__VALUE__' => bless( do{\(my $o = 'acl-outside')}, 'Farly::Value::String' ),
                                   'LINE' => bless( {
-                                                     '__VALUE__' => bless( do{\(my $o = '1')}, 'Object::KVC::Integer' ),
+                                                     '__VALUE__' => bless( do{\(my $o = '1')}, 'Farly::Value::Integer' ),
                                                      'TYPE' => bless( {
-                                                                        '__VALUE__' => bless( do{\(my $o = 'extended')}, 'Object::KVC::String' ),
+                                                                        '__VALUE__' => bless( do{\(my $o = 'extended')}, 'Farly::Value::String' ),
                                                                         'ACTION' => bless( {
-                                                                                             '__VALUE__' => bless( do{\(my $o = 'permit')}, 'Object::KVC::String' ),
+                                                                                             '__VALUE__' => bless( do{\(my $o = 'permit')}, 'Farly::Value::String' ),
                                                                                              'PROTOCOL' => bless( {
                                                                                                                     '__VALUE__' => bless( do{\(my $o = '6')}, 'Farly::Transport::Protocol' ),
                                                                                                                     'SRC_IP' => bless( {
@@ -54,9 +54,9 @@ my $expected = bless( {
                                                                                                                                                                                                                                   }, 'Farly::Transport::PortRange' )
                                                                                                                                                                                                           }, 'DST_PORT' ),
                                                                                                                                                                                      '__VALUE__' => bless( {
-                                                                                                                                                                                                             'ID' => bless( do{\(my $o = 'citrix')}, 'Object::KVC::String' ),
-                                                                                                                                                                                                             'ENTRY' => bless( do{\(my $o = 'GROUP')}, 'Object::KVC::String' )
-                                                                                                                                                                                                           }, 'Object::KVC::HashRef' )
+                                                                                                                                                                                                             'ID' => bless( do{\(my $o = 'citrix')}, 'Farly::Value::String' ),
+                                                                                                                                                                                                             'ENTRY' => bless( do{\(my $o = 'GROUP')}, 'Farly::Value::String' )
+                                                                                                                                                                                                           }, 'Farly::Object::Ref' )
                                                                                                                                                                                    }, 'DST_IP' )
                                                                                                                                                               }, 'SRC_PORT' )
                                                                                                                                        }, 'SRC_IP' )

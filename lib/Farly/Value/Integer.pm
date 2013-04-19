@@ -96,7 +96,7 @@ Farly::Value::Integer - Integer wrapper class
 =head1 DESCRIPTION
 
 Farly::Value::Integer is a integer wrapper class for use as a value
-in a Object::KVC::Hash object.
+in a Farly::Object object.
 
 =head1 METHODS
 

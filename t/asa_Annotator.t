@@ -40,8 +40,8 @@ $annotator->visit($named_rule);
 my @actual = visit($named_rule);
 
 my @expected = (
-	Object::KVC::String->new('permit'),
-	Object::KVC::String->new('acl-outside'),
+	Farly::Value::String->new('permit'),
+	Farly::Value::String->new('acl-outside'),
 	Farly::Transport::PortRange->new('80 65535'),
 	Farly::IPv4::Address->new('192.168.10.1'),
 	Farly::Transport::Protocol->new('0'),
@@ -59,20 +59,20 @@ $annotator->visit($in);
 
 @actual = visit($in);
 
-my $GROUP = Object::KVC::HashRef->new();
-$GROUP->set( 'ENTRY', Object::KVC::String->new('GROUP') );
-$GROUP->set( 'ID',    Object::KVC::String->new('citrix') );
+my $GROUP = Farly::Object::Ref->new();
+$GROUP->set( 'ENTRY', Farly::Value::String->new('GROUP') );
+$GROUP->set( 'ID',    Farly::Value::String->new('citrix') );
 
 @expected = (
 	$GROUP,
-	Object::KVC::String->new('acl-outside'),
-	Object::KVC::String->new('permit'),
+	Farly::Value::String->new('acl-outside'),
+	Farly::Value::String->new('permit'),
 	Farly::Transport::PortRange->new('1 1024'),
 	Farly::Transport::PortRange->new('1024 65535'),
-	Object::KVC::Integer->new('1'),
+	Farly::Value::Integer->new('1'),
 	Farly::Transport::Protocol->new('6'),
 	Farly::IPv4::Network->new('0.0.0.0 0.0.0.0'),
-	Object::KVC::String->new('extended'),
+	Farly::Value::String->new('extended'),
 );
 
 ok( equals( \@actual, \@expected ), "ref and port coverage" );

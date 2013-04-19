@@ -28,8 +28,8 @@ our $AST_Root_Class = {
 # The $AST_Node_Class hash value is the new AST node class 
 # Any Token / '__VALUE__' found in the parse tree beneath the given nodes
 # in the parse tree becomes the AST node '__VALUE__'
-# The AST node class will become the key in the Object::KVC::Hash object
-# AST node '__VALUE__' becomes the Object::KVC::Hash value object
+# The AST node class will become the key in the Farly::Object object
+# AST node '__VALUE__' becomes the Farly::Object value object
 # i.e. The $AST_Node_Class mapping defines the vendor to Farly model mapping :
 # $object->set( ref($ast_node), $ast_node->{__VALUE__} );
 

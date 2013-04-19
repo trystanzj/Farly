@@ -22,8 +22,8 @@ sub new {
 #	print Dumper($opts),"\n";
 
 	my $self = {
-		SEARCH => Object::KVC::Hash->new(),
-		FILTER => Object::KVC::Set->new(),
+		SEARCH => Farly::Object->new(),
+		FILTER => Farly::Object::Set->new(),
 	};
 	bless( $self, $class );
 
@@ -57,7 +57,7 @@ sub _id {
 	my ( $self, $opts ) = @_;
 
 	if ( defined $opts->{'id'} ) {
-		$self->search->set( 'ID', Object::KVC::String->new( $opts->{'id'} ) );
+		$self->search->set( 'ID', Farly::Value::String->new( $opts->{'id'} ) );
 	}
 }
 
@@ -69,7 +69,7 @@ sub _action {
 		if ( $action !~ /permit|deny/ ) {
 			die "action must be 'permit' or 'deny'";
 		}
-		$self->search->set( 'ACTION', Object::KVC::String->new($action) );
+		$self->search->set( 'ACTION', Farly::Value::String->new($action) );
 	}
 }
 
@@ -183,7 +183,7 @@ sub _set_exclude {
 
 	while ( my $line = $file->getline() ) {
 		next if ( $line !~ /\S+/ );
-		my $exlude = Object::KVC::Hash->new();
+		my $exlude = Farly::Object->new();
 		$exlude->set( $property, Farly::IPv4::Network->new($line) );
 		$self->filter->add($exlude);
 	}
@@ -220,10 +220,10 @@ Farly::Opts::Search - Create a search object from an options hash
 =head1 DESCRIPTION
 
 Farly::Opts::Search converts a Getopt::Long options hash to an 
-Object::KVC::Hash object which can be used to search a Farly 
-Object::KVC::List<Object::KVC::Hash> firewall model.  
+Farly::Object object which can be used to search a Farly 
+Farly::Object::List<Farly::Object> firewall model.  
 
-Farly::Opts::Search can also create an Object::KVC::Set<Object::KVC::Hash>
+Farly::Opts::Search can also create an Farly::Object::Set<Farly::Object>
 object from a configuration file. The filter set is used to exclude 
 firewall rules from the search results of the current Farly firewall
 model.
@@ -238,14 +238,14 @@ The constructor. The Getopt::Long GetOptions hash is provided.
 
 =head2 search()
 
-Returns an Object::KVC::Hash search object used to search for firewall
+Returns an Farly::Object search object used to search for firewall
 rules in the current Farly firewall model.
 
   $search_object = $search_parser->search();
 
 =head2 filter()
 
-Returns an Object::KVC::Set<Object::KVC::Hash> object used to exculde 
+Returns an Farly::Object::Set<Farly::Object> object used to exculde 
 firewall rules from the search results of the current Farly firewall
 model.
 

@@ -3,22 +3,22 @@ use warnings;
 
 use Test::Simple tests => 16;
 
-use Object::KVC::Hash;
-use Object::KVC::String;
+use Farly::Object;
+use Farly::Value::String;
 
 my $keys;
 
 # ce = configuration element or container element
 
-my $ce = Object::KVC::Hash->new();
+my $ce = Farly::Object->new();
 	
-$ce->{"S1"} = Object::KVC::String->new("stringA1");
-$ce->set( "D1", Object::KVC::String->new("stringB2") );
+$ce->{"S1"} = Farly::Value::String->new("stringA1");
+$ce->set( "D1", Farly::Value::String->new("stringB2") );
 
-my $search = Object::KVC::Hash->new();
+my $search = Farly::Object->new();
 	
-$search->set( "S1", Object::KVC::String->new("stringA1"));
-$search->set( "D1", Object::KVC::String->new("stringB2") );
+$search->set( "S1", Farly::Value::String->new("stringA1"));
+$search->set( "D1", Farly::Value::String->new("stringB2") );
 
 ok( $ce->matches($search), "matches");
 ok( $ce->equals($search), "equals");
@@ -52,21 +52,21 @@ ok ( !$ce->contains("a string"), "!contains other type");
 ok ( $search->intersects($ce), "intersects");
 
 
-my $ce1 = Object::KVC::Hash->new();
-my $ce2 = Object::KVC::Hash->new();
-my $ce3 = Object::KVC::Hash->new();
-my $ce4 = Object::KVC::Hash->new();
+my $ce1 = Farly::Object->new();
+my $ce2 = Farly::Object->new();
+my $ce3 = Farly::Object->new();
+my $ce4 = Farly::Object->new();
 
-$ce1->set( "S1", Object::KVC::String->new("string11") );
-$ce1->set( "D1", Object::KVC::String->new("string12") );
+$ce1->set( "S1", Farly::Value::String->new("string11") );
+$ce1->set( "D1", Farly::Value::String->new("string12") );
 
-$ce2->set( "D1", Object::KVC::String->new("string32") );
+$ce2->set( "D1", Farly::Value::String->new("string32") );
 
-$ce3->set( "S1", Object::KVC::String->new("string31") );
-$ce3->set( "D1", Object::KVC::String->new("string32") );
+$ce3->set( "S1", Farly::Value::String->new("string31") );
+$ce3->set( "D1", Farly::Value::String->new("string32") );
 
-$ce4->set( "S1", Object::KVC::String->new("string31") );
-$ce4->set( "D1", Object::KVC::String->new("string32") );
+$ce4->set( "S1", Farly::Value::String->new("string31") );
+$ce4->set( "D1", Farly::Value::String->new("string32") );
 
 ok ( ! $ce4->intersects($ce1), "!intersects" );
 

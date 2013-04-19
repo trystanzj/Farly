@@ -40,12 +40,13 @@ sub set {
 	confess "a value object must be defined"
 	  unless ( defined($value) );
 
-    # Farly::Object can be used as a tree node
-    if ( $value->isa('Farly::Object::Set') ) {
+    # reference object, or container (i.e. $self is tree node)
+    if ( $value->isa('Farly::Object') || $value->isa('Farly::Object::Set') ) {
         $self->{$key} = $value;
         return;
     }
 
+    # or value object
 	confess "$value is not a valid value object type"
 	  unless ( $value->can('equals') 
 	  			&& $value->can('contains')

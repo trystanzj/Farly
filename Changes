@@ -12,7 +12,7 @@
   - Fixed bug in Farly::Transport::Protocol::intersects()
   - Fixed bug in ::ASA::Parser names rule
   - Added Line number printing in ASA.tt
-  - "DIGIT" and "ICMP_TYPE" Token to Object::KVC::Integer
+  - "DIGIT" and "ICMP_TYPE" Token to Farly::Value::Integer
   
 0.05 - 25 February 2012
   - Fixed asa_Parser.t names test
@@ -72,5 +72,13 @@
    - translate failure logs to file
    - added META.YML, LICENSE, repository link
 
-0.13 - April 2013
+0.20 - April 2013
    - added compare method
+   - moved Object::KVC into Farly
+		Object::KVC::Hash = Farly::Object
+		Object::KVC::HashRef = Farly::Object::Ref
+		Object::KVC::List = Farly::Object::List
+		Farly::Object::Set = Farly::Object::Set
+		Farly::Value::String = Farly::Value::String
+		Farly::Value::Integer = Farly::Value::Integer
+   - added Farly::Object::Aggregate   

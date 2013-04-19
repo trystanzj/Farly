@@ -138,7 +138,7 @@ sub _value_format {
 			$string .= $value->as_string();
 		}
 	}
-	elsif ( $value->isa('Object::KVC::HashRef') ) {
+	elsif ( $value->isa('Farly::Object::Ref') ) {
 
 		$string = $value->get("ID")->as_string();
 	}
@@ -155,25 +155,25 @@ sub _value_format {
 sub _format {
 	my ( $self, $ce ) = @_;
 
-	my $GROUP_REF = Object::KVC::HashRef->new();
-	$GROUP_REF->set( 'ENTRY', Object::KVC::String->new('GROUP') );
+	my $GROUP_REF = Farly::Object::Ref->new();
+	$GROUP_REF->set( 'ENTRY', Farly::Value::String->new('GROUP') );
 
-	my $OBJECT_REF = Object::KVC::HashRef->new();
-	$OBJECT_REF->set( 'ENTRY', Object::KVC::String->new('OBJECT') );
+	my $OBJECT_REF = Farly::Object::Ref->new();
+	$OBJECT_REF->set( 'ENTRY', Farly::Value::String->new('OBJECT') );
 
-	my $IF_REF = Object::KVC::HashRef->new();
-	$IF_REF->set( 'ENTRY', Object::KVC::String->new('INTERFACE') );
+	my $IF_REF = Farly::Object::Ref->new();
+	$IF_REF->set( 'ENTRY', Farly::Value::String->new('INTERFACE') );
 
-	my $NAME = Object::KVC::Hash->new();
-	$NAME->set( 'ENTRY', Object::KVC::String->new('NAME') );
+	my $NAME = Farly::Object->new();
+	$NAME->set( 'ENTRY', Farly::Value::String->new('NAME') );
 
-	my $INTERFACE = Object::KVC::Hash->new();
-	$INTERFACE->set( 'ENTRY', Object::KVC::String->new('INTERFACE') );
+	my $INTERFACE = Farly::Object->new();
+	$INTERFACE->set( 'ENTRY', Farly::Value::String->new('INTERFACE') );
 
-	my $ROUTE = Object::KVC::Hash->new();
-	$ROUTE->set( 'ENTRY', Object::KVC::String->new('ROUTE') );
+	my $ROUTE = Farly::Object->new();
+	$ROUTE->set( 'ENTRY', Farly::Value::String->new('ROUTE') );
 
-	my $RULE  = Object::KVC::String->new('RULE');
+	my $RULE  = Farly::Value::String->new('RULE');
 
 	my $ALL = Farly::Transport::PortRange->new('1 65535');
 	my $ANY_ICMP_TYPE = Farly::IPv4::ICMPType->new( -1 );
@@ -200,7 +200,7 @@ sub _format {
 	if ( $ce->matches( $ROUTE ) ) {
 		foreach my $key ( $ce->get_keys() ) {
 			if( $key eq 'INTERFACE'){
-				# use _value_format because $ce isa 'Object::KVC::HashRef'
+				# use _value_format because $ce isa 'Farly::Object::Ref'
 				$hash->{$key} = $self->_value_format($ce->get($key));
 				next;
 			}
@@ -226,7 +226,7 @@ sub _format {
 			next;
 		}
 
-		if ( $value->isa('Object::KVC::HashRef') ) {
+		if ( $value->isa('Farly::Object::Ref') ) {
 
 			if ( $value->matches($GROUP_REF) ) {
 				if ( $ce->get('ENTRY')->equals($RULE) ) {
@@ -293,7 +293,7 @@ Valid device types:
 
   ASA
 
-=head2 as_string( <Object::KVC::Hash> )
+=head2 as_string( <Farly::Object> )
 
 Prints the current Farly object in Cisco format.
 

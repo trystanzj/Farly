@@ -19,13 +19,13 @@ my $expander = Farly::Rule::Expander->new($fw);
 
 my $entries = $expander->expand_all();
 
-my $remove_list = Object::KVC::List->new();
+my $remove_list = Farly::Object::List->new();
 
-my $search = Object::KVC::Hash->new();
-$search->set('LINE', Object::KVC::Integer->new('3') );
+my $search = Farly::Object->new();
+$search->set('LINE', Farly::Value::Integer->new('3') );
 $entries->matches( $search, $remove_list );
 
-$search->set('LINE', Object::KVC::Integer->new('5') );
+$search->set('LINE', Farly::Value::Integer->new('5') );
 $search->set('DST_IP', Farly::IPv4::Address->new('192.168.2.1') );
 
 $entries->matches( $search, $remove_list );

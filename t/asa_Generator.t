@@ -11,13 +11,13 @@ my $generator = Farly::ASA::Generator->new();
 
 my $ast = bless( {
                  'ID' => bless( {
-                                  '__VALUE__' => bless( do{\(my $o = 'acl-outside')}, 'Object::KVC::String' ),
+                                  '__VALUE__' => bless( do{\(my $o = 'acl-outside')}, 'Farly::Value::String' ),
                                   'LINE' => bless( {
-                                                     '__VALUE__' => bless( do{\(my $o = '1')}, 'Object::KVC::Integer' ),
+                                                     '__VALUE__' => bless( do{\(my $o = '1')}, 'Farly::Value::Integer' ),
                                                      'TYPE' => bless( {
-                                                                        '__VALUE__' => bless( do{\(my $o = 'extended')}, 'Object::KVC::String' ),
+                                                                        '__VALUE__' => bless( do{\(my $o = 'extended')}, 'Farly::Value::String' ),
                                                                         'ACTION' => bless( {
-                                                                                             '__VALUE__' => bless( do{\(my $o = 'permit')}, 'Object::KVC::String' ),
+                                                                                             '__VALUE__' => bless( do{\(my $o = 'permit')}, 'Farly::Value::String' ),
                                                                                              'PROTOCOL' => bless( {
                                                                                                                     '__VALUE__' => bless( do{\(my $o = '6')}, 'Farly::Transport::Protocol' ),
                                                                                                                     'SRC_IP' => bless( {
@@ -38,9 +38,9 @@ my $ast = bless( {
                                                                                                                                                                                                                                   }, 'Farly::Transport::PortRange' )
                                                                                                                                                                                                           }, 'DST_PORT' ),
                                                                                                                                                                                      '__VALUE__' => bless( {
-                                                                                                                                                                                                             'ID' => bless( do{\(my $o = 'citrix')}, 'Object::KVC::String' ),
-                                                                                                                                                                                                             'ENTRY' => bless( do{\(my $o = 'GROUP')}, 'Object::KVC::String' )
-                                                                                                                                                                                                           }, 'Object::KVC::HashRef' )
+                                                                                                                                                                                                             'ID' => bless( do{\(my $o = 'citrix')}, 'Farly::Value::String' ),
+                                                                                                                                                                                                             'ENTRY' => bless( do{\(my $o = 'GROUP')}, 'Farly::Value::String' )
+                                                                                                                                                                                                           }, 'Farly::Object::Ref' )
                                                                                                                                                                                    }, 'DST_IP' )
                                                                                                                                                               }, 'SRC_PORT' )
                                                                                                                                        }, 'SRC_IP' )
@@ -55,21 +55,21 @@ $generator->visit($ast);
 
 #print $generator->container->[0]->dump;
 
-my $dst = Object::KVC::HashRef->new();
-$dst->set('ENTRY' => Object::KVC::String->new('GROUP') );
-$dst->set('ID' => Object::KVC::String->new('citrix') );
+my $dst = Farly::Object::Ref->new();
+$dst->set('ENTRY' => Farly::Value::String->new('GROUP') );
+$dst->set('ID' => Farly::Value::String->new('citrix') );
 
-my $expected = Object::KVC::Hash->new();
+my $expected = Farly::Object->new();
 
-$expected->set('ACTION',  Object::KVC::String->new('permit'));
+$expected->set('ACTION',  Farly::Value::String->new('permit'));
 $expected->set('DST_IP',  $dst ); 
 $expected->set('DST_PORT',  Farly::Transport::PortRange->new('1 1024'));
-$expected->set('ENTRY',  Object::KVC::String->new('RULE'));
-$expected->set('ID',  Object::KVC::String->new('acl-outside'));
-$expected->set('LINE',  Object::KVC::Integer->new(1) );
+$expected->set('ENTRY',  Farly::Value::String->new('RULE'));
+$expected->set('ID',  Farly::Value::String->new('acl-outside'));
+$expected->set('LINE',  Farly::Value::Integer->new(1) );
 $expected->set('PROTOCOL',  Farly::Transport::Protocol->new('6'));
 $expected->set('SRC_IP',  Farly::IPv4::Network->new('0.0.0.0 0.0.0.0'));
 $expected->set('SRC_PORT',  Farly::Transport::PortRange->new('1024 65535'));
-$expected->set('TYPE',  Object::KVC::String->new('extended'));
+$expected->set('TYPE',  Farly::Value::String->new('extended'));
 
 ok( $generator->container->[0]->equals( $expected), 'generator' );

@@ -35,10 +35,10 @@ eval { $optimizer = Farly::Rule::Optimizer->new($expanded_rules); };
 
 ok( $@ =~ /found invalid object/, "not single rule set" );
 
-my $search = Object::KVC::Hash->new();
-$search->set( "ID" => Object::KVC::String->new("outside-in") );
+my $search = Farly::Object->new();
+$search->set( "ID" => Farly::Value::String->new("outside-in") );
 
-my $search_result = Object::KVC::List->new();
+my $search_result = Farly::Object::List->new();
 
 $expanded_rules->matches( $search, $search_result );
 

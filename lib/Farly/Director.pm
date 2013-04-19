@@ -76,7 +76,7 @@ Farly::Director - Manages Builder creation and configuration
 
 Farly::Director sets up the vendor specific Farly::Builder. It accepts a
 firewall configuration IO::File object and returns an 
-Object::KVC::List<Object::KVC::Hash> firewall device model when
+Farly::Object::List<Farly::Object> firewall device model when
 finished.
 
 Farly::Director is used by the Farly factory class only.

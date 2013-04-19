@@ -16,15 +16,15 @@ sub new {
 	confess "configuration container object required"
 	  unless ( defined($rule_list) );
 
-	confess "Object::KVC::List object required"
-	  unless ( $rule_list->isa("Object::KVC::List") );
+	confess "Farly::Object::List object required"
+	  unless ( $rule_list->isa("Farly::Object::List") );
 
 	my $self = {
 		ORIGINAL  => $rule_list,
-		PERMITS   => Object::KVC::List->new(),
-		DENIES    => Object::KVC::List->new(),
-		OPTIMIZED => Object::KVC::List->new(),
-		REMOVED   => Object::KVC::List->new(),
+		PERMITS   => Farly::Object::List->new(),
+		DENIES    => Farly::Object::List->new(),
+		OPTIMIZED => Farly::Object::List->new(),
+		REMOVED   => Farly::Object::List->new(),
 		P_ACTION  => "permit",
 		D_ACTION  => "deny",
 		PROTOCOLS => [ 0, 6, 17 ],
@@ -90,8 +90,8 @@ sub _is_valid_rule_set {
 
 	my $id = $self->original->[0]->get("ID");
 		
-	my $search = Object::KVC::Hash->new();
-	$search->set( "ENTRY", Object::KVC::String->new("RULE") );
+	my $search = Farly::Object->new();
+	$search->set( "ENTRY", Farly::Value::String->new("RULE") );
 	$search->set( "ID", $id );
 
 	foreach my $rule ( $self->original->iter() ) {
@@ -105,7 +105,7 @@ sub _is_expanded {
 	my ($self) = @_;
 	foreach my $rule ( $self->original->iter() ) {
 		foreach my $key ( $rule->get_keys() ) {
-			if ( $rule->get($key)->isa("Object::KVC::HashRef") ) {
+			if ( $rule->get($key)->isa("Farly::Object::Ref") ) {
 				die "an expanded firewall ruleset is required";
 			}
 		}
@@ -115,17 +115,17 @@ sub _is_expanded {
 sub _do_search {
 	my ($self) = @_;
 
-	my $search = Object::KVC::Hash->new();
+	my $search = Farly::Object->new();
 
 	# 0, 6, 17 or ip, tcp, udp
 	foreach my $protocol ( @{ $self->protocols } ) {
 
 		$search->set( "PROTOCOL", Farly::Transport::Protocol->new($protocol) );
 
-		$search->set( "ACTION", Object::KVC::String->new( $self->p_action ) );
+		$search->set( "ACTION", Farly::Value::String->new( $self->p_action ) );
 		$self->original->matches( $search, $self->_permits );
 
-		$search->set( "ACTION", Object::KVC::String->new( $self->d_action ) );
+		$search->set( "ACTION", Farly::Value::String->new( $self->d_action ) );
 		$self->original->matches( $search, $self->_denies );
 	}
 }
@@ -156,7 +156,7 @@ sub _re_add {
 
 	my @full_list = sort _ascending_LINE $self->optimized->iter();
 	
-	my $new_optimized = Object::KVC::List->new();
+	my $new_optimized = Farly::Object::List->new();
 	
 	foreach my $rule ( @full_list ) {
 		$new_optimized->add($rule);
@@ -189,7 +189,7 @@ sub _five_tuple {
 
 	my $logger = get_logger(__PACKAGE__);
 
-	my $r = Object::KVC::Hash->new();
+	my $r = Farly::Object->new();
 
 	my @rule_properties = qw(PROTOCOL SRC_IP SRC_PORT DST_IP DST_PORT);
 
@@ -365,7 +365,7 @@ sub _redundant {
 sub _remove_copy_exists {
 	my ( $self, $a_ref, $remove ) = @_;
 
-	my $r = Object::KVC::List->new();
+	my $r = Farly::Object::List->new();
 
 	for ( my $i = 0 ; $i != scalar( @{$a_ref} ) ; $i++ ) {
 		if ( !exists( $remove->{$i} ) ) {
@@ -417,7 +417,7 @@ sub _optimize {
 	# remove is a hash with the index number of
 	# rules which are to be removed. the value is the
 	# rule object causing the redundancy
-	my %remove;    # %remove<index, Object::KVC::Hash>
+	my %remove;    # %remove<index, Farly::Object>
 
 	# find permit rules that contain deny rules
 	# that are defined further down in the rule set
@@ -487,9 +487,9 @@ Farly::Rule::Optimizer - Optimize a raw firewall rule set
   my $rule_expander = Farly::Rule::Expander->new( $container );
   my $expanded_rules = $rule_expander->expand_all();  
 
-  my $search = Object::KVC::Hash->new();
-  $search->set( "ID", Object::KVC::String->new("outside-in") );
-  my $search_result = Object::KVC::List->new();
+  my $search = Farly::Object->new();
+  $search->set( "ID", Farly::Value::String->new("outside-in") );
+  my $search_result = Farly::Object::List->new();
   $expanded_rules->matches( $search, $search_result );
 
   my $optimizer = Farly::Rule::Optimizer->new( $search_result );
@@ -530,7 +530,7 @@ Logged rules are currently displayed in Cisco ASA format.
 
 The constructor. A single expanded rule list is required.
 
-  $optimizer = Farly::Rule::Optimizer->new( $expanded_rules<Object::KVC::List> );
+  $optimizer = Farly::Rule::Optimizer->new( $expanded_rules<Farly::Object::List> );
 
 =head2 verbose()
 
@@ -558,7 +558,7 @@ Change the default deny string. The default deny string is "deny."
 
 =head2 optimized()
 
-Returns an Object::KVC::List<Object::KVC::Hash> container of all
+Returns an Farly::Object::List<Farly::Object> container of all
 expanded firewall rules, excluding duplicate and overlapping rule objects,
 in the current Farly firewall model.
 
@@ -566,7 +566,7 @@ in the current Farly firewall model.
 
 =head2 removed()
 
-Returns an Object::KVC::List<Object::KVC::Hash> container of all
+Returns an Farly::Object::List<Farly::Object> container of all
 duplicate and overlapping firewall rule objects which could be removed.
 
   $remove_rules = $optimizer->removed();

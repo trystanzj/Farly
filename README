@@ -13,20 +13,20 @@ large scale firewall configuration changes.
 Farly is object oriented, using a "key value coding" style.
 
 Each line of firewall configuration is represented by an
-Object::KVC::Hash object. Each property within the line of
+Farly::Object object. Each property within the line of
 configuration is represented by a key value pair.
 
 The key describes what the property within the specific 
 line of configuration is, such as "ID," or "SRC_IP."
  
-The Object::KVC::Hash value objects are the basic types
+The Farly::Object value objects are the basic types
 found in a firewall configuration, such as IP addresses,
 protocols, port numbers, string identifiers and references
 to other configuration elements.
 
 The entire firewall device model, made up of 
-Object::KVC::Hash objects, is stored in an Object::KVC::List.
-The Object::KVC::List class implements object search
+Farly::Object objects, is stored in an Farly::Object::List.
+The Farly::Object::List class implements object search
 functionality required for firewall rule analysis.
 
 See "Farly" package SYNOPSIS for code which will dump a

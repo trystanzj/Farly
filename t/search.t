@@ -32,10 +32,10 @@ $opts{'dport'} = $dst_port;
 
 my $search_parser = Farly::Opts::Search->new( \%opts );
  
-my $expected = Object::KVC::Hash->new();
+my $expected = Farly::Object->new();
 
-$expected->set( 'ID', Object::KVC::String->new($id) );
-$expected->set( 'ACTION', Object::KVC::String->new($action) );
+$expected->set( 'ID', Farly::Value::String->new($id) );
+$expected->set( 'ACTION', Farly::Value::String->new($action) );
 $expected->set( 'PROTOCOL', Farly::Transport::Protocol->new(6) );
 $expected->set( 'SRC_IP', Farly::IPv4::Address->new($src_ip) );
 $expected->set( 'DST_IP', Farly::IPv4::Address->new($dst_ip) );
@@ -59,11 +59,11 @@ ok( $search_parser->search()->equals( $expected ), 'ip net' );
 
 $opts{'exclude-dst'} = "$path/filter.txt";
 
-my $filter_set = Object::KVC::Set->new();
+my $filter_set = Farly::Object::Set->new();
 
-my $filter1 = Object::KVC::Hash->new();
+my $filter1 = Farly::Object->new();
 $filter1->set('DST_IP', Farly::IPv4::Network->new('10.1.2.0 255.255.255.0') );
-my $filter2 = Object::KVC::Hash->new();
+my $filter2 = Farly::Object->new();
 $filter2->set('DST_IP', Farly::IPv4::Network->new('10.2.2.0 255.255.255.0') );
 
 $filter_set->add($filter1);
@@ -78,11 +78,11 @@ delete $opts{'exclude-dst'};
 
 $opts{'exclude-src'} = "$path/filter.txt";
 
-$filter_set = Object::KVC::Set->new();
+$filter_set = Farly::Object::Set->new();
 
-my $filter3 = Object::KVC::Hash->new();
+my $filter3 = Farly::Object->new();
 $filter3->set('SRC_IP', Farly::IPv4::Network->new('10.1.2.0 255.255.255.0') );
-my $filter4 = Object::KVC::Hash->new();
+my $filter4 = Farly::Object->new();
 $filter4->set('SRC_IP', Farly::IPv4::Network->new('10.2.2.0 255.255.255.0') );
 
 $filter_set->add($filter3);

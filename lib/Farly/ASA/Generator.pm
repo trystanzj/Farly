@@ -15,7 +15,7 @@ sub new {
 	my ( $class ) = @_;
 
 	my $self = {
-		CONTAINER => Object::KVC::List->new(),    #store data here
+		CONTAINER => Farly::Object::List->new(),    #store data here
 	};
 	bless $self, $class;
 
@@ -38,10 +38,10 @@ sub visit {
 	my $logger = get_logger(__PACKAGE__);
 
 	# the Farly translator parses one firewall object at a time
-	my $object = Object::KVC::Hash->new();
+	my $object = Farly::Object->new();
 
 	# the AST root node is the 'ENTRY'
-	$object->set('ENTRY', Object::KVC::String->new( ref($node) ) );
+	$object->set('ENTRY', Farly::Value::String->new( ref($node) ) );
 
 	$logger->debug( "ENTRY = ", ref($node) );
 
@@ -90,7 +90,7 @@ __END__
 
 =head1 NAME
 
-Farly::ASA::Generator - Create Object::KVC::Hash objects from an AST
+Farly::ASA::Generator - Create Farly::Object objects from an AST
 
 =head1 DESCRIPTION
 
@@ -99,10 +99,10 @@ value objects. Token objects are recognized by the presence
 of the '__VALUE__' key.
 
 When a Token value object is found the AST node class is used as the 
-Object::KVC::Hash key. The key and value object, from $node->{__VALUE__},
-are then set in the Object::KVC::Hash object.
+Farly::Object key. The key and value object, from $node->{__VALUE__},
+are then set in the new Farly::Object.
 
-The new Object::KVC::Hash object is stored in the container after the tree
+The new Farly::Object is stored in the container after the AST
 has been explored.
 
 Farly::ASA::Generator dies on error.

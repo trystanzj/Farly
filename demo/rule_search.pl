@@ -12,13 +12,13 @@ my $file = "../t/test.cfg";
 my $importer = Farly->new();
 
 # call the process method in order to obtain
-# an Object::KVC::List<Object::KVC::Hash> firewall 
+# an Farly::Object::List<Farly::Object> firewall 
 # device model
 
 my $container = $importer->process("ASA",$file);
 
 # create a rule expander object which will be
-# used to obtain an Object::KVC::List<Object::KVC::Hash> 
+# used to obtain an Farly::Object::List<Farly::Object> 
 # container with all of the firewalls raw rule entries
 # (same as "show access-list" on a Cisco ASA firewall)
 
@@ -35,9 +35,9 @@ my $expanded_rules = $rule_expander->expand_all();
 # only the ones you're interested in
 # protocol's and port's must be the integer value (6 = tcp)
 
-my $web = Object::KVC::Hash->new();
+my $web = Farly::Object->new();
 
-$web->set( "ACTION",   Object::KVC::String->new("permit") );
+$web->set( "ACTION",   Farly::Value::String->new("permit") );
 $web->set( "PROTOCOL", Farly::Transport::Protocol->new(6) );
 $web->set( "SRC_IP",   Farly::IPv4::Network->new("0.0.0.0 0.0.0.0") );
 $web->set( "DST_PORT", Farly::Transport::Port->new(80) );
@@ -46,7 +46,7 @@ $web->set( "DST_PORT", Farly::Transport::Port->new(80) );
 # (this allows the results of multiple searches to go in the
 # same container, if needed)
 
-my $search_result = Object::KVC::List->new();
+my $search_result = Farly::Object::List->new();
 
 # do the search
 
