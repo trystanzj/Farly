@@ -12,45 +12,46 @@ our $VERSION = '0.20';
 our ( $volume, $dir, $file ) = File::Spec->splitpath( $INC{'Farly/Template/Cisco.pm'} );
 
 sub new {
-	my ($class, $file, %args) = @_;
+    my ( $class, $file, %args ) = @_;
 
-	my $self = {
-		FILE     => $file,
-		TEMPLATE => undef,
-		TEXT     => undef,  #set this to use text port and protocol names
-	};
+    my $self = {
+        FILE     => $file,
+        TEMPLATE => undef,
+        TEXT     => undef,    #set this to use text port and protocol names
+    };
 
-	bless $self, $class;
+    bless $self, $class;
 
-	$self->_init(%args);
+    $self->_init(%args);
 
-	my $logger = get_logger(__PACKAGE__);
-	$logger->info("$self NEW");
+    my $logger = get_logger(__PACKAGE__);
+    $logger->info("$self NEW");
 
-	return $self;
+    return $self;
 }
 
 sub _template { return $_[0]->{TEMPLATE}; }
-sub _file { return $_[0]->{FILE}; }
-sub _text { $_[0]->{TEXT} }
+sub _file     { return $_[0]->{FILE}; }
+sub _text     { $_[0]->{TEXT} }
 
 sub _init {
-	my ($self, %args) = @_;
+    my ( $self, %args ) = @_;
 
-	my $path = "$volume$dir"."Files/";
+    my $path = "$volume$dir" . "Files/";
 
-	$self->{TEMPLATE} = Template->new(
-		{
-			%args,
-			INCLUDE_PATH => $path,
-			TRIM         => 1,
-		}
-	) or die "$Template::ERROR\n";
+    $self->{TEMPLATE} = Template->new(
+        {
+            %args,
+            INCLUDE_PATH => $path,
+            TRIM         => 1,
+        }
+      )
+      or die "$Template::ERROR\n";
 }
 
 sub use_text {
-	my ($self, $flag) = @_;
-	$self->{TEXT} = $flag;
+    my ( $self, $flag ) = @_;
+    $self->{TEXT} = $flag;
 }
 
 # port_formatter     => Farly::ASA::PortFormatter->new(),
@@ -58,214 +59,215 @@ sub use_text {
 # icmp_formatter     => Farly::ASA::ICMPFormatter->new(),
 
 sub set_formatters {
-	my ($self, $formatter) = @_;
-	foreach my $key ( keys %$formatter ) {
-		confess "invalid formatters" if ( $key !~ /port_formatter|protocol_formatter|icmp_formatter/ );
-		$self->{$key} = $formatter->{$key};
-	}
+    my ( $self, $formatter ) = @_;
+    foreach my $key ( keys %$formatter ) {
+        confess "invalid formatters"
+          if ( $key !~ /port_formatter|protocol_formatter|icmp_formatter/ );
+        $self->{$key} = $formatter->{$key};
+    }
 }
 
 sub _value_format {
-	my ( $self, $value ) = @_;
+    my ( $self, $value ) = @_;
 
-	my $string;
+    my $string;
 
-	if ( $value->isa('Farly::IPv4::Address') ) {
+    if ( $value->isa('Farly::IPv4::Address') ) {
 
-		$string = "host " . $value->as_string();
-	}
-	elsif ( $value->isa('Farly::Transport::Protocol') ) {
+        $string = "host " . $value->as_string();
+    }
+    elsif ( $value->isa('Farly::Transport::Protocol') ) {
 
-		if ( $self->_text ) {
-			$string = defined( $self->{protocol_formatter}->as_string( $value->as_string() ) )
-			  ? $self->{protocol_formatter}->as_string( $value->as_string() )
-			  : $value->as_string();			
-		}
-		else {
-			$string = $value->as_string();
-		}
-	}
-	elsif ( $value->isa('Farly::Transport::PortGT') ) {
-		$string = "gt ";
-		if ( $self->_text ) {
-			$string .= defined( $self->{port_formatter}->as_string( $value->as_string() ) )
-			  ? $self->{port_formatter}->as_string( $value->as_string() )
-			  : $value->as_string();
-		}
-		else {	  
-			$string .= $value->as_string();
-		}
-	}
-	elsif ( $value->isa('Farly::Transport::PortLT') ) {
-		$string = "lt ";
-		if ( $self->_text ) {
-			$string .= defined( $self->{port_formatter}->as_string( $value->as_string() ) )
-			  ? $self->{port_formatter}->as_string( $value->as_string() )
-			  : $value->as_string();
-		}
-		else {	  
-			$string .= $value->as_string();
-		}
-	}		
-	elsif ( $value->isa('Farly::Transport::Port') ) {
-		$string = "eq ";
-		if ( $self->_text ) {
-			$string .= defined( $self->{port_formatter}->as_string( $value->as_string() ) )
-			  ? $self->{port_formatter}->as_string( $value->as_string() )
-			  : $value->as_string();
-		}
-		else {	  
-			$string .= $value->as_string();
-		}
-	}
-	elsif ( $value->isa('Farly::Transport::PortRange') ) {
+        if ( $self->_text ) {
+            $string = defined( $self->{protocol_formatter}->as_string( $value->as_string() ) )
+              ? $self->{protocol_formatter}->as_string( $value->as_string() )
+              : $value->as_string();
+        }
+        else {
+            $string = $value->as_string();
+        }
+    }
+    elsif ( $value->isa('Farly::Transport::PortGT') ) {
+        $string = "gt ";
+        if ( $self->_text ) {
+            $string .= defined( $self->{port_formatter}->as_string( $value->as_string() ) )
+              ? $self->{port_formatter}->as_string( $value->as_string() )
+              : $value->as_string();
+        }
+        else {
+            $string .= $value->as_string();
+        }
+    }
+    elsif ( $value->isa('Farly::Transport::PortLT') ) {
+        $string = "lt ";
+        if ( $self->_text ) {
+            $string .= defined( $self->{port_formatter}->as_string( $value->as_string() ) )
+              ? $self->{port_formatter}->as_string( $value->as_string() )
+              : $value->as_string();
+        }
+        else {
+            $string .= $value->as_string();
+        }
+    }
+    elsif ( $value->isa('Farly::Transport::Port') ) {
+        $string = "eq ";
+        if ( $self->_text ) {
+            $string .= defined( $self->{port_formatter}->as_string( $value->as_string() ) )
+              ? $self->{port_formatter}->as_string( $value->as_string() )
+              : $value->as_string();
+        }
+        else {
+            $string .= $value->as_string();
+        }
+    }
+    elsif ( $value->isa('Farly::Transport::PortRange') ) {
 
-		$string = "range ";
+        $string = "range ";
 
-		if ( $self->_text ) {
-			
-			$string .= defined( $self->{port_formatter}->as_string( $value->first() ) )
-			  ? $self->{port_formatter}->as_string( $value->first() )
-			  : $value->first();
-			
-			$string .= " ";
-			
-			$string .= defined( $self->{port_formatter}->as_string( $value->last() ) )
-			  ? $self->{port_formatter}->as_string( $value->last() )
-			  : $value->last();
-		}
-		else {
-			$string .= $value->as_string();
-		}
-	}
-	elsif ( $value->isa('Farly::Object::Ref') ) {
+        if ( $self->_text ) {
 
-		$string = $value->get("ID")->as_string();
-	}
-	else {
+            $string .= defined( $self->{port_formatter}->as_string( $value->first() ) )
+              ? $self->{port_formatter}->as_string( $value->first() )
+              : $value->first();
 
-		$string = $value->as_string();
-		$string =~ s/0.0.0.0 0.0.0.0/any/g;
-		$string =~ s/^\s+|\s+$//g;
-	}
+            $string .= " ";
 
-	return $string;
+            $string .= defined( $self->{port_formatter}->as_string( $value->last() ) )
+              ? $self->{port_formatter}->as_string( $value->last() )
+              : $value->last();
+        }
+        else {
+            $string .= $value->as_string();
+        }
+    }
+    elsif ( $value->isa('Farly::Object::Ref') ) {
+
+        $string = $value->get("ID")->as_string();
+    }
+    else {
+
+        $string = $value->as_string();
+        $string =~ s/0.0.0.0 0.0.0.0/any/g;
+        $string =~ s/^\s+|\s+$//g;
+    }
+
+    return $string;
 }
 
 sub _format {
-	my ( $self, $ce ) = @_;
+    my ( $self, $ce ) = @_;
 
-	my $GROUP_REF = Farly::Object::Ref->new();
-	$GROUP_REF->set( 'ENTRY', Farly::Value::String->new('GROUP') );
+    my $GROUP_REF = Farly::Object::Ref->new();
+    $GROUP_REF->set( 'ENTRY', Farly::Value::String->new('GROUP') );
 
-	my $OBJECT_REF = Farly::Object::Ref->new();
-	$OBJECT_REF->set( 'ENTRY', Farly::Value::String->new('OBJECT') );
+    my $OBJECT_REF = Farly::Object::Ref->new();
+    $OBJECT_REF->set( 'ENTRY', Farly::Value::String->new('OBJECT') );
 
-	my $IF_REF = Farly::Object::Ref->new();
-	$IF_REF->set( 'ENTRY', Farly::Value::String->new('INTERFACE') );
+    my $IF_REF = Farly::Object::Ref->new();
+    $IF_REF->set( 'ENTRY', Farly::Value::String->new('INTERFACE') );
 
-	my $NAME = Farly::Object->new();
-	$NAME->set( 'ENTRY', Farly::Value::String->new('NAME') );
+    my $NAME = Farly::Object->new();
+    $NAME->set( 'ENTRY', Farly::Value::String->new('NAME') );
 
-	my $INTERFACE = Farly::Object->new();
-	$INTERFACE->set( 'ENTRY', Farly::Value::String->new('INTERFACE') );
+    my $INTERFACE = Farly::Object->new();
+    $INTERFACE->set( 'ENTRY', Farly::Value::String->new('INTERFACE') );
 
-	my $ROUTE = Farly::Object->new();
-	$ROUTE->set( 'ENTRY', Farly::Value::String->new('ROUTE') );
+    my $ROUTE = Farly::Object->new();
+    $ROUTE->set( 'ENTRY', Farly::Value::String->new('ROUTE') );
 
-	my $RULE  = Farly::Value::String->new('RULE');
+    my $RULE = Farly::Value::String->new('RULE');
 
-	my $ALL = Farly::Transport::PortRange->new('1 65535');
-	my $ANY_ICMP_TYPE = Farly::IPv4::ICMPType->new( -1 );
+    my $ALL           = Farly::Transport::PortRange->new('1 65535');
+    my $ANY_ICMP_TYPE = Farly::IPv4::ICMPType->new(-1);
 
-	my $hash;
+    my $hash;
 
-	#names should not be prefixed with 'host'
-	if ( $ce->matches( $NAME ) ) {
-		foreach my $key ( $ce->get_keys() ) {
-			$hash->{$key} = $ce->get($key)->as_string();
-		}
-		return $hash;
-	}
+    #names should not be prefixed with 'host'
+    if ( $ce->matches($NAME) ) {
+        foreach my $key ( $ce->get_keys() ) {
+            $hash->{$key} = $ce->get($key)->as_string();
+        }
+        return $hash;
+    }
 
-	#interface ip addresses should not be prefixed with 'host'
-	if ( $ce->matches( $INTERFACE ) ) {
-		foreach my $key ( $ce->get_keys() ) {
-			$hash->{$key} = $ce->get($key)->as_string();
-		}
-		return $hash;
-	}
+    #interface ip addresses should not be prefixed with 'host'
+    if ( $ce->matches($INTERFACE) ) {
+        foreach my $key ( $ce->get_keys() ) {
+            $hash->{$key} = $ce->get($key)->as_string();
+        }
+        return $hash;
+    }
 
-	# for routes, neither interface names nor ip addresses should be prefixed
-	if ( $ce->matches( $ROUTE ) ) {
-		foreach my $key ( $ce->get_keys() ) {
-			if( $key eq 'INTERFACE'){
-				# use _value_format because $ce isa 'Farly::Object::Ref'
-				$hash->{$key} = $self->_value_format($ce->get($key));
-				next;
-			}
-			$hash->{$key} = $ce->get($key)->as_string();
-		}
-		return $hash;
-	}
+    # for routes, neither interface names nor ip addresses should be prefixed
+    if ( $ce->matches($ROUTE) ) {
+        foreach my $key ( $ce->get_keys() ) {
+            if ( $key eq 'INTERFACE' ) {
 
-	foreach my $key ( $ce->get_keys() ) {
+                # use _value_format because $ce isa 'Farly::Object::Ref'
+                $hash->{$key} = $self->_value_format( $ce->get($key) );
+                next;
+            }
+            $hash->{$key} = $ce->get($key)->as_string();
+        }
+        return $hash;
+    }
 
-		my $value = $ce->get($key);
+    foreach my $key ( $ce->get_keys() ) {
 
-		my $prefix;
-		my $string;
+        my $value = $ce->get($key);
 
-		# skip port range 1 - 65535
-		if ( $value->equals($ALL) ) {
-			next;
-		}
+        my $prefix;
+        my $string;
 
-		# skip default ICMP type '255'
-		if ( $value->equals($ANY_ICMP_TYPE) ) {
-			next;
-		}
+        # skip port range 1 - 65535
+        if ( $value->equals($ALL) ) {
+            next;
+        }
 
-		if ( $value->isa('Farly::Object::Ref') ) {
+        # skip default ICMP type '-1'
+        if ( $value->equals($ANY_ICMP_TYPE) ) {
+            next;
+        }
 
-			if ( $value->matches($GROUP_REF) ) {
-				if ( $ce->get('ENTRY')->equals($RULE) ) {
-					$prefix = 'object-group';
-				}
-			}
-			elsif ( $value->matches($OBJECT_REF) ) {
-				$prefix = 'object';
-			}
-			elsif ( $value->matches($IF_REF) ) {
-				$prefix = 'interface';
-			}
-		}
+        if ( $value->isa('Farly::Object::Ref') ) {
 
-		$string = defined($prefix)
-		  ? $prefix . ' ' . $self->_value_format($value)
-		  : $self->_value_format($value);
+            if ( $value->matches($GROUP_REF) ) {
+                if ( $ce->get('ENTRY')->equals($RULE) ) {
+                    $prefix = 'object-group';
+                }
+            }
+            elsif ( $value->matches($OBJECT_REF) ) {
+                $prefix = 'object';
+            }
+            elsif ( $value->matches($IF_REF) ) {
+                $prefix = 'interface';
+            }
+        }
 
-		if ( $self->_text && $key eq 'ICMP_TYPE' ) {
-			
-			$string = defined( $self->{icmp_formatter}->as_string( $value->as_string() ) )
-			  ? $self->{icmp_formatter}->as_string( $value->as_string() )
-			  : $value->as_string();
-		}
+        $string = defined($prefix)
+          ? $prefix . ' ' . $self->_value_format($value)
+          : $self->_value_format($value);
 
-		$hash->{ $key } = $string;
-	}
+        if ( $self->_text && $key eq 'ICMP_TYPE' ) {
 
-	return $hash;
+            $string = defined( $self->{icmp_formatter}->as_string( $value->as_string() ) )
+              ? $self->{icmp_formatter}->as_string( $value->as_string() )
+              : $value->as_string();
+        }
+
+        $hash->{$key} = $string;
+    }
+
+    return $hash;
 }
 
-
 sub as_string {
-	my ( $self, $ce ) = @_;
+    my ( $self, $ce ) = @_;
 
-	my $hash = $self->_format($ce);
+    my $hash = $self->_format($ce);
 
-	$self->_template()->process( $self->_file, $hash )
-	  or die $self->_template()->error();
+    $self->_template()->process( $self->_file, $hash )
+      or die $self->_template()->error();
 }
 
 1;
@@ -273,8 +275,7 @@ __END__
 
 =head1 NAME
 
-Farly::Template::Cisco - Converts the Farly firewall model into 
-                         Cisco format
+Farly::Template::Cisco - Converts the Farly model into Cisco format
 
 =head1 DESCRIPTION
 
