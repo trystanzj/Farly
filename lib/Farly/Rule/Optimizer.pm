@@ -143,16 +143,17 @@ sub set_l3 {
     $TCP->set( 'PROTOCOL', Farly::Transport::Protocol->new(6) );
 
     my $UDP = Farly::Object->new();
-    $UDP->set( 'PROTOCOL', Farly::Transport::Protocol->new(6) );
+    $UDP->set( 'PROTOCOL', Farly::Transport::Protocol->new(17) );
 
     my @protocols;
 
     foreach my $rule ( $self->rules->iter() ) {
 
-        if ( !($rule->matches($ICMP) && $rule->matches($TCP) && $rule->matches($UDP)) )
-        {
-            push @protocols, $rule->get('PROTOCOL')->as_string();
-        }
+        next if $rule->matches($ICMP);
+        next if $rule->matches($TCP);
+        next if $rule->matches($UDP);
+        
+        push @protocols, $rule->get('PROTOCOL')->as_string();
     }
 
     $self->{MODE}       = 'L3';
