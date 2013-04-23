@@ -9,121 +9,126 @@ use Log::Log4perl qw(get_logger);
 our $VERSION = '0.20';
 
 sub new {
-	my ( $class, $fw ) = @_;
+    my ( $class, $fw ) = @_;
 
-	confess "configuration container object required"
-	  unless ( defined($fw) );
+    confess "configuration container object required"
+      unless ( defined($fw) );
 
-	confess "Farly::Object::List object required"
-	  unless ( $fw->isa("Farly::Object::List") );
+    confess "Farly::Object::List object required"
+      unless ( $fw->isa('Farly::Object::List') );
 
-	my $self = {
-		CONFIG => $fw,
-		AGGREGATE  => undef,
-	};
+    my $self = {
+        CONFIG    => $fw,
+        AGGREGATE => undef,
+    };
 
-	bless $self, $class;
+    bless $self, $class;
 
-	my $logger = get_logger(__PACKAGE__);
-	$logger->info("$self NEW");
-	$logger->info("$self CONFIG ",$self->{CONFIG});
+    my $logger = get_logger(__PACKAGE__);
+    $logger->info("$self NEW");
+    $logger->info( "$self CONFIG ", $self->{CONFIG} );
 
-	$self->_init();
+    $self->_init();
 
-	return $self;
+    return $self;
 }
 
 sub config { return $_[0]->{CONFIG}; }
-sub _agg { return $_[0]->{AGGREGATE}; }
+sub _agg   { return $_[0]->{AGGREGATE}; }
 
 sub _init {
-	my ($self) = @_;
-	$self->{AGGREGATE} = Farly::Object::Aggregate->new( $self->config );
-	$self->{AGGREGATE}->groupby( 'ENTRY', 'ID' );
+    my ($self) = @_;
+    $self->{AGGREGATE} = Farly::Object::Aggregate->new( $self->config );
+    $self->{AGGREGATE}->groupby( 'ENTRY', 'ID' );
 }
 
 sub _set_defaults {
-	my ( $self, $ce ) = @_;
+    my ( $self, $ce ) = @_;
 
-	my $logger = get_logger(__PACKAGE__);
+    my $logger = get_logger(__PACKAGE__);
 
-	my $RULE = Farly::Object->new();
-	$RULE->set( 'ENTRY', Farly::Value::String->new('RULE') );
+    my $RULE = Farly::Object->new();
+    $RULE->set( 'ENTRY', Farly::Value::String->new('RULE') );
 
-	my $IP   = Farly::Transport::Protocol->new('0');
-	my $TCP  = Farly::Transport::Protocol->new('6');
-	my $UDP  = Farly::Transport::Protocol->new('17');
-	my $ICMP = Farly::Transport::Protocol->new('1');
+    my $IP   = Farly::Transport::Protocol->new('0');
+    my $TCP  = Farly::Transport::Protocol->new('6');
+    my $UDP  = Farly::Transport::Protocol->new('17');
+    my $ICMP = Farly::Transport::Protocol->new('1');
 
-	#Check if the config entry is an access-list
-	if ( $ce->matches($RULE) ) {
+    #Check if the config entry is an access-list
+    if ( $ce->matches($RULE) ) {
 
-		return if ( $ce->has_defined('COMMENT') );
+        return if ( $ce->has_defined('COMMENT') );
 
-		#Check if the access-list protocol is ip, tcp or udp
-		if (   $ce->get('PROTOCOL')->equals($IP)
-			|| $ce->get('PROTOCOL')->equals($TCP)
-			|| $ce->get('PROTOCOL')->equals($UDP) )
-		{
+        #Check if the access-list protocol is ip, tcp or udp
+        if (   $ce->get('PROTOCOL')->equals($IP)
+            || $ce->get('PROTOCOL')->equals($TCP)
+            || $ce->get('PROTOCOL')->equals($UDP) )
+        {
 
-			$logger->debug("defaulting ports for $ce");
+            $logger->debug("defaulting ports for $ce");
 
-			#if a srcport is not defined, define all ports
-			if ( !$ce->has_defined('SRC_PORT') ) {
+            #if a srcport is not defined, define all ports
+            if ( !$ce->has_defined('SRC_PORT') ) {
 
-				$ce->set( 'SRC_PORT', Farly::Transport::PortRange->new( 1, 65535 ) );
-				$logger->debug( 'SET SOURCE PORT ', $ce->get('SRC_PORT') );
-			}
+                $ce->set( 'SRC_PORT',
+                    Farly::Transport::PortRange->new( 1, 65535 ) );
+                $logger->debug( 'SET SOURCE PORT ', $ce->get('SRC_PORT') );
+            }
 
-			#if a dst port is not defined, define all ports
-			if ( !$ce->has_defined('DST_PORT') ) {
+            #if a dst port is not defined, define all ports
+            if ( !$ce->has_defined('DST_PORT') ) {
 
-				$ce->set( 'DST_PORT', Farly::Transport::PortRange->new( 1, 65535 ) );
-				$logger->debug( "SET DST PORT ", $ce->get('DST_PORT') );
-			}
-		}
-		elsif( $ce->get('PROTOCOL')->equals($ICMP) ) {
-			$logger->debug("defaulting ports for $ce");
+                $ce->set( 'DST_PORT',
+                    Farly::Transport::PortRange->new( 1, 65535 ) );
+                $logger->debug( "SET DST PORT ", $ce->get('DST_PORT') );
+            }
+        }
 
-			#if an icmp type is not defined, define all icmp types as 255
-			if ( !$ce->has_defined('ICMP_TYPE') ) {
+        if (   $ce->get('PROTOCOL')->equals($IP)
+            || $ce->get('PROTOCOL')->equals($ICMP) )
+        {
+            $logger->debug("defaulting ports for $ce");
 
-				$ce->set( 'ICMP_TYPE', Farly::IPv4::ICMPType->new( -1 ) );
-				$logger->debug( 'SET ICMP_TYPE to -1 ');
-			}
-		}
-	}
-	else {
-		confess "_set_defaults is for RULE objects only";
-	}
+            #if an icmp type is not defined, define all icmp types as -1
+            if ( !$ce->has_defined('ICMP_TYPE') ) {
+
+                $ce->set( 'ICMP_TYPE', Farly::IPv4::ICMPType->new(-1) );
+                $logger->debug('SET ICMP_TYPE to -1 ');
+            }
+        }
+    }
+    else {
+        confess "_set_defaults is for RULE objects only";
+    }
 }
 
 sub expand_all {
-	my ($self) = @_;
-	my $logger = get_logger(__PACKAGE__);
+    my ($self) = @_;
+    my $logger = get_logger(__PACKAGE__);
 
-	my $expanded = Farly::Object::List->new();
+    my $expanded = Farly::Object::List->new();
 
-	my $RULE = Farly::Value::String->new('RULE');
+    my $RULE = Farly::Value::String->new('RULE');
 
-	my $RULE_SEARCH = Farly::Object->new();
-	$RULE_SEARCH->set( 'ENTRY', $RULE );
+    my $RULE_SEARCH = Farly::Object->new();
+    $RULE_SEARCH->set( 'ENTRY', $RULE );
 
-	my $rules = Farly::Object::List->new();
+    my $rules = Farly::Object::List->new();
 
-	$self->config->matches( $RULE_SEARCH, $rules );
+    $self->config->matches( $RULE_SEARCH, $rules );
 
-	foreach my $ce ( $rules->iter() ) {
-		eval {
-			my $clone = $ce->clone();
-			$self->expand( $clone, $expanded );
-		};
-		if ($@) {
-			confess "$@ \n expand failed for ", $ce->dump(), "\n";
-		}
-	}
+    foreach my $ce ( $rules->iter() ) {
+        eval {
+            my $clone = $ce->clone();
+            $self->expand( $clone, $expanded );
+        };
+        if ($@) {
+            confess "$@ \n expand failed for ", $ce->dump(), "\n";
+        }
+    }
 
-	return $expanded;
+    return $expanded;
 }
 
 # { 'key' => ::HashRef } refers to one or more actual Objects
@@ -136,141 +141,143 @@ sub expand_all {
 #   use "OBJECT" key/value in the raw RULE object
 
 sub expand {
-	my ( $self, $rule, $result ) = @_;
-	my $logger = get_logger(__PACKAGE__);
+    my ( $self, $rule, $result ) = @_;
+    my $logger = get_logger(__PACKAGE__);
 
-	my $is_expanded;
-	my @stack;
-	push @stack, $rule;
+    my $is_expanded;
+    my @stack;
+    push @stack, $rule;
 
-	my $COMMENT = Farly::Object->new();
-	$COMMENT->set( "OBJECT_TYPE", Farly::Value::String->new("COMMENT") );
+    my $COMMENT = Farly::Object->new();
+    $COMMENT->set( 'OBJECT_TYPE', Farly::Value::String->new('COMMENT') );
 
-	my $SERVICE = Farly::Object->new();
-	$SERVICE->set( "OBJECT_TYPE", Farly::Value::String->new("SERVICE") );
+    my $SERVICE = Farly::Object->new();
+    $SERVICE->set( 'OBJECT_TYPE', Farly::Value::String->new('SERVICE') );
 
-	my $VIP = Farly::Object->new();
-	$VIP->set( "OBJECT_TYPE", Farly::Value::String->new("VIP") );
+    my $VIP = Farly::Object->new();
+    $VIP->set( 'OBJECT_TYPE', Farly::Value::String->new('VIP') );
 
-	while (@stack) {
-		my $ce = pop @stack;
+    while (@stack) {
+        my $ce = pop @stack;
 
-		foreach my $key ( $ce->get_keys() ) {
+        foreach my $key ( $ce->get_keys() ) {
 
-			my $value = $ce->get($key);
+            my $value = $ce->get($key);
 
-			$logger->debug("entry $ce - key : $key - value : $value");
+            $logger->debug("entry $ce - key : $key - value : $value");
 
-			$is_expanded = 1;
+            $is_expanded = 1;
 
-			if ( $value->isa("Farly::Object::Ref") ) {
+            if ( $value->isa('Farly::Object::Ref') ) {
 
-				$is_expanded = 0;
+                $is_expanded = 0;
 
-				my $actual = $self->_agg->matches( $value );
+                my $actual = $self->_agg->matches($value);
 
-				if ( !defined $actual ) {
-					confess "actual not found for $key";
-				}
+                if ( !defined $actual ) {
+                    confess "actual not found for $key";
+                }
 
-				$ce->set( $key, $actual );
+                $ce->set( $key, $actual );
 
-				push @stack, $ce;
-				
-				last;
-			}
-			elsif ( $value->isa("Farly::Object::Set") ) {
+                push @stack, $ce;
 
-				$is_expanded = 0;
+                last;
+            }
+            elsif ( $value->isa('Farly::Object::Set') ) {
 
-				$logger->debug("$ce => $key isa $value");
+                $is_expanded = 0;
 
-				foreach my $object ( $value->iter() ) {
+                $logger->debug("$ce => $key isa $value");
 
-					my $clone = $ce->clone();
+                foreach my $object ( $value->iter() ) {
 
-					$clone->set( $key, $object );
+                    my $clone = $ce->clone();
 
-					push @stack, $clone;
-				}
-				
-				last;
-			}
-			elsif ( $value->isa("Farly::Object") ) {
+                    $clone->set( $key, $object );
 
-				$is_expanded = 0;
+                    push @stack, $clone;
+                }
 
-				my $clone = $ce->clone();
+                last;
+            }
+            elsif ( $value->isa('Farly::Object') ) {
 
-				if ( $value->matches($COMMENT) ) {
-					
-					$logger->debug( "skipped group comment :\n", $ce->dump(),"\n" );
+                $is_expanded = 0;
 
-					last;
-				}
-				if ( $value->matches($VIP) ) {
+                my $clone = $ce->clone();
 
-					$self->_expand_vip( $key, $clone, $value );
-				}
-				elsif ( $value->matches($SERVICE) ) {
-					
-					$self->_expand_service( $clone, $value );
-				}
-				elsif ( $value->has_defined("OBJECT") ) {
-					
-					$clone->set( $key, $value->get("OBJECT") );
-				}
-				else {
-					
-					$logger->warn("skipped $ce property $key has no OBJECT\n", $ce->dump() );
+                if ( $value->matches($COMMENT) ) {
 
-					last;
-				}
+                    $logger->debug( "skipped group comment :\n",
+                        $ce->dump(), "\n" );
 
-				push @stack, $clone;
+                    last;
+                }
+                if ( $value->matches($VIP) ) {
 
-				last;
-			}
-		}
+                    $self->_expand_vip( $key, $clone, $value );
+                }
+                elsif ( $value->matches($SERVICE) ) {
 
-		if ($is_expanded) {
-			$self->_set_defaults($ce);
-			$result->add($ce);
-		}
-	}
+                    $self->_expand_service( $clone, $value );
+                }
+                elsif ( $value->has_defined('OBJECT') ) {
 
-	return $result;
+                    $clone->set( $key, $value->get('OBJECT') );
+                }
+                else {
+
+                    $logger->warn( "skipped $ce property $key has no OBJECT\n",
+                        $ce->dump() );
+
+                    last;
+                }
+
+                push @stack, $clone;
+
+                last;
+            }
+        }
+
+        if ($is_expanded) {
+            $self->_set_defaults($ce);
+            $result->add($ce);
+        }
+    }
+
+    return $result;
 }
 
 sub _expand_service {
-	my ( $self, $clone, $service_object ) = @_;
-	my @keys = qw(PROTOCOL SRC_PORT DST_PORT ICMP_TYPE);
-	foreach my $key (@keys) {
-		if ( $service_object->has_defined($key) ) {
-			$clone->set( $key, $service_object->get($key) );
-		}
-	}
-	return;
+    my ( $self, $clone, $service_object ) = @_;
+    my @keys = qw(PROTOCOL SRC_PORT DST_PORT ICMP_TYPE);
+    foreach my $key (@keys) {
+        if ( $service_object->has_defined($key) ) {
+            $clone->set( $key, $service_object->get($key) );
+        }
+    }
+    return;
 }
 
 sub _expand_vip {
-	my ( $self, $key, $clone, $vip_object ) = @_;
+    my ( $self, $key, $clone, $vip_object ) = @_;
 
-	my $logger = get_logger(__PACKAGE__);
-	$logger->debug("processing VIP : $vip_object - key : $key");
+    my $logger = get_logger(__PACKAGE__);
+    $logger->debug("processing VIP : $vip_object - key : $key");
 
-	if ( $key eq "DST_IP" ) {
-		$clone->set( $key, $vip_object->get("REAL_IP") );
-	}
-	elsif ( $key eq "DST_PORT" ) {
-		$clone->set( $key, $vip_object->get("REAL_PORT") );
-	}
-	else {
-		confess "invalid key for VIP\n", "key $key \n",
-		  "rule: ", $clone->dump(), "\n", "vip: ", $vip_object->dump(), "\n";
-	}
+    if ( $key eq 'DST_IP' ) {
+        $clone->set( $key, $vip_object->get('REAL_IP') );
+    }
+    elsif ( $key eq 'DST_PORT' ) {
+        $clone->set( $key, $vip_object->get('REAL_PORT') );
+    }
+    else {
+        confess "invalid key for VIP\n", "key $key \n", "rule: ",
+          $clone->dump(), "\n", "vip: ", $vip_object->dump(), "\n";
+    }
 
-	return;
+    return;
 }
 
 1;
@@ -279,15 +286,15 @@ __END__
 
 =head1 NAME
 
-Farly::Rule::Expander - Convert a firewall rule configuration into a raw rule set
+Farly::Rule::Expander - Convert a firewall rule configuration into an expanded rule set
 
 =head1 DESCRIPTION
 
-Farly::Rule::Expander converts a firewall rule configuration into a raw rule set.
-The raw ruleset is an Farly::Object::List<Farly::Object> containing
+Farly::Rule::Expander converts a firewall rule configuration into a expanded rule set.
+The expanded firewall rule set is an Farly::Object::List<Farly::Object> containing
 all firewall rules.  
 
-A raw rule set has no references to other firewall objects.  The expanded 
+An expanded rule set has no references to other firewall objects.  The expanded 
 firewall rule is for specific packet to firewall rule matching.
 
 =head1 METHODS
@@ -311,7 +318,6 @@ Returns the expanded version of the given firewall rule in the
 provided result container.
 
   $expanded_rule = $rule_expander->expand( $rule );
-
 
 =head1 COPYRIGHT AND LICENCE
 
