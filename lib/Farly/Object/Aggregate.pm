@@ -41,7 +41,32 @@ sub iter {
 
 sub NEXTVAL { $_[0]->() }
 
-sub iterator {
+# iterator over the aggregate identities
+sub id_iterator {
+    my ($self) = @_;
+
+    my @arr = $self->iter();
+    my $i   = 0;
+
+    # the iterator code ref
+    return sub {
+        return undef if ( $i == scalar(@arr) );
+        
+        my $object = Farly::Object->new();
+
+        foreach my $property ( $arr[$i]->get_keys() ) {
+            if ( $property ne '__SET__' ) {
+                $object->set( $property, $arr[$i]->get($property) );
+            }
+        }
+
+        $i++;
+
+        return $object;
+      }
+}
+
+sub set_iterator {
     my ($self) = @_;
 
     my @arr = $self->iter();
@@ -106,6 +131,8 @@ sub groupby {
     # $list will include objects that have defined all @keys
     my $list = $self->_has_defined_keys( \@keys );
 
+    # check list size?
+
     my @sorted = sort {
 
         my $r;
@@ -160,6 +187,9 @@ sub matches {
             return $object->get('__SET__');
         }
     }
+    
+    #return an empty Set on no match
+    return Farly::Object::Set->new();
 }
 
 # input = search object and new __SET__

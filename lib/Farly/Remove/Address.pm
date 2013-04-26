@@ -235,7 +235,7 @@ sub _reference_search {
 }
 
 # Copies the objects in $set into a new ::Set, except for the objects
-# that match $remove equal to value, which are not copied.
+# that match $remove, which are not copied.
 sub _remove_copy {
 	my ( $self, $set, $remove ) = @_;
 

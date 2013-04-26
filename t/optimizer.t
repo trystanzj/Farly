@@ -44,7 +44,7 @@ $expanded_rules->matches( $search, $search_result );
 
 $optimizer = Farly::Rule::Optimizer->new($search_result);
 $optimizer->verbose(1);
-$optimizer->set_icmp();
+$optimizer->set_l3();
 $optimizer->run();
 
 ok( $optimizer->optimized->size() == 15, "optimized" );

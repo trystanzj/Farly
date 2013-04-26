@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 use Farly;
+use Farly::Rule::Expander;
 use Farly::Remove::Rule;
 use Farly::Template::Cisco;
 use Test::Simple tests => 1;
@@ -13,24 +14,33 @@ my $path = $volume.$dir;
 my $importer = Farly->new();
 my $fw = $importer->process( 'ASA', "$path/test.cfg" );
 
-my $remover = Farly::Remove::Rule->new($fw);
-
 my $expander = Farly::Rule::Expander->new($fw);
 
 my $entries = $expander->expand_all();
 
-my $remove_list = Farly::Object::List->new();
+my $rules = Farly::Object::List->new();
 
-my $search = Farly::Object->new();
-$search->set('LINE', Farly::Value::Integer->new('3') );
-$entries->matches( $search, $remove_list );
+my $ce0 = Farly::Object->new();
+$ce0->set('ID', Farly::Value::String->new('outside-in') );
 
-$search->set('LINE', Farly::Value::Integer->new('5') );
-$search->set('DST_IP', Farly::IPv4::Address->new('192.168.2.1') );
+$entries->matches( $ce0, $rules );
 
-$entries->matches( $search, $remove_list );
+my $ce1 = Farly::Object->new();
+$ce1->set('LINE', Farly::Value::Integer->new('3') );
 
-$remover->remove($remove_list);
+my $ce2 = Farly::Object->new();
+$ce2->set('LINE', Farly::Value::Integer->new('5') );
+$ce2->set('DST_IP', Farly::IPv4::Address->new('192.168.2.1') );
+
+foreach my $obj ( $rules->iter() ) {
+    if ($obj->matches($ce1) || $obj->matches($ce2) ) {
+    $obj->set( 'REMOVE', Farly::Value::String->new('RULE') );
+    }
+}
+
+my $remover = Farly::Remove::Rule->new();
+
+$remover->remove($fw, $rules);
 
 my $string;
 my $template = Farly::Template::Cisco->new('ASA', 'OUTPUT' => \$string);

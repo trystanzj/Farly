@@ -46,9 +46,9 @@ $agg->groupby('S1' );
 
 ok ( scalar( $agg->iter() ) == 3, "single key" );
 
-my $it = $agg->iterator();
+my $it = $agg->set_iterator();
 
-ok( ref($it) eq 'CODE', "iterator code ref");
+ok( ref($it) eq 'CODE', "set_iterator code ref");
 
 my $set_count = 0;
 my $object_count = 0;
@@ -58,9 +58,9 @@ while ( my $set = NEXTVAL($it) ) {
     $object_count += $set->size(); 
 }
 
-ok( $set_count == 3, "set iterator" );
+ok( $set_count == 3, "set set_iterator" );
 
-ok( $object_count == 4, "set iterator objects" );
+ok( $object_count == 4, "set set_iterator objects" );
 
 my $id = Farly::Object->new();
 
@@ -80,3 +80,4 @@ $agg->update( $id, $new_set );
 $result_set = $agg->matches( $id );
 ok ( $result_set->equals($new_set), "update" );
 
+# id_iterator tests needed

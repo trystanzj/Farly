@@ -4,167 +4,140 @@ use 5.008008;
 use strict;
 use warnings;
 use Carp;
-use Farly::Rule::Expander;
+use Farly::Object::Aggregate qw(NEXTVAL);
 
 our $VERSION = '0.20';
 
-# one object per firewall
 sub new {
-	my ( $class, $container ) = @_;
+    my ($class) = @_;
 
-	confess "firewall configuration container object required"
-	  unless ( defined($container) );
+    my $self = { RESULT => Farly::Object::List->new(), };
+    bless $self, $class;
 
-	confess "Farly::Object::List object required"
-	  unless ( $container->isa("Farly::Object::List") );
-
-	my $self = {
-		CONFIG => $container,
-		RESULT => Farly::Object::List->new(),
-	};
-	bless $self, $class;
-
-	return $self;
+    return $self;
 }
 
-# given a config container ::List and a ::List of rules to remove
-# modify the configuration to remove the remove rules
-# if the config has a group, then remove the rule with the group
-# and keep the expanded rules in the configuration
-
-sub config { return $_[0]->{CONFIG} }
 sub result { return $_[0]->{RESULT} }
 
-sub _fetch_config_acl {
-	my ( $self, $id ) = @_;
+sub _removes {
+    my ( $self, $list ) = @_;
 
-	my $search = Farly::Object->new();
-	$search->set( 'ENTRY', Farly::Value::String->new('RULE') );
-	$search->set( 'ID',    $id );
+    my $remove = Farly::Object::List->new();
 
-	my $search_result = Farly::Object::List->new();
+    foreach my $rule ( $list->iter() ) {
+        if ( $rule->has_defined('REMOVE') ) {
+            $remove->add($rule);
+        }
+    }
 
-	$self->config->matches( $search, $search_result );
-
-	return $search_result;
+    return $remove;
 }
 
-sub _has_group {
-	my ( $self, $rule_object ) = @_;
+sub _keeps {
+    my ( $self, $list ) = @_;
 
-	my $GROUP = Farly::Object::Ref->new();
-	$GROUP->set( 'ENTRY', Farly::Value::String->new('GROUP') );
+    my $keep = Farly::Object::List->new();
 
-	foreach my $property ( $rule_object->get_keys() ) {
-		if ( $rule_object->get($property)->isa('Farly::Object::Ref') ) {
-			if ( $rule_object->get($property)->matches($GROUP) ) {
-				return 1;
-			}
-		}
-	}
+    foreach my $rule ( $list->iter() ) {
+        if ( ! $rule->has_defined('REMOVE') ) {
+            $keep->add($rule);
+        }
+    }
+
+    return $keep;
 }
 
-sub _is_unique {
-	my ( $self, $rule_set, $id ) = @_;
+# convert an object into a reference object
+sub _create_ref {
+    my ( $self, $object ) = @_;
 
-	foreach my $object ( $rule_set->iter() ) {
-		if ( !$object->get('ID')->equals($id) ) {
-			confess "more than one rule $id ", $object->get('ID')->as_string(),
-			  "\n";
-		}
-	}
+    my $ref = Farly::Object::Ref->new();
+    $ref->set( 'ENTRY', $object->get('ENTRY') );
+    $ref->set( 'ID',    $object->get('ID') );
+
+    return $ref;
 }
 
 sub _is_expanded {
-	my ( $self, $rule_set ) = @_;
+    my ( $self, $list ) = @_;
 
-	foreach my $object ( $rule_set->iter() ) {
-		if ( $self->_has_group($object) ) {
-			confess "ruleset not expanded ", $object->get('ID')->as_string(),
-			  "\n";
-		}
-	}
+    foreach my $object ( $list->iter() ) {
+        foreach my $property ( $object->get_keys() ) {
+            if ( $object->get($property)->isa('Farly::Object') ) {
+                confess "an expanded rule set is required";
+            }
+        }
+    }
+}
+
+sub _is_unique {
+    my ( $self, $id, $list ) = @_;
+
+    foreach my $object ( $list->iter() ) {
+        if ( !$object->matches($id) ) {
+            die "list is not unique";
+        }
+    }
+}
+
+sub _aggregate {
+    my ( $self, $list ) = @_;
+    my $agg = Farly::Object::Aggregate->new( $list );
+    $agg->groupby( 'ENTRY', 'ID', 'LINE' );
+    return $agg;
+}
+
+sub _remove_config {
+    my ( $self, $list, $id ) = @_;
+
+    foreach my $object ( $list->iter() ) {
+        if ( $object->matches($id) ) {
+            my $clone = $object->clone();
+            $clone->set( 'REMOVE', Farly::Value::String->new('RULE') );
+            $clone->delete_key('LINE');
+            $self->result->add($clone);
+            return;
+        }
+    }
 }
 
 sub remove {
-	my ( $self, $remove_list ) = @_;
+    my ( $self, $config, $list ) = @_;
 
-	# $remove_list isa Farly::Object::List of expanded Rules (not config rules)
-	confess "remove list of rules container object required"
-	  unless ( defined($remove_list) );
+    my $rule_id = $self->_create_ref( $list->[0] );
 
-	confess "Farly::Object::List object required"
-	  unless ( $remove_list->isa("Farly::Object::List") );
+    # validate list
+    $self->_is_unique( $rule_id, $list );
+    $self->_is_expanded($list);
 
-	#$remove_list must contain one expanded rule set only
-	my $id = $remove_list->[0]->get('ID');
-	$self->_is_unique( $remove_list, $id );
+    # get the config rules
+    my $cfg_rules = Farly::Object::List->new();
+    $config->matches( $rule_id, $cfg_rules );
 
-	#$remove_list must be expanded rules, it must not contain groups
-	$self->_is_expanded($remove_list);
+    # remove_agg will have the list of entries to be removed
+    my $remove_agg = $self->_aggregate( $self->_removes($list) );
 
-	# get the configuration rule set
-	my $config_list = $self->_fetch_config_acl($id);
+    # keep_agg will have the set of entries which need to be kept
+    my $keep_agg = $self->_aggregate( $self->_keeps($list) );
 
-	# create indexes by LINE,  'LINE NO.' => ::Set
-	my $config_index = Object::KVC::Index->new($config_list);
-	$config_index->make_index("LINE");
+    my $it = $remove_agg->id_iterator();
 
-	my $removed_index = Object::KVC::Index->new($remove_list);
-	$removed_index->make_index("LINE");
+    while ( my $id = NEXTVAL($it) ) {
 
-	# get an array of the rule line numbers that have errors
-	my @remove_rules = sort { $a <=> $b } keys %{ $removed_index->get_index };
+        # the entries which are being kept
+        my $keep_set = $keep_agg->matches($id);
+        
+        foreach my $keep_rule ( $keep_set->iter() ) {
+            $self->result->add($keep_rule);
+        }
 
-	# create a rule expander object
-	my $rule_expander = Farly::Rule::Expander->new( $self->config );
-
-	# check each config rule to see if it uses a group or not
-	foreach my $line_number (@remove_rules) {
-
-		# get the config rule
-		my $config_rule_set = $config_index->fetch($line_number);
-		if ( $config_rule_set->size != 1 ) {
-			confess "config rule set size not 1. that was unexpected!";
-		}
-		my $config_rule = $config_rule_set->[0];
-
-		#get the rule entries that need to be removed from the config
-		my $remove_set = $removed_index->fetch($line_number);
-
-		#if the config rule has an object-group then replace the config
-		#rule with all expanded rule entries that need to be kept
-		if ( $self->_has_group($config_rule) ) {
-
-			# clone and expand the config rule, putting the rule
-			# entries into a ::Set
-			my $clone = $config_rule->clone();
-
-			my $exp_config_rule_set = Farly::Object::Set->new();
-			$rule_expander->expand( $clone, $exp_config_rule_set );
-
-			# ::Set difference is all rule entries in the config that
-			#  are not in remove, i.e. that need to be kept
-			my $diff = $exp_config_rule_set->difference($remove_set);
-
-			# the rule entries to be kept are added to the config in raw form
-			# diff is empty if the entire config rule needs to be removed
-			foreach my $keep_object ( $diff->iter() ) {
-				$self->result->add($keep_object);
-			}
-
-		}
-
-		#the running config rule had an error, so remove it
-		#use the expanded rule entries instead
-		my $r = $config_rule->clone();
-		$r->set( 'REMOVE', Farly::Value::String->new('RULE') );
-		$r->delete_key('LINE');
-		$self->result->add($r);
-	}
+        # the config rule being removed
+        $self->_remove_config( $cfg_rules, $id );
+    }
 }
 
 1;
+
 __END__
 
 =head1 NAME
@@ -182,40 +155,32 @@ and the expanded firewall rule entries are used in the configuration.
 
 =head1 METHODS
 
-=head2 new( $list<Farly::Object::List<Farly::Object>> )
+=head2 new( $list )
 
-The constructor. A firewall configuration $list must be provided.
+The constructor.
 
-  $rule_remover = Farly::Remove::Rule->new( $list );
+=head2 remove( $config<Farly::Object::List>, $expanded_rules<Farly::Object::List> )
 
-=head2 remove( $list<Farly::Object::List<Farly::Object>> )
+Resolves removes the list of firewall rule entries from the 
+given Farly firewall $config model.
 
-Resolves dependencies and removes the list of firewall rule entries from the 
-current Farly firewall model.
+  $remover->remove( $config, $expanded_rules );
 
-  $remover->remove( $list );
+Object being removed from the config must have the 'REMOVE' property
+set within $expanded_rules.
 
 =head2 result()
 
-Returns an Farly::Object::Set<Farly::Object> object containing all objects
+Returns an Farly::Object::List<Farly::Object> object containing all objects
 which need to be removed or added to the current Farly firewall model in order
-to remove all references to the list of removed firewall rule entries.
+to remove all references to the removed firewall rule entries.
 
   $remove_result_set = $remover->result();
-
-=head2 config()
-
-Return the current configuration Farly::Object::List<Farly::Object> object.
-
-  $fw_config = $remover->config();
-  
-After calling remove() this will be the up to date configuration, with configuration
-rules removed and expanded rule entries added in.
 
 =head1 COPYRIGHT AND LICENCE
 
 Farly::Remove::Rule
-Copyright (C) 2012  Trystan Johnson
+Copyright (C) 2012-2013  Trystan Johnson
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
