@@ -47,11 +47,9 @@ To install this module type the following:
 
 DEPENDENCIES
 
-Object::KVC
 Parse::RecDescent
 Log::Log4perl
-Template	
-UNIVERSAL::DOES
+Template
 Carp
 Scalar::Util
 IO::File
@@ -59,7 +57,8 @@ File::Spec
 
 DEVICES SUPPORTED
 
-Cisco ASA 7.2 and up.
+Cisco ASA 7.2 - 8.x.
+Cisco FWSM 3.x 
 
 LIMITATIONS
 
@@ -69,6 +68,7 @@ LIMITATIONS
 - NAT configurations are not modeled.
 - No IPv6 support
 - The Cisco "ne" port operator is not currently supported.
+- Cisco's "identity firewall" feature is not currently supported.
 
 BUGS
 
