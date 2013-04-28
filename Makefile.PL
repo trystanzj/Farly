@@ -18,7 +18,6 @@ WriteMakefile(
 	CONFIGURE_REQUIRES => { 'ExtUtils::MakeMaker' => 6.62, },
 	PREREQ_PM          => {
 		#non-core
-		'Object::KVC'       => 0.04,
 		'Parse::RecDescent' => 1.965001,
 		'Log::Log4perl'     => 1.35,
 		'Template'          => 2.22,
