@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::Simple tests => 17;
+use Test::Simple tests => 22;
 
 use Farly::IPv4::Range;
 use Farly::IPv4::Address;
