@@ -287,13 +287,25 @@ Return an array of aggregate objects.
 
   @objects = $aggregate->iter();
 
-=head2 iterator()
+=head2 set_iterator()
 
-Return an iterator code reference.
+Return an iterator code reference to an iterator function which iterates over
+all __SET__'s defined in the aggregate. The __SET__'s contain objects with the
+same identity as defined by the 'groupby' method.
 
   use Farly::Object::Aggregate qw(NEXTVAL);
   
-  $it = $aggregate->iterator()
+  $it = $aggregate->set_iterator()
+
+=head2 id_iterator()
+
+Return an iterator code reference to an iterator function which iterates over
+all identities defined in the aggregate. The identities are Farly::Objects with
+the identity as defined by the 'groupby' method.
+
+  use Farly::Object::Aggregate qw(NEXTVAL);
+  
+  $it = $aggregate->id_iterator()
 
 =head1 FUNCTIONS
 
@@ -308,7 +320,7 @@ Advance the iterator to the next __SET__
 =head1 COPYRIGHT AND LICENCE
 
 Farly::Object::Aggregate
-Copyright (C) 2012  Trystan Johnson
+Copyright (C) 2013  Trystan Johnson
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
