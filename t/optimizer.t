@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use File::Spec;
-use Test::Simple tests => 7;
+use Test::Simple tests => 9;
 use Farly;
 use Farly::Rule::Optimizer;
 use Farly::Rule::Expander;
@@ -17,7 +17,7 @@ eval { my $optimizer1 = Farly::Rule::Optimizer->new($container); };
 
 ok( $@ =~ /found invalid object/, "not expanded" );
 
-ok( $container->size() == 45, "import" );
+ok( $container->size() == 48, "import" );
 
 my $rule_expander = Farly::Rule::Expander->new($container);
 
@@ -27,7 +27,7 @@ ok( defined($rule_expander), "constructor" );
 
 my $expanded_rules = $rule_expander->expand_all();
 
-ok( $expanded_rules->size == 17, "expand_all" );
+ok( $expanded_rules->size == 20, "expand_all" );
 
 my $optimizer;
 
@@ -43,17 +43,28 @@ my $search_result = Farly::Object::List->new();
 $expanded_rules->matches( $search, $search_result );
 
 $optimizer = Farly::Rule::Optimizer->new($search_result);
-$optimizer->verbose(1);
-$optimizer->set_l3();
+#$optimizer->verbose(1);
 $optimizer->run();
 
-ok( $optimizer->optimized->size() == 15, "optimized" );
+ok( $optimizer->optimized->size() == 18, "optimized" );
 
 ok( $optimizer->removed->size() == 1, "removed" );
 
-my $t = Farly::Template::Cisco->new('ASA');
+my $l4_optimized = $optimizer->rules();
 
-foreach my $o ( $optimizer->optimized->iter() ) {
-   $t->as_string( $o );
-   print "\n"; 
-}
+$optimizer = Farly::Rule::Optimizer->new($l4_optimized);
+#$optimizer->verbose(1);
+$optimizer->set_l3();
+$optimizer->run();
+
+ok( $optimizer->optimized->size() == 17, "l3 mode - optimized" );
+
+my $l3_optimized = $optimizer->rules();
+
+$optimizer = Farly::Rule::Optimizer->new($l3_optimized);
+#$optimizer->verbose(1);
+$optimizer->set_icmp();
+$optimizer->run();
+
+ok( $optimizer->optimized->size() == 14, "icmp mode - optimized" );
+

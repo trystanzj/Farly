@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::Simple tests => 9;
+use Test::Simple tests => 10;
 
 use Farly::Object::List;
 use Farly::Object;
@@ -80,4 +80,12 @@ $agg->update( $id, $new_set );
 $result_set = $agg->matches( $id );
 ok ( $result_set->equals($new_set), "update" );
 
-# id_iterator tests needed
+my $id_it = $agg->id_iterator();
+
+my $id_count = 0;
+
+while ( my $obj = NEXTVAL($id_it) ) {
+    $id_count++; 
+}
+
+ok ( $id_count == 3, "id iterator" );
