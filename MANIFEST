@@ -20,6 +20,10 @@ lib/Farly/IPv4/Network.pm
 lib/Farly/IPv4/Object.pm
 lib/Farly/IPv4/Range.pm
 lib/Farly/Log/Farly.conf
+lib/Farly/Object/Aggregate.pm
+lib/Farly/Object/List.pm
+lib/Farly/Object/Ref.pm
+lib/Farly/Object/Set.pm
 lib/Farly/Opts/Search.pm
 lib/Farly/Remove/Address.pm
 lib/Farly/Remove/Rule.pm
@@ -33,10 +37,11 @@ lib/Farly/Transport/PortGT.pm
 lib/Farly/Transport/PortLT.pm
 lib/Farly/Transport/PortRange.pm
 lib/Farly/Transport/Protocol.pm
+lib/Farly/Value/Integer.pm
+lib/Farly/Value/String.pm
 lib/Farly/Builder.pm
 lib/Farly/Director.pm
-lib/Farly/Optimizer.pm
-lib/Farly/Rules.pm
+lib/Farly/Object.pm
 lib/Farly.pm
 t/asa_Annotator.t
 t/asa_Builder.t
@@ -55,6 +60,10 @@ t/ipv4_address.t
 t/ipv4_icmptype.t
 t/ipv4_network.t
 t/ipv4_range.t
+t/object_aggregate.t
+t/object_ref.t
+t/object_set.t
+t/object.t
 t/optimizer.t
 t/pod.t
 t/remove_address.t
@@ -65,3 +74,5 @@ t/template_cisco_asa.t
 t/test.cfg
 t/transport_port.t
 t/transport_protocol.t
+t/value_integer.t
+t/value_string.t
