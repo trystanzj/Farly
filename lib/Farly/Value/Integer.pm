@@ -8,71 +8,71 @@ use Carp;
 our $VERSION = '0.05';
 
 sub new {
-	my ( $class, $number ) = @_;
+    my ( $class, $number ) = @_;
 
-	confess "integer required" 
-	  unless defined($number);
+    confess "integer required"
+      unless defined($number);
 
-	$number =~ s/^\s+|\s+$//g;
+    $number =~ s/^\s+|\s+$//g;
 
-	confess "not an integer"
-	  unless ( $number =~ /^\d+$/ );
+    confess "not an integer"
+      unless ( $number =~ /^\d+$/ );
 
-	return bless( \$number, $class );
+    return bless( \$number, $class );
 }
 
-sub number { return ${$_[0]} }
+sub number { return ${ $_[0] } }
 
-sub as_string { return ${$_[0]} }
+sub as_string { return ${ $_[0] } }
 
 sub equals {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa('Farly::Value::Integer') ) {
-		return $self->number() == $other->number();
-	}
+    if ( $other->isa('Farly::Value::Integer') ) {
+        return $self->number() == $other->number();
+    }
 }
 
 sub contains {
-	my ( $self, $other ) = @_;
-	return $self->equals($other);
+    my ( $self, $other ) = @_;
+    return $self->equals($other);
 }
 
 sub intersects {
-	my ( $self, $other ) = @_;
-	return $self->equals($other);
+    my ( $self, $other ) = @_;
+    return $self->equals($other);
 }
 
 sub compare {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa('Farly::Value::Integer') ) {
-		return $self->number() <=> $other->number();
-	}
+    if ( $other->isa('Farly::Value::Integer') ) {
+        return $self->number() <=> $other->number();
+    }
 }
 
 sub gt {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa('Farly::Value::Integer') ) {
-		return $self->number() > $other->number();
-	}
+    if ( $other->isa('Farly::Value::Integer') ) {
+        return $self->number() > $other->number();
+    }
 }
 
 sub lt {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa('Farly::Value::Integer') ) {
-		return $self->number() < $other->number();
-	}
+    if ( $other->isa('Farly::Value::Integer') ) {
+        return $self->number() < $other->number();
+    }
 }
 
 sub incr {
-	${$_[0]}++;
+    ${ $_[0] }++;
 }
 
 sub decr {
-	${$_[0]}--;
+    ${ $_[0] }--;
 }
 
 1;

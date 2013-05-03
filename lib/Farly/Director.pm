@@ -9,60 +9,58 @@ use Log::Log4perl qw(get_logger);
 our $VERSION = '0.20';
 
 sub new {
-	my $class  = shift;
+    my $class = shift;
 
-	my $self   = {
-		FILE    => undef,
-		BUILDER => undef,
-	};
-	bless( $self, $class );
+    my $self = {
+        FILE    => undef,
+        BUILDER => undef,
+    };
+    bless( $self, $class );
 
-	my $logger = get_logger(__PACKAGE__);
-	$logger->info("$self NEW ");
-
-	return $self;
+    my $logger = get_logger(__PACKAGE__);
+    $logger->info("$self NEW ");
+    return $self;
 }
 
 sub set_file {
-	my ( $self, $file ) = @_;
+    my ( $self, $file ) = @_;
 
-	$file->isa('IO::File') 
-	  or confess "an IO::File object is required";
-	
-	$self->{FILE} = $file;
+    $file->isa('IO::File')
+      or confess "an IO::File object is required";
 
-	my $logger = get_logger(__PACKAGE__);
-	$logger->info( "$self SET FILE TO ", $self->{FILE} );
+    $self->{FILE} = $file;
+
+    my $logger = get_logger(__PACKAGE__);
+    $logger->info( "$self SET FILE TO ", $self->{FILE} );
 }
 
 sub file {
-	return $_[0]->{FILE};
+    return $_[0]->{FILE};
 }
 
 sub set_builder {
-	my ( $self, $builder ) = @_;
+    my ( $self, $builder ) = @_;
 
-	$builder->isa('Farly::Builder') 
-		or confess " A Farly::Builder object is required ";		
-	
-	$self->{BUILDER} = $builder;
-	
-	my $logger  = get_logger(__PACKAGE__);	
-	$logger->info( "$self SET BUILDER TO ", $self->{BUILDER} );
+    $builder->isa('Farly::Builder')
+      or confess " A Farly::Builder object is required ";
+
+    $self->{BUILDER} = $builder;
+
+    my $logger = get_logger(__PACKAGE__);
+    $logger->info( "$self SET BUILDER TO ", $self->{BUILDER} );
 }
 
 sub builder {
-	return $_[0]->{BUILDER};
+    return $_[0]->{BUILDER};
 }
 
 sub run {
-	my ( $self ) = @_;
+    my ($self) = @_;
 
-	$self->builder()->set_file( $self->file() );
-	
-	$self->builder()->run();
-	
-	return $self->builder()->result();
+    $self->builder()->set_file( $self->file() );
+
+    $self->builder()->run();
+    return $self->builder()->result();
 }
 
 1;

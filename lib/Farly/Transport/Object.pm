@@ -7,81 +7,76 @@ use warnings;
 our $VERSION = '0.20';
 
 sub size {
-	return $_[0]->last - $_[0]->first;
+    return $_[0]->last - $_[0]->first;
 }
 
 sub equals {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa('Farly::Transport::Object') ) {
+    if ( $other->isa('Farly::Transport::Object') ) {
 
-		return $self->first == $other->first
-		  && $self->last == $other->last;
-	}
+        return $self->first == $other->first
+          && $self->last == $other->last;
+    }
 }
 
 sub contains {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa('Farly::Transport::Object') ) {
+    if ( $other->isa('Farly::Transport::Object') ) {
 
-		return $self->first <= $other->first
-		  && $self->last >= $other->last;
-	}
+        return $self->first <= $other->first
+          && $self->last >= $other->last;
+    }
 }
 
 sub intersects {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa('Farly::Transport::Object') ) {
+    if ( $other->isa('Farly::Transport::Object') ) {
 
-		return ( $self->first <= $other->first
-		  && $other->first <= $self->last )
-		||
-		( $self->first <= $other->last
-		  && $other->last <= $self->last )
-		||
-		( $other->first <= $self->first
-		  && $self->first <= $other->last );
-	}
+        return ( $self->first <= $other->first && $other->first <= $self->last )
+          || ( $self->first <= $other->last && $other->last <= $self->last )
+          || ( $other->first <= $self->first && $self->first <= $other->last );
+    }
 }
 
 sub gt {
-	my ( $self, $other ) = @_;
-	
-	if ( $other->isa('Farly::Transport::Object') ) {
+    my ( $self, $other ) = @_;
 
-		return $self->first > $other->last;
-	}
+    if ( $other->isa('Farly::Transport::Object') ) {
+
+        return $self->first > $other->last;
+    }
 }
 
 sub lt {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa('Farly::Transport::Object') ) {
+    if ( $other->isa('Farly::Transport::Object') ) {
 
-		return $self->last < $other->first;
-	}
+        return $self->last < $other->first;
+    }
 }
 
 sub adjacent {
-	my ( $self, $other ) = @_;
-	
-	if ( $other->isa('Farly::Transport::Object') ) {
+    my ( $self, $other ) = @_;
 
-		return $self->size() == $other->size()
-		  && ( $self->last + 1 ) == $other->first;
-	}
+    if ( $other->isa('Farly::Transport::Object') ) {
+
+        return $self->size() == $other->size()
+          && ( $self->last + 1 ) == $other->first;
+    }
 }
 
 sub compare {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa('Farly::Transport::Object') ) {
+    if ( $other->isa('Farly::Transport::Object') ) {
 
-		return ( $self->first() <=> $other->first()
-          || $other->last() <=> $self->last() );
-	}
+        return ( $self->first() <=> $other->first()
+              || $other->last() <=> $self->last() );
+    }
 }
 
 1;

@@ -23,22 +23,22 @@ use Farly::Transport::Protocol;
 our $VERSION = '0.20';
 
 sub new {
-	my ( $class ) = @_;
+    my ($class) = @_;
 
-	carp "constructor arguments not supported; use 'set'"
-	  if ( scalar(@_) > 1 ); 
+    carp "constructor arguments not supported; use 'set'"
+      if ( scalar(@_) > 1 );
 
-	return bless {}, $class;
+    return bless {}, $class;
 }
 
 sub set {
-	my ( $self, $key, $value ) = @_;
+    my ( $self, $key, $value ) = @_;
 
-	confess "invalid key"
-	  unless ( defined($key) && length($key) );
+    confess "invalid key"
+      unless ( defined($key) && length($key) );
 
-	confess "a value object must be defined"
-	  unless ( defined($value) );
+    confess "a value object must be defined"
+      unless ( defined($value) );
 
     # reference object, or container (i.e. $self is tree node)
     if ( $value->isa('Farly::Object') || $value->isa('Farly::Object::Set') ) {
@@ -47,151 +47,153 @@ sub set {
     }
 
     # or value object
-	confess "$value is not a valid value object type"
-	  unless ( $value->can('equals') 
-	  			&& $value->can('contains')
-	  			&& $value->can('intersects')
-                && $value->can('compare')
-	  			&& $value->can('as_string') );
- 
-	$self->{$key} = $value;
+    confess "$value is not a valid value object type"
+      unless ( $value->can('equals')
+        && $value->can('contains')
+        && $value->can('intersects')
+        && $value->can('compare')
+        && $value->can('as_string') );
+
+    $self->{$key} = $value;
 }
 
 sub get {
-	my ( $self, $key ) = @_;
-	if ( defined( $self->{$key} ) ) {
-		return $self->{$key};
-	}
-	else {
-		confess $self->dump(),"\n undefined key $key. use 'has_defined' to
+    my ( $self, $key ) = @_;
+    if ( defined( $self->{$key} ) ) {
+        return $self->{$key};
+    }
+    else {
+        confess $self->dump(), "\n undefined key $key. use 'has_defined' to
 		  check for the existance of a key/value pair";
-	}
+    }
 }
 
 sub has_defined {
-	my ( $self, $key ) = @_;
-	return 1 if defined $self->{$key};
+    my ( $self, $key ) = @_;
+    return 1 if defined $self->{$key};
 }
 
 sub delete_key {
-	my ( $self, $key ) = @_;
-	delete $self->{$key}
-	  or carp "key $key delete error";
+    my ( $self, $key ) = @_;
+    delete $self->{$key}
+      or carp "key $key delete error";
 }
 
 sub get_keys {
-	return keys %{ $_[0] };
+    return keys %{ $_[0] };
 }
 
 sub equals {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa(__PACKAGE__) ) {
+    if ( $other->isa(__PACKAGE__) ) {
 
-		if ( scalar( keys %$self ) != scalar( keys %$other ) ) {
-			return undef;
-		}
-	
-		return $self->matches($other);
-	}
+        if ( scalar( keys %$self ) != scalar( keys %$other ) ) {
+            return undef;
+        }
+
+        return $self->matches($other);
+    }
 }
 
 sub matches {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa(__PACKAGE__) ) {
+    if ( $other->isa(__PACKAGE__) ) {
 
-		foreach my $key ( keys %$other ) {
-			if ( !defined( $self->{$key} ) ) {
-				return undef;
-			}
-			if ( ! $self->{$key}->equals( $other->{$key} ) ) {
-				return undef;
-			}
-		}
-		return 1;
-	}
+        foreach my $key ( keys %$other ) {
+            if ( !defined( $self->{$key} ) ) {
+                return undef;
+            }
+            if ( !$self->{$key}->equals( $other->{$key} ) ) {
+                return undef;
+            }
+        }
+        return 1;
+    }
 }
 
 sub intersects {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa(__PACKAGE__) ) {
+    if ( $other->isa(__PACKAGE__) ) {
 
-		foreach my $key ( keys %$other ) {
-			if ( !defined( $self->{$key} ) ) {
-				return undef;
-			}
-			if ( ! $self->{$key}->intersects( $other->{$key} ) ) {
-				return undef;
-			}
-		}
-	
-		return 1;
-	}
+        foreach my $key ( keys %$other ) {
+            if ( !defined( $self->{$key} ) ) {
+                return undef;
+            }
+            if ( !$self->{$key}->intersects( $other->{$key} ) ) {
+                return undef;
+            }
+        }
+
+        return 1;
+    }
 }
 
 sub contains {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa(__PACKAGE__) ) {
+    if ( $other->isa(__PACKAGE__) ) {
 
-		foreach my $key ( keys %$other ) {
-			if ( !defined( $self->{$key} ) ) {
-				return undef;
-			}
-			if ( ! $self->{$key}->contains( $other->{$key} ) ) {
-				return undef;
-			}
-		}
-	
-		return 1;
-	}
+        foreach my $key ( keys %$other ) {
+            if ( !defined( $self->{$key} ) ) {
+                return undef;
+            }
+            if ( !$self->{$key}->contains( $other->{$key} ) ) {
+                return undef;
+            }
+        }
+
+        return 1;
+    }
 }
 
 sub contained_by {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa(__PACKAGE__) ) {
+    if ( $other->isa(__PACKAGE__) ) {
 
-		foreach my $key ( keys %$other ) {
-			if ( !defined( $self->{$key} ) ) {
-				return undef;
-			}
-			if ( ! $other->{$key}->contains( $self->{$key} ) ) {
-				return undef;
-			}
-		}
-	
-		return 1;
-	}
+        foreach my $key ( keys %$other ) {
+            if ( !defined( $self->{$key} ) ) {
+                return undef;
+            }
+            if ( !$other->{$key}->contains( $self->{$key} ) ) {
+                return undef;
+            }
+        }
+
+        return 1;
+    }
 }
 
 sub clone {
-	my ($self) = @_;
-	my %clone = %$self;
-	return bless( \%clone, ref $self ) ;
+    my ($self) = @_;
+    my %clone = %$self;
+    return bless( \%clone, ref $self );
 }
 
 sub as_string {
-	my ($self) = @_;
-	my $string;
-	foreach my $key  ( sort keys %$self ) {
-		$string .= $key . " => " . $self->get($key) . " ";
-	}
-	return $string;
+    my ($self) = @_;
+    my $string;
+    foreach my $key ( sort keys %$self ) {
+        $string .= $key . " => " . $self->get($key) . " ";
+    }
+    return $string;
 }
 
 sub dump {
-	my ($self) = @_;
-	my $string;
-	foreach my $key  ( sort keys %$self ) {
-		$string .= $key . " => " . ref( $self->get($key) ) . " " . $self->get($key)->as_string() . "\n";
-	}
-	return $string;
+    my ($self) = @_;
+    my $string;
+    foreach my $key ( sort keys %$self ) {
+        $string .=
+            $key . " => "
+          . ref( $self->get($key) ) . " "
+          . $self->get($key)->as_string() . "\n";
+    }
+    return $string;
 
 }
-
 
 1;
 __END__

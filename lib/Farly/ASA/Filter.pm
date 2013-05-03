@@ -9,178 +9,179 @@ use Log::Log4perl qw(get_logger);
 our $VERSION = '0.20';
 
 sub new {
-	my ( $class ) = @_;
-	
-	my $self  = {
-		FILE     => undef,
-		PREPARSE => [],
-		OG_INDEX => {},      #object-group to type mapping
-		ACL_ID   => {},      #for inserting line numbers
-	};
-	bless $self, $class;
+    my ($class) = @_;
 
-	my $logger = get_logger(__PACKAGE__);
-	$logger->info("$self NEW");
+    my $self = {
+        FILE     => undef,
+        PREPARSE => [],
+        OG_INDEX => {},      #object-group to type mapping
+        ACL_ID   => {},      #for inserting line numbers
+    };
+    bless $self, $class;
 
-	return $self;
+    my $logger = get_logger(__PACKAGE__);
+    $logger->info("$self NEW");
+
+    return $self;
 }
 
 sub set_file {
-	my ( $self, $file ) = @_;
-	$self->{FILE} = $file;
-	my $logger = get_logger(__PACKAGE__);
-	$logger->info( "$self SET FILE TO ", $self->{FILE} );
+    my ( $self, $file ) = @_;
+    $self->{FILE} = $file;
+    my $logger = get_logger(__PACKAGE__);
+    $logger->info( "$self SET FILE TO ", $self->{FILE} );
 }
 
 sub append {
-	my ( $self, $string ) = @_;
-	defined($string)
-	  or confess " $self attempted to append undefined string to PREPARSE";
-	push @{ $self->{PREPARSE} }, $string;
+    my ( $self, $string ) = @_;
+    defined($string)
+      or confess " $self attempted to append undefined string to PREPARSE";
+    push @{ $self->{PREPARSE} }, $string;
 }
 
 sub run {
-	my ( $self ) = @_;
-	my $file = $self->{FILE};
+    my ($self) = @_;
+    my $file = $self->{FILE};
 
-	my $logger = get_logger(__PACKAGE__);
+    my $logger = get_logger(__PACKAGE__);
 
-	my $interface_options = "nameif|security-level|ip address"; #shutdown needed
-	my $object_options    = "host|range|subnet|service";
-	my $group_options     = "network-object|port-object|group-object|protocol-object|description|icmp-object|service-object";
-	my $unsupported_acl_type = "ethertype|standard|webtype";
-	
-	while ( my $line = $file->getline() ) {
+    my $interface_options = "nameif|security-level|ip address"; #shutdown needed
+    my $object_options    = "host|range|subnet|service";
+    my $group_options     = "network-object|port-object|group-object|protocol-object|description|icmp-object|service-object";
+    my $unsupported_acl_type = "ethertype|standard|webtype";
 
-		$logger->debug("$self SCAN $line");
+    while ( my $line = $file->getline() ) {
 
-		if ( $line =~ /^hostname (\S+)/ ) {
-			$self->append($line);
-			next;
-		}
-		if ( $line =~ /^name (\S+) (\S+)/ ) {
-			$self->append($line);
-			next;
-		}
-		if ( $line =~ /^interface/ ) {
-			$self->_process_section( $line, $interface_options, 1 );
-			next;
-		}
-		if ( $line =~ /^object\s/ ) {
-			$self->_process_section( $line, $object_options );
-			next;
-		}
-		if ( $line =~ /^object-group (\S+) (\S+)/ ) {
-			my $type = $1;
-			my $id = $2;
-			$self->{OG_INDEX}->{$id} = $type;
-			$logger->debug("added OG_INDEX $id $type");
-			$self->_process_section( $line, $group_options );
-			next;
-		}
-		if ( $line =~ /^access-list (.*) $unsupported_acl_type/ ) {
-			$logger->info("$self SKIPPED access-list '$line'");
-			next;
-		}
+        $logger->debug("$self SCAN $line");
+
+        if ( $line =~ /^hostname (\S+)/ ) {
+            $self->append($line);
+            next;
+        }
+        if ( $line =~ /^name (\S+) (\S+)/ ) {
+            $self->append($line);
+            next;
+        }
+        if ( $line =~ /^interface/ ) {
+            $self->_process_section( $line, $interface_options, 1 );
+            next;
+        }
+        if ( $line =~ /^object\s/ ) {
+            $self->_process_section( $line, $object_options );
+            next;
+        }
+        if ( $line =~ /^object-group (\S+) (\S+)/ ) {
+            my $type = $1;
+            my $id   = $2;
+            $self->{OG_INDEX}->{$id} = $type;
+            $logger->debug("added OG_INDEX $id $type");
+            $self->_process_section( $line, $group_options );
+            next;
+        }
+        if ( $line =~ /^access-list (.*) $unsupported_acl_type/ ) {
+            $logger->info("$self SKIPPED access-list '$line'");
+            next;
+        }
+
 #access-list outside-in line 3 extended permit tcp OG_NETWORK internal OG_SERVICE highports host 192.168.2.1 eq 80
-		if ( $line =~ /^access-list/ ) {
-			my $p_line = $self->_process_acl($line);
-			$logger->debug("$self pre-processed line '$p_line'");
-			$self->append($p_line);
-			next;
-		}
-		if ( $line =~ /^access-group/ ) {
-			$self->append($line);
-			next;
-		}
-		if ( $line =~ /^route/ ) {
-			$self->append($line);
-		}
-	}
+        if ( $line =~ /^access-list/ ) {
+            my $p_line = $self->_process_acl($line);
+            $logger->debug("$self pre-processed line '$p_line'");
+            $self->append($p_line);
+            next;
+        }
+        if ( $line =~ /^access-group/ ) {
+            $self->append($line);
+            next;
+        }
+        if ( $line =~ /^route/ ) {
+            $self->append($line);
+        }
+    }
 
-	return @{ $self->{PREPARSE} };
+    return @{ $self->{PREPARSE} };
 }
 
 sub _process_section {
-	my ( $self, $header, $options, $full_sect ) = @_;
+    my ( $self, $header, $options, $full_sect ) = @_;
 
-	my $logger = get_logger(__PACKAGE__);
+    my $logger = get_logger(__PACKAGE__);
 
-	my $file = $self->{FILE};
-	my $pos  = $file->getpos();
-	my $line = $file->getline();
-	
-	$logger->debug("$header");
-	my $header_pos = $pos;
-	 
-	while ( $line =~ /^\s/ ) {
+    my $file = $self->{FILE};
+    my $pos  = $file->getpos();
+    my $line = $file->getline();
 
-		if ( $line =~ /^\s(?=$options)/ ) {
-			$logger->debug("$line");
-			if ( defined($full_sect) ) {
-				$header .= $line;
-			}
-			else {
-				$self->append( $header . $line );
-			}
-		}
-		else {
-			chomp($line);
-			$logger->warn("unknown option in line '$line'");
-		}
+    $logger->debug("$header");
+    my $header_pos = $pos;
 
-		$pos = $file->getpos();
-		$line = $file->getline();
-	}
-	
-	if ( defined($full_sect) ) {
-		$self->append( $header );
-	}
+    while ( $line =~ /^\s/ ) {
 
-	if ( $pos eq $header_pos ) {
-		$logger->warn("empty section : '$header'");
-	}
-	
-	#should check that this worked?
-	$file->setpos($pos);
+        if ( $line =~ /^\s(?=$options)/ ) {
+            $logger->debug("$line");
+            if ( defined($full_sect) ) {
+                $header .= $line;
+            }
+            else {
+                $self->append( $header . $line );
+            }
+        }
+        else {
+            chomp($line);
+            $logger->warn("unknown option in line '$line'");
+        }
+
+        $pos  = $file->getpos();
+        $line = $file->getline();
+    }
+
+    if ( defined($full_sect) ) {
+        $self->append($header);
+    }
+
+    if ( $pos eq $header_pos ) {
+        $logger->warn("empty section : '$header'");
+    }
+
+    #should check that this worked?
+    $file->setpos($pos);
 }
 
 sub _process_acl {
-	my ( $self, $line ) = @_;
+    my ( $self, $line ) = @_;
 
-	# add line number to configuration access-list
-	if ( $line =~ /^access-list (\S+)/ ) {
-		my $acl_id = $1;
-		if ( !$self->{ACL_ID}->{$acl_id} ) {
-			$self->{ACL_ID}->{$acl_id} = 1;
-		}
-		else {
-			$self->{ACL_ID}->{$acl_id}++;
-		}
-		my $line_count = $self->{ACL_ID}->{$acl_id};
-		$line =~ s/access-list $acl_id/access-list $acl_id line $line_count/;
-	}
+    # add line number to configuration access-list
+    if ( $line =~ /^access-list (\S+)/ ) {
+        my $acl_id = $1;
+        if ( !$self->{ACL_ID}->{$acl_id} ) {
+            $self->{ACL_ID}->{$acl_id} = 1;
+        }
+        else {
+            $self->{ACL_ID}->{$acl_id}++;
+        }
+        my $line_count = $self->{ACL_ID}->{$acl_id};
+        $line =~ s/access-list $acl_id/access-list $acl_id line $line_count/;
+    }
 
-	# translate "object-group" to OG_<TYPE> format
-	if ( $line =~ /object-group/ ) {
+    # translate "object-group" to OG_<TYPE> format
+    if ( $line =~ /object-group/ ) {
 
-		my @lineArr = split( /\s+/, $line );
+        my @lineArr = split( /\s+/, $line );
 
-		while (@lineArr) {
-			my $string = shift @lineArr;
-			if ( $string =~ /object-group/ ) {
-				my $og_ID     = shift @lineArr;
+        while (@lineArr) {
+            my $string = shift @lineArr;
+            if ( $string =~ /object-group/ ) {
+                my $og_ID = shift @lineArr;
 
-				my $og_type = $self->{OG_INDEX}->{$og_ID}
-				  or confess "no object-group type for $og_ID";
-				  
-				my $new_og_type = "OG_" . uc($og_type);
-				$line =~ s/object-group $og_ID/$new_og_type $og_ID/;
-			}
-		}
-	}
+                my $og_type = $self->{OG_INDEX}->{$og_ID}
+                  or confess "no object-group type for $og_ID";
 
-	return $line;
+                my $new_og_type = "OG_" . uc($og_type);
+                $line =~ s/object-group $og_ID/$new_og_type $og_ID/;
+            }
+        }
+    }
+
+    return $line;
 }
 
 1;
@@ -192,7 +193,7 @@ Farly::ASA::Filter - Firewall configuration filter and pre-processor
 
 =head1 DESCRIPTION
 
-Farly::Filter filters out unneeded configuration and pre formats
+Farly::ASA::Filter filters out unneeded configuration and pre formats
 the configuration in a manner as needed by the parser. It accepts
 the configuration in an IO::File object, and stores the pre formatted
 configuration, line by line, into an array.

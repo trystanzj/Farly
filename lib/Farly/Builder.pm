@@ -9,31 +9,31 @@ use Log::Log4perl qw(get_logger);
 our $VERSION = '0.20';
 
 sub new {
-	my $class  = shift;
+    my $class = shift;
 
-	my $self   = {
-		FILE      => undef,
-		CONTAINER => undef,
-	};
-	bless( $self, $class );
+    my $self = {
+        FILE      => undef,
+        CONTAINER => undef,
+    };
+    bless( $self, $class );
 
-	my $logger = get_logger(__PACKAGE__);
-	$logger->info("$self NEW ");
+    my $logger = get_logger(__PACKAGE__);
+    $logger->info("$self NEW ");
 
-	return $self;
+    return $self;
 }
 
 sub set_file {
-	my ($self, $file) = @_;
+    my ( $self, $file ) = @_;
 
-	$self->{FILE} = $file;
+    $self->{FILE} = $file;
 
-	my $logger = get_logger(__PACKAGE__);
-	$logger->info( "$self SET FILE TO ", $self->{FILE} );
+    my $logger = get_logger(__PACKAGE__);
+    $logger->info( "$self SET FILE TO ", $self->{FILE} );
 }
 
 sub file {
-	return $_[0]->{FILE};
+    return $_[0]->{FILE};
 }
 
 1;

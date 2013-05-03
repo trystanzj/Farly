@@ -12,202 +12,201 @@ use Farly::ASA::ProtocolFormatter;
 our $VERSION = '0.20';
 
 sub new {
-	my ( $class, $opts ) = @_;
+    my ( $class, $opts ) = @_;
 
-	defined($opts)
-	  or confess "options hash object required";
+    defined($opts)
+      or confess "options hash object required";
 
-	confess "invalid options type ", ref($opts)
-	  unless ( ref($opts) eq 'HASH' );
-#	print Dumper($opts),"\n";
+    confess "invalid options type ", ref($opts)
+      unless ( ref($opts) eq 'HASH' );
 
-	my $self = {
-		SEARCH => Farly::Object->new(),
-		FILTER => Farly::Object::Set->new(),
-	};
-	bless( $self, $class );
+    my $self = {
+        SEARCH => Farly::Object->new(),
+        FILTER => Farly::Object::Set->new(),
+    };
+    bless( $self, $class );
 
-	my $logger = get_logger(__PACKAGE__);
-	$logger->info("$self NEW ");
+    my $logger = get_logger(__PACKAGE__);
+    $logger->info("$self NEW ");
 
-	$self->_check_opts($opts);
+    $self->_check_opts($opts);
 
-	return $self;
+    return $self;
 }
 
 sub search { return $_[0]->{SEARCH} }
 sub filter { return $_[0]->{FILTER} }
 
 sub _check_opts {
-	my ( $self, $opts ) = @_;
+    my ( $self, $opts ) = @_;
 
-	$self->_id($opts);
-	$self->_action($opts);
-	$self->_protocol($opts);
-	$self->_src_ip($opts);
-	$self->_dst_ip($opts);
-	$self->_src_port($opts);
-	$self->_dst_port($opts);
-	$self->_exclude_src($opts);
-	$self->_exclude_dst($opts);
-	
+    $self->_id($opts);
+    $self->_action($opts);
+    $self->_protocol($opts);
+    $self->_src_ip($opts);
+    $self->_dst_ip($opts);
+    $self->_src_port($opts);
+    $self->_dst_port($opts);
+    $self->_exclude_src($opts);
+    $self->_exclude_dst($opts);
+
 }
 
 sub _id {
-	my ( $self, $opts ) = @_;
+    my ( $self, $opts ) = @_;
 
-	if ( defined $opts->{'id'} ) {
-		$self->search->set( 'ID', Farly::Value::String->new( $opts->{'id'} ) );
-	}
+    if ( defined $opts->{'id'} ) {
+        $self->search->set( 'ID', Farly::Value::String->new( $opts->{'id'} ) );
+    }
 }
 
 sub _action {
-	my ( $self, $opts ) = @_;
+    my ( $self, $opts ) = @_;
 
-	if ( defined $opts->{'action'} ) {
-		my $action = $opts->{'action'};
-		if ( $action !~ /permit|deny/ ) {
-			die "action must be 'permit' or 'deny'";
-		}
-		$self->search->set( 'ACTION', Farly::Value::String->new($action) );
-	}
+    if ( defined $opts->{'action'} ) {
+        my $action = $opts->{'action'};
+        if ( $action !~ /permit|deny/ ) {
+            die "action must be 'permit' or 'deny'";
+        }
+        $self->search->set( 'ACTION', Farly::Value::String->new($action) );
+    }
 }
 
 sub _protocol {
-	my ( $self, $opts ) = @_;
+    my ( $self, $opts ) = @_;
 
-	if ( defined $opts->{'p'} ) {
-		my $protocol = $opts->{'p'};
-		$protocol =~ s/^\s+|\s+$//g;
-		my $protocol_formatter = Farly::ASA::ProtocolFormatter->new();
-		if ( $protocol =~ /^\d+$/ ) {
-			$self->search->set( 'PROTOCOL', Farly::Transport::Protocol->new($protocol) );
-		}
-		elsif ( $protocol =~ /^\S+$/ ) {
-			my $protocol_number = $protocol_formatter->as_integer($protocol);
-			die "unknown protocol '$protocol'\n"
-			  if ( !defined $protocol_number );
-			$self->search->set( 'PROTOCOL', Farly::Transport::Protocol->new($protocol_number) );
-		}
+    if ( defined $opts->{'p'} ) {
+        my $protocol = $opts->{'p'};
+        $protocol =~ s/^\s+|\s+$//g;
+        my $protocol_formatter = Farly::ASA::ProtocolFormatter->new();
+        if ( $protocol =~ /^\d+$/ ) {
+            $self->search->set( 'PROTOCOL', Farly::Transport::Protocol->new($protocol) );
+        }
+        elsif ( $protocol =~ /^\S+$/ ) {
+            my $protocol_number = $protocol_formatter->as_integer($protocol);
+            die "unknown protocol '$protocol'\n"
+              if ( !defined $protocol_number );
+            $self->search->set( 'PROTOCOL', Farly::Transport::Protocol->new($protocol_number) );
+        }
 
-	}
+    }
 }
 
 sub _set_ip {
-	my ( $self, $property, $ip ) = @_;
+    my ( $self, $property, $ip ) = @_;
 
-	if ( $ip =~ /((\d{1,3})((\.)(\d{1,3})){3})\s+((\d{1,3})((\.)(\d{1,3})){3})/ )
-	{
-		$self->search->set( $property, Farly::IPv4::Network->new($ip) );
-	}
-	elsif ( $ip =~ /(\d{1,3}(\.\d{1,3}){3})(\/)(\d+)/ ) {
-		$self->search->set( $property, Farly::IPv4::Network->new($ip) );
-	}
-	elsif ( $ip =~ /((\d{1,3})((\.)(\d{1,3})){3})/ ) {
-		$self->search->set( $property, Farly::IPv4::Address->new($ip) );
-	}
-	elsif ( $ip =~ /\S+/ ) {
-		my @addresses = gethostbyname($ip);
-		if (@addresses) {
-			@addresses = map { inet_ntoa($_) } @addresses[ 4 .. $#addresses ];
-			$self->search->set( $property, Farly::IPv4::Address->new( $addresses[0] ) );
-			print "$ip [", $addresses[0], "]\n";
-		}
-		else {
-			die "Unable to resolve host '$ip'\n";
-		}
-	}
-	else {
-		die "Invalid IP '$ip'\n";
-	}
+    if ( $ip =~ /((\d{1,3})((\.)(\d{1,3})){3})\s+((\d{1,3})((\.)(\d{1,3})){3})/ )
+    {
+        $self->search->set( $property, Farly::IPv4::Network->new($ip) );
+    }
+    elsif ( $ip =~ /(\d{1,3}(\.\d{1,3}){3})(\/)(\d+)/ ) {
+        $self->search->set( $property, Farly::IPv4::Network->new($ip) );
+    }
+    elsif ( $ip =~ /((\d{1,3})((\.)(\d{1,3})){3})/ ) {
+        $self->search->set( $property, Farly::IPv4::Address->new($ip) );
+    }
+    elsif ( $ip =~ /\S+/ ) {
+        my @addresses = gethostbyname($ip);
+        if (@addresses) {
+            @addresses = map { inet_ntoa($_) } @addresses[ 4 .. $#addresses ];
+            $self->search->set( $property, Farly::IPv4::Address->new( $addresses[0] ) );
+            print "$ip [", $addresses[0], "]\n";
+        }
+        else {
+            die "Unable to resolve host '$ip'\n";
+        }
+    }
+    else {
+        die "Invalid IP '$ip'\n";
+    }
 }
 
 sub _src_ip {
-	my ( $self, $opts ) = @_;
+    my ( $self, $opts ) = @_;
 
-	if ( defined $opts->{'s'} ) {
-		my $ip = $opts->{'s'};
-		$self->_set_ip( 'SRC_IP', $ip );
-	}
+    if ( defined $opts->{'s'} ) {
+        my $ip = $opts->{'s'};
+        $self->_set_ip( 'SRC_IP', $ip );
+    }
 }
 
 sub _dst_ip {
-	my ( $self, $opts ) = @_;
+    my ( $self, $opts ) = @_;
 
-	if ( defined $opts->{'d'} ) {
-		my $ip = $opts->{'d'};
-		$self->_set_ip( 'DST_IP', $ip );
-	}
+    if ( defined $opts->{'d'} ) {
+        my $ip = $opts->{'d'};
+        $self->_set_ip( 'DST_IP', $ip );
+    }
 }
 
 sub _set_port {
-	my ( $self, $property, $port ) = @_;
+    my ( $self, $property, $port ) = @_;
 
-	my $port_formatter = Farly::ASA::PortFormatter->new();
+    my $port_formatter = Farly::ASA::PortFormatter->new();
 
-	$port =~ s/^\s+|\s+$//g;
+    $port =~ s/^\s+|\s+$//g;
 
-	if ( $port =~ /^\d+$/ ) {
-		$self->search->set( $property, Farly::Transport::Port->new($port) );
-	}
-	elsif ( $port =~ /^\S+$/ ) {
-		my $port_number = $port_formatter->as_integer($port)
-		  or die "unknown port '$port'\n";
-		$self->search->set( $property, Farly::Transport::Port->new($port_number) );
-	}
+    if ( $port =~ /^\d+$/ ) {
+        $self->search->set( $property, Farly::Transport::Port->new($port) );
+    }
+    elsif ( $port =~ /^\S+$/ ) {
+        my $port_number = $port_formatter->as_integer($port)
+          or die "unknown port '$port'\n";
+        $self->search->set( $property, Farly::Transport::Port->new($port_number) );
+    }
 }
 
 sub _src_port {
-	my ( $self, $opts ) = @_;
+    my ( $self, $opts ) = @_;
 
-	if ( defined $opts->{'sport'} ) {
-		my $port = $opts->{'sport'};
-		$self->_set_port( 'SRC_PORT', $port );
-	}
+    if ( defined $opts->{'sport'} ) {
+        my $port = $opts->{'sport'};
+        $self->_set_port( 'SRC_PORT', $port );
+    }
 }
 
 sub _dst_port {
-	my ( $self, $opts ) = @_;
+    my ( $self, $opts ) = @_;
 
-	if ( defined $opts->{'dport'} ) {
-		my $port = $opts->{'dport'};
-		$self->_set_port( 'DST_PORT', $port );
-	}
+    if ( defined $opts->{'dport'} ) {
+        my $port = $opts->{'dport'};
+        $self->_set_port( 'DST_PORT', $port );
+    }
 }
 
 sub _set_exclude {
-	my ( $self, $property, $file_name ) = @_;
+    my ( $self, $property, $file_name ) = @_;
 
-	my $file = IO::File->new($file_name)
-	  or croak "Please specify a valid file for exclusion\n";
+    my $file = IO::File->new($file_name)
+      or croak "Please specify a valid file for exclusion\n";
 
-	while ( my $line = $file->getline() ) {
-		next if ( $line !~ /\S+/ );
-		my $exlude = Farly::Object->new();
-		$exlude->set( $property, Farly::IPv4::Network->new($line) );
-		$self->filter->add($exlude);
-	}
+    while ( my $line = $file->getline() ) {
+        next if ( $line !~ /\S+/ );
+        my $exlude = Farly::Object->new();
+        $exlude->set( $property, Farly::IPv4::Network->new($line) );
+        $self->filter->add($exlude);
+    }
 
 }
 
 sub _exclude_src {
-	my ( $self, $opts ) = @_;
+    my ( $self, $opts ) = @_;
 
-	if ( defined $opts->{'exclude-src'} ) {
-		my $file_name = $opts->{'exclude-src'};
-		croak "$file_name is not a valid file" unless ( -f $file_name );
-		$self->_set_exclude( 'SRC_IP', $file_name );
-	}
+    if ( defined $opts->{'exclude-src'} ) {
+        my $file_name = $opts->{'exclude-src'};
+        croak "$file_name is not a valid file" unless ( -f $file_name );
+        $self->_set_exclude( 'SRC_IP', $file_name );
+    }
 }
 
 sub _exclude_dst {
-	my ( $self, $opts ) = @_;
+    my ( $self, $opts ) = @_;
 
-	if ( defined $opts->{'exclude-dst'} ) {
-		my $file_name = $opts->{'exclude-dst'};
-		croak "$file_name is not a valid file" unless ( -f $file_name );
-		$self->_set_exclude( 'DST_IP', $file_name );
-	}
+    if ( defined $opts->{'exclude-dst'} ) {
+        my $file_name = $opts->{'exclude-dst'};
+        croak "$file_name is not a valid file" unless ( -f $file_name );
+        $self->_set_exclude( 'DST_IP', $file_name );
+    }
 }
 
 1;

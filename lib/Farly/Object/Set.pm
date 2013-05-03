@@ -8,195 +8,196 @@ use Carp;
 our $VERSION = '0.20';
 
 sub new {
-	my ( $class ) = @_;
-	return bless [], $class; 
+    my ($class) = @_;
+    return bless [], $class;
 }
 
 sub add {
-	my ( $self, $object ) = @_;
+    my ( $self, $object ) = @_;
 
-	croak "Farly::Object object required"
-	  unless ( defined $object );
+    croak "Farly::Object object required"
+      unless ( defined $object );
 
-	croak "Farly::Object object required"
-	  unless ( $object->isa('Farly::Object') );
+    croak "Farly::Object object required"
+      unless ( $object->isa('Farly::Object') );
 
-	push @{$self}, $object;
+    push @{$self}, $object;
 }
 
 sub size {
-	return scalar( @{ $_[0] } );
+    return scalar( @{ $_[0] } );
 }
 
 sub iter {
-	return @{ $_[0] };
+    return @{ $_[0] };
 }
 
 sub equals {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa(__PACKAGE__) ) {
+    if ( $other->isa(__PACKAGE__) ) {
 
-		if ( $self->size() != $other->size() ) {
-			return undef;
-		}
+        if ( $self->size() != $other->size() ) {
+            return undef;
+        }
 
-		foreach my $s ( $self->iter() ) {
-			my $match;
-			foreach my $o ( $other->iter() ) {
-				if ( $s->equals($o) ) {
-					$match = 1;
-				}
-			}
-			if ( !$match ) {
-				return undef;
-			}
-		}
+        foreach my $s ( $self->iter() ) {
+            my $match;
+            foreach my $o ( $other->iter() ) {
+                if ( $s->equals($o) ) {
+                    $match = 1;
+                }
+            }
+            if ( !$match ) {
+                return undef;
+            }
+        }
 
-		return 1;
-	}
+        return 1;
+    }
 }
 
 sub contains {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa(__PACKAGE__) ) {
-		
-		foreach my $o ( $other->iter() ) {
-			my $contained;
-			foreach my $s ( $self->iter() ) {
-				if ( $s->contains($o) ) {
-					$contained = 1;
-					last;
-				}
-			}
-			if ( !$contained ) {
-				return undef;
-			}
-		}
-		return 1;
-	}
-	
-	if ( $other->isa('Farly::Object') ) {
-		foreach my $s ( $self->iter() ) {
-			return 1 if ( $s->contains($other) );
-		}
-	}
+    if ( $other->isa(__PACKAGE__) ) {
+
+        foreach my $o ( $other->iter() ) {
+            my $contained;
+            foreach my $s ( $self->iter() ) {
+                if ( $s->contains($o) ) {
+                    $contained = 1;
+                    last;
+                }
+            }
+            if ( !$contained ) {
+                return undef;
+            }
+        }
+        return 1;
+    }
+
+    if ( $other->isa('Farly::Object') ) {
+        foreach my $s ( $self->iter() ) {
+            return 1 if ( $s->contains($other) );
+        }
+    }
 }
 
 sub includes {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa(__PACKAGE__) ) {
+    if ( $other->isa(__PACKAGE__) ) {
 
-		foreach my $o ( $other->iter() ) {
-			my $included;
-			foreach my $s ( $self->iter() ) {
-				if ( $s->matches($o) ) {
-					$included = 1;
-					last;
-				}
-			}
-			if ( !$included ) {
-				return undef;
-			}
-		}
-		return 1;
-	}
+        foreach my $o ( $other->iter() ) {
+            my $included;
+            foreach my $s ( $self->iter() ) {
+                if ( $s->matches($o) ) {
+                    $included = 1;
+                    last;
+                }
+            }
+            if ( !$included ) {
+                return undef;
+            }
+        }
+        return 1;
+    }
 
-	if ( $other->isa('Farly::Object') ) {
-		foreach my $s ( $self->iter() ) {
-			if ( $s->matches($other) ) {
-				return 1;
-			}
-		}
-	}
+    if ( $other->isa('Farly::Object') ) {
+        foreach my $s ( $self->iter() ) {
+            if ( $s->matches($other) ) {
+                return 1;
+            }
+        }
+    }
 }
 
 sub intersects {
-	my ( $self, $other ) = @_;
-	return 1 if ( $self->intersection($other)->size() >= 1 );		
+    my ( $self, $other ) = @_;
+    return 1 if ( $self->intersection($other)->size() >= 1 );
 }
 
 sub intersection {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	confess "Set required"
-	  unless $other->isa(__PACKAGE__);
+    confess "Set required"
+      unless $other->isa(__PACKAGE__);
 
-	my $isect = __PACKAGE__->new();
+    my $isect = __PACKAGE__->new();
 
-	foreach my $s ( $self->iter() ) {
-		foreach my $o ( $other->iter() ) {
-			if ( $s->matches($o) ) {
-				$isect->add($s);
-				last;
-			}
-		}
-	}
+    foreach my $s ( $self->iter() ) {
+        foreach my $o ( $other->iter() ) {
+            if ( $s->matches($o) ) {
+                $isect->add($s);
+                last;
+            }
+        }
+    }
 
-	return $isect;
+    return $isect;
 }
 
 sub union {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	confess "Set required"
-	  unless $other->isa(__PACKAGE__);
+    confess "Set required"
+      unless $other->isa(__PACKAGE__);
 
-	my $union = __PACKAGE__->new();
+    my $union = __PACKAGE__->new();
 
-	foreach my $s ( $self->iter() ) {
-		$union->add($s);
-	}
+    foreach my $s ( $self->iter() ) {
+        $union->add($s);
+    }
 
-	foreach my $o ( $other->iter() ) {
-		if ( !$union->includes($o) ) {
-			$union->add($o);
-		}
-	}
+    foreach my $o ( $other->iter() ) {
+        if ( !$union->includes($o) ) {
+            $union->add($o);
+        }
+    }
 
-	return $union;
+    return $union;
 }
 
 sub disjoint {
-	my ( $self, $other ) = @_;
-	my $isect = $self->intersection($other);
-	return $isect->size() == 0;
+    my ( $self, $other ) = @_;
+    my $isect = $self->intersection($other);
+    return $isect->size() == 0;
 }
 
 sub difference {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	confess "Set required"
-	  unless $other->isa(__PACKAGE__);
+    confess "Set required"
+      unless $other->isa(__PACKAGE__);
 
-	my $diff = __PACKAGE__->new();
+    my $diff = __PACKAGE__->new();
 
-	foreach my $s ( $self->iter() ) {
-		my $in_other;
-		foreach my $o ( $other->iter() ) {
-			if ( $s->matches( $o ) ) {
-				$in_other = 1;
-				last;
-			}
-		}
-		if ( !$in_other ) {
-			$diff->add($s);
-		}
-	}
+    foreach my $s ( $self->iter() ) {
+        my $in_other;
+        foreach my $o ( $other->iter() ) {
+            if ( $s->matches($o) ) {
+                $in_other = 1;
+                last;
+            }
+        }
+        if ( !$in_other ) {
+            $diff->add($s);
+        }
+    }
 
-	return $diff;
+    return $diff;
 }
 
 sub as_string {
-	my ( $self ) = @_;
-	#carp "called as_string on Set";
-	my $string;
-	foreach my $s ( $self->iter() ) {
-		$string .= $s->as_string()." ";
-	}
-	return $string;
+    my ($self) = @_;
+
+    #carp "called as_string on Set";
+    my $string;
+    foreach my $s ( $self->iter() ) {
+        $string .= $s->as_string() . " ";
+    }
+    return $string;
 }
 
 1;

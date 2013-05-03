@@ -10,69 +10,69 @@ our @ISA     = qw(Farly::IPv4::Object);
 our $VERSION = '0.20';
 
 sub new {
-	my ( $class, $address ) = @_;
+    my ( $class, $address ) = @_;
 
-	confess "IP address required"
-	  unless ( defined($address) );
+    confess "IP address required"
+      unless ( defined($address) );
 
-	carp "invalid constructor arguments"
-	  if ( scalar( @_ ) > 2 );
+    carp "invalid constructor arguments"
+      if ( scalar(@_) > 2 );
 
-	$address =~ s/\s+//g;
+    $address =~ s/\s+//g;
 
-	if ( $address =~ /^((\d{1,3})((\.)(\d{1,3})){3})$/ ) {
-		$address = pack( "C4", split( /\./, $address ) );
-	}
-	elsif ( $address =~ /^\d+$/) {
-		$address = pack( "N", $address);
-	}
-	else {
-		confess "invalid address $address";
-	}
+    if ( $address =~ /^((\d{1,3})((\.)(\d{1,3})){3})$/ ) {
+        $address = pack( "C4", split( /\./, $address ) );
+    }
+    elsif ( $address =~ /^\d+$/ ) {
+        $address = pack( "N", $address );
+    }
+    else {
+        confess "invalid address $address";
+    }
 
-	my $ip = bless( \$address, $class );
+    my $ip = bless( \$address, $class );
 
-	confess "invalid address $address"
-	  unless ( $ip->address() >= 0 && $ip->address() <= 4294967295 );
+    confess "invalid address $address"
+      unless ( $ip->address() >= 0 && $ip->address() <= 4294967295 );
 
-	return $ip;
+    return $ip;
 }
 
 sub address {
-	return unpack( "N", ${$_[0]} );
+    return unpack( "N", ${ $_[0] } );
 }
 
 sub inverse {
-	return ~$_[0]->address() & 4294967295;
+    return ~$_[0]->address() & 4294967295;
 }
 
 sub first {
-	return $_[0]->address();
+    return $_[0]->address();
 }
 
 sub last {
-	return $_[0]->address();
+    return $_[0]->address();
 }
 
 sub start {
-	return Farly::IPv4::Address->new( $_[0]->address() );
+    return Farly::IPv4::Address->new( $_[0]->address() );
 }
 
 sub end {
-	return Farly::IPv4::Address->new( $_[0]->address() );
+    return Farly::IPv4::Address->new( $_[0]->address() );
 }
 
 sub dottedDecimalFormat {
-	return join( ".", unpack( 'C4', ${$_[0]} ) );
+    return join( ".", unpack( 'C4', ${ $_[0] } ) );
 }
 
 sub as_string {
-	return $_[0]->dottedDecimalFormat();
+    return $_[0]->dottedDecimalFormat();
 }
 
 sub iter {
-	my @iter = ( Farly::IPv4::Range->new( $_[0]->first(), $_[0]->last() ) );
-	return @iter;
+    my @iter = ( Farly::IPv4::Range->new( $_[0]->first(), $_[0]->last() ) );
+    return @iter;
 }
 
 1;

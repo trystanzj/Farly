@@ -1,5 +1,4 @@
 package Farly::Object::Aggregate;
-
 use 5.008008;
 use strict;
 use warnings;
@@ -51,7 +50,7 @@ sub id_iterator {
     # the iterator code ref
     return sub {
         return undef if ( $i == scalar(@arr) );
-        
+
         my $object = Farly::Object->new();
 
         foreach my $property ( $arr[$i]->get_keys() ) {
@@ -98,6 +97,7 @@ sub _has_defined_keys {
                 last;
             }
             if ( !$obj->get($key)->can('compare') ) {
+
                 #warn "$self skipped ", $obj->dump(), " in groupby\n";
                 $all_keys_defined = undef;
                 last;
@@ -187,7 +187,7 @@ sub matches {
             return $object->get('__SET__');
         }
     }
-    
+
     #return an empty Set on no match
     return Farly::Object::Set->new();
 }
@@ -208,12 +208,11 @@ sub update {
             return;
         }
     }
-    
-    confess $search->dump()," not found";
+
+    confess $search->dump(), " not found";
 }
 
 1;
-
 __END__
 
 =head1 NAME

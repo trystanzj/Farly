@@ -8,42 +8,42 @@ use Carp;
 our $VERSION = '0.05';
 
 sub new {
-	my ( $class, $string ) = @_;
+    my ( $class, $string ) = @_;
 
-	confess "string required"
-	  unless defined($string);
+    confess "string required"
+      unless defined($string);
 
-	$string =~ s/^\s+|\s+$//g;
+    $string =~ s/^\s+|\s+$//g;
 
-	return bless( \$string, $class );
+    return bless( \$string, $class );
 }
 
-sub as_string { return ${$_[0]} }
+sub as_string { return ${ $_[0] } }
 
 sub equals {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa('Farly::Value::String') ) {
-		return $self->as_string() eq $other->as_string();
-	}
+    if ( $other->isa('Farly::Value::String') ) {
+        return $self->as_string() eq $other->as_string();
+    }
 }
 
 sub contains {
-	my ( $self, $other ) = @_;
-	return $self->equals($other);
+    my ( $self, $other ) = @_;
+    return $self->equals($other);
 }
 
 sub intersects {
-	my ( $self, $other ) = @_;
-	return $self->equals($other);
+    my ( $self, $other ) = @_;
+    return $self->equals($other);
 }
 
 sub compare {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa('Farly::Value::String') ) {
+    if ( $other->isa('Farly::Value::String') ) {
         return $self->as_string() cmp $other->as_string();
-	}
+    }
 }
 
 1;

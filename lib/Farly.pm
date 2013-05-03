@@ -11,63 +11,60 @@ use Farly::Director;
 use Farly::Object;
 
 our $VERSION = '0.20';
-
-our ($volume,$dir,$file) = File::Spec->splitpath( $INC{'Farly.pm'} );
-Log::Log4perl::init( $volume.$dir.'Farly/Log/Farly.conf');
+our ( $volume, $dir, $file ) = File::Spec->splitpath( $INC{'Farly.pm'} );
+Log::Log4perl::init( $volume . $dir . 'Farly/Log/Farly.conf' );
 
 sub new {
-	my ( $class, $container ) = @_;
+    my ( $class, $container ) = @_;
 
-	my $self = { DIRECTOR => Farly::Director->new(), };
-	bless $self, $class;
+    my $self = { DIRECTOR => Farly::Director->new(), };
+    bless $self, $class;
 
-	my $logger = get_logger(__PACKAGE__);
-	$logger->info("$self NEW");
+    my $logger = get_logger(__PACKAGE__);
+    $logger->info("$self NEW");
 
-	return $self;
+    return $self;
 }
 
 sub director {
-	return $_[0]->{DIRECTOR};
+    return $_[0]->{DIRECTOR};
 }
 
 sub process {
-	my ( $self, $type, $file_name ) = @_;
+    my ( $self, $type, $file_name ) = @_;
 
-	croak "$file_name is not a file" unless ( -f $file_name );
+    croak "$file_name is not a file" unless ( -f $file_name );
 
-	my $logger = get_logger(__PACKAGE__);
+    my $logger = get_logger(__PACKAGE__);
 
-	my $location     = "Farly/$type/Builder.pm";
-	my $builder_class = 'Farly::'.$type.'::Builder';
+    my $location      = "Farly/$type/Builder.pm";
+    my $builder_class = 'Farly::'.$type.'::Builder';
 
-	require $location;
-	
-	my $builder = $builder_class->new();
+    require $location;
 
-	my $file = IO::File->new($file_name);
+    my $builder = $builder_class->new();
 
-	$self->director()->set_file($file);
-	$self->director()->set_builder($builder);
+    my $file = IO::File->new($file_name);
 
-	my $start = [ Time::HiRes::gettimeofday() ];
+    $self->director()->set_file($file);
+    $self->director()->set_builder($builder);
 
-	my $container;
-	
-	eval {
-		$container = $self->director()->run();
-	};
-	if ($@) {
-		die "Import of $file_name failed\n",$@,"\n";
-	}
-	
-	my $elapsed = Time::HiRes::tv_interval($start);
+    my $start = [ Time::HiRes::gettimeofday() ];
 
-	$logger->info("parse time: $elapsed seconds");
+    my $container;
 
-	$logger->info("imported ",$container->size()," objects");
+    eval { $container = $self->director()->run(); };
+    if ($@) {
+        die "Import of $file_name failed\n", $@, "\n";
+    }
 
-	return $container;
+    my $elapsed = Time::HiRes::tv_interval($start);
+
+    $logger->info("parse time: $elapsed seconds");
+
+    $logger->info( "imported ", $container->size(), " objects" );
+
+    return $container;
 }
 
 1;

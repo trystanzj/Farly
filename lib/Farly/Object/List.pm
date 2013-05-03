@@ -8,116 +8,114 @@ use Carp;
 our $VERSION = '0.20';
 
 sub new {
-	my ($class) = @_;
-	return bless [], $class;
+    my ($class) = @_;
+    return bless [], $class;
 }
-
 sub add {
-	my ( $self, $object ) = @_;
+    my ( $self, $object ) = @_;
 
-	croak "Farly::Object object required"
-	  unless ( $object->isa('Farly::Object') );
+    croak "Farly::Object object required"
+      unless ( $object->isa('Farly::Object') );
 
-	push @$self, $object;
+    push @$self, $object;
 }
 
 sub iter {
-	return @{ $_[0] };
+    return @{ $_[0] };
 }
 
 sub size {
-	return scalar( @{ $_[0] } );
+    return scalar( @{ $_[0] } );
 }
 
 sub clone {
-	my ($self) = @_;
+    my ($self) = @_;
 
-	my $result = Farly::Object::List->new();
+    my $result = Farly::Object::List->new();
 
-	foreach my $object ( $self->iter() ) {
-		$result->add( $object->clone() );
-	}
+    foreach my $object ( $self->iter() ) {
+        $result->add( $object->clone() );
+    }
 
-	return $result;
+    return $result;
 }
 
 sub matches {
-	my ( $self, $other, $result ) = @_;
+    my ( $self, $other, $result ) = @_;
 
-	foreach my $object ( $self->iter() ) {
-		if ( $object->matches($other) ) {
-			$result->add($object);
-		}
-	}
+    foreach my $object ( $self->iter() ) {
+        if ( $object->matches($other) ) {
+            $result->add($object);
+        }
+    }
 }
 
 sub contains {
-	my ( $self, $other, $result ) = @_;
+    my ( $self, $other, $result ) = @_;
 
-	foreach my $object ( $self->iter() ) {
-		if ( $object->contains($other) ) {
-			$result->add($object);
-		}
-	}
+    foreach my $object ( $self->iter() ) {
+        if ( $object->contains($other) ) {
+            $result->add($object);
+        }
+    }
 }
 
 sub contained_by {
-	my ( $self, $other, $result ) = @_;
+    my ( $self, $other, $result ) = @_;
 
-	foreach my $object ( $self->iter() ) {
-		if ( $object->contained_by($other) ) {
-			$result->add($object);
-		}
-	}
+    foreach my $object ( $self->iter() ) {
+        if ( $object->contained_by($other) ) {
+            $result->add($object);
+        }
+    }
 }
 
 sub intersects {
-	my ( $self, $other, $result ) = @_;
+    my ( $self, $other, $result ) = @_;
 
-	foreach my $object ( $self->iter() ) {
-		if ( $object->intersects($other) ) {
-			$result->add($object);
-		}
-	}
+    foreach my $object ( $self->iter() ) {
+        if ( $object->intersects($other) ) {
+            $result->add($object);
+        }
+    }
 }
 
 sub search {
-	my ( $self, $other, $result ) = @_;
+    my ( $self, $other, $result ) = @_;
 
-	foreach my $object ( $self->iter() ) {
-		if ( $object->matches($other) ) {
-			$result->add($object);
-		}
-		elsif ( $object->contains($other) ) {
-			$result->add($object);
-		}
-		elsif ( $object->contained_by($other) ) {
-			$result->add($object);
-		}
-		elsif ( $object->intersects($other) ) {
-			$result->add($object);
-		}
-	}
+    foreach my $object ( $self->iter() ) {
+        if ( $object->matches($other) ) {
+            $result->add($object);
+        }
+        elsif ( $object->contains($other) ) {
+            $result->add($object);
+        }
+        elsif ( $object->contained_by($other) ) {
+            $result->add($object);
+        }
+        elsif ( $object->intersects($other) ) {
+            $result->add($object);
+        }
+    }
 }
 
 sub _validate {
-	my ( $self, $other, $result ) = @_;
+    my ( $self, $other, $result ) = @_;
 
-	carp "other not defined"
-	  unless ( defined $other );
+    carp "other not defined"
+      unless ( defined $other );
 
-	confess "container for result required"
-	  unless ( defined $result );
+    confess "container for result required"
+      unless ( defined $result );
 
-	confess "the search object must be an Farly::Object or Farly::Object::Ref"
-	  unless ( $other->isa("Farly::Object") );
-	  
-	confess "the result container must be an Farly::Object::List or Farly::Object::Set"
-	  unless ( $result->isa("Farly::Object::List") || $result->isa("Farly::Object::Set") );
-	  
+    confess "the search object must be an Farly::Object or Farly::Object::Ref"
+      unless ( $other->isa("Farly::Object") );
+
+    confess "the result container must be an Farly::Object::List or Farly::Object::Set"
+      unless ( $result->isa("Farly::Object::List") || $result->isa("Farly::Object::Set") );
 }
-1;
 
+1;
 __END__
 
 =head1 NAME

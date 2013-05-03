@@ -6,11 +6,11 @@ use warnings;
 use Carp;
 use Farly::Transport::Port;
 
-our @ISA = qw(Farly::Transport::Port);
+our @ISA     = qw(Farly::Transport::Port);
 our $VERSION = '0.20';
 
 sub first {
-	return 1;
+    return 1;
 }
 
 1;

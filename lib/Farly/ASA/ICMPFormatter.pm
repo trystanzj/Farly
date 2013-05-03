@@ -7,59 +7,59 @@ use warnings;
 our $VERSION = '0.20';
 
 our $String_To_Int = {
-	"echo-reply"           => 0,
-	"unreachable"          => 3,
-	"source-quench"        => 4,
-	"redirect"             => 5,
-	"alternate-address"    => 6,
-	"echo"                 => 8,
-	"router-advertisement" => 9,
-	"router-solicitation"  => 10,
-	"time-exceeded"        => 11,
-	"parameter-problem"    => 12,
-	"timestamp-request"    => 13,
-	"timestamp-reply"      => 14,
-	"information-request"  => 15,
-	"information-reply"    => 16,
-	"mask-request"         => 17,
-	"mask-reply"           => 18,
-	"traceroute"           => 30,
-	"conversion-error"     => 31,
-	"mobile-redirect"      => 32,
+    "echo-reply"           => 0,
+    "unreachable"          => 3,
+    "source-quench"        => 4,
+    "redirect"             => 5,
+    "alternate-address"    => 6,
+    "echo"                 => 8,
+    "router-advertisement" => 9,
+    "router-solicitation"  => 10,
+    "time-exceeded"        => 11,
+    "parameter-problem"    => 12,
+    "timestamp-request"    => 13,
+    "timestamp-reply"      => 14,
+    "information-request"  => 15,
+    "information-reply"    => 16,
+    "mask-request"         => 17,
+    "mask-reply"           => 18,
+    "traceroute"           => 30,
+    "conversion-error"     => 31,
+    "mobile-redirect"      => 32,
 };
 
 our $Int_To_String = {
-	0  => "echo-reply",
-	3  => "unreachable",
-	4  => "source-quench",
-	5  => "redirect",
-	6  => "alternate-address",
-	8  => "echo",
-	9  => "router-advertisement",
-	10 => "router-solicitation",
-	11 => "time-exceeded",
-	12 => "parameter-problem",
-	13 => "timestamp-request",
-	14 => "timestamp-reply",
-	15 => "information-request",
-	16 => "information-reply",
-	17 => "mask-request",
-	18 => "mask-reply",
-	30 => "traceroute",
-	31 => "conversion-error",
-	32 => "mobile-redirect",
+    0  => "echo-reply",
+    3  => "unreachable",
+    4  => "source-quench",
+    5  => "redirect",
+    6  => "alternate-address",
+    8  => "echo",
+    9  => "router-advertisement",
+    10 => "router-solicitation",
+    11 => "time-exceeded",
+    12 => "parameter-problem",
+    13 => "timestamp-request",
+    14 => "timestamp-reply",
+    15 => "information-request",
+    16 => "information-reply",
+    17 => "mask-request",
+    18 => "mask-reply",
+    30 => "traceroute",
+    31 => "conversion-error",
+    32 => "mobile-redirect",
 };
 
 sub new {
-	return bless {}, $_[0];
+    return bless {}, $_[0];
 }
 
 sub as_string {
-	return $Int_To_String->{ $_[1] }; 
+    return $Int_To_String->{ $_[1] };
 }
 
 sub as_integer {
-	return $String_To_Int->{ $_[1] };
+    return $String_To_Int->{ $_[1] };
 }
 
 1;

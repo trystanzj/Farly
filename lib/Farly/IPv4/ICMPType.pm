@@ -8,65 +8,65 @@ use Carp;
 our $VERSION = '0.20';
 
 sub new {
-	my ( $class, $type ) = @_;
+    my ( $class, $type ) = @_;
 
-	confess "type number required" unless (defined $type);
+    confess "type number required" unless ( defined $type );
 
-	$type =~ s/\s+//g;
+    $type =~ s/\s+//g;
 
-	confess "$type is not a number" 
-		unless ( $type =~ /^\d+$/ || $type =~ /^-1$/);
+    confess "$type is not a number"
+      unless ( $type =~ /^\d+$/ || $type =~ /^-1$/ );
 
-	confess "invalid type $type"
-	  unless ( ( $type >= -1 && $type <= 255 ) );
+    confess "invalid type $type"
+      unless ( ( $type >= -1 && $type <= 255 ) );
 
-	return bless( \$type, $class );
+    return bless( \$type, $class );
 }
 
 sub type {
-	return ${$_[0]};
+    return ${ $_[0] };
 }
 
 sub as_string {
-	return ${$_[0]};
+    return ${ $_[0] };
 }
 
 sub equals {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa( 'Farly::IPv4::ICMPType' ) ) {
+    if ( $other->isa('Farly::IPv4::ICMPType') ) {
 
-		return $self->type() == $other->type();
-	}
+        return $self->type() == $other->type();
+    }
 }
 
 sub contains {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa( 'Farly::IPv4::ICMPType' ) ) {
+    if ( $other->isa('Farly::IPv4::ICMPType') ) {
 
-		if ( $self->type() == -1 ) {
-			return 1;
-		}
-	
-		return $self->equals($other);
-	}
+        if ( $self->type() == -1 ) {
+            return 1;
+        }
+
+        return $self->equals($other);
+    }
 }
 
 sub intersects {
-	my ( $self, $other ) = @_;
-	
-	if ( $self->contains($other) || $other->contains($self) ) {
-		return 1;
-	}
+    my ( $self, $other ) = @_;
+
+    if ( $self->contains($other) || $other->contains($self) ) {
+        return 1;
+    }
 }
 
 sub compare {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa('Farly::IPv4::ICMPType') ) {
-		return $self->type() <=> $other->type();
-	}
+    if ( $other->isa('Farly::IPv4::ICMPType') ) {
+        return $self->type() <=> $other->type();
+    }
 }
 
 1;

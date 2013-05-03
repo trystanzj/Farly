@@ -8,83 +8,78 @@ use Carp;
 our $VERSION = '0.20';
 
 sub size {
-	my ($self) = @_;
-	return $self->last - $self->first + 1;
+    my ($self) = @_;
+    return $self->last - $self->first + 1;
 }
 
 sub equals {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa('Farly::IPv4::Object') ) {
-	  
-		return $self->first == $other->first
-		  && $self->last == $other->last
-		  && $self->size == $other->size;
-	}
+    if ( $other->isa('Farly::IPv4::Object') ) {
+
+        return $self->first == $other->first
+          && $self->last == $other->last
+          && $self->size == $other->size;
+    }
 }
 
 sub contains {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa('Farly::IPv4::Object') ) {
+    if ( $other->isa('Farly::IPv4::Object') ) {
 
-		return $self->first <= $other->first
-		  && $self->last >= $other->last;
-	}
+        return $self->first <= $other->first
+          && $self->last >= $other->last;
+    }
 }
 
 sub intersects {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa('Farly::IPv4::Object') ) {
+    if ( $other->isa('Farly::IPv4::Object') ) {
 
-		return ( $self->first <= $other->first
-		  && $other->first <= $self->last )
-		||
-		( $self->first <= $other->last
-		  && $other->last <= $self->last )
-		||
-		( $other->first <= $self->first
-		  && $self->first <= $other->last );
-	}
+        return ( $self->first <= $other->first && $other->first <= $self->last )
+          || ( $self->first <= $other->last && $other->last <= $self->last )
+          || ( $other->first <= $self->first && $self->first <= $other->last );
+    }
 }
 
 sub gt {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa('Farly::IPv4::Object') ) {
+    if ( $other->isa('Farly::IPv4::Object') ) {
 
-		return $self->first > $other->last;
-	}
+        return $self->first > $other->last;
+    }
 }
 
 sub lt {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa('Farly::IPv4::Object') ) {
+    if ( $other->isa('Farly::IPv4::Object') ) {
 
-		return $self->last < $other->first;
-	}
+        return $self->last < $other->first;
+    }
 }
 
 sub adjacent {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa('Farly::IPv4::Object') ) {
+    if ( $other->isa('Farly::IPv4::Object') ) {
 
-		return ( ( $self->last + 1 ) == $other->first )
-		  || ( ( $other->last + 1 ) == $self->first );
-	}
+        return ( ( $self->last + 1 ) == $other->first )
+          || ( ( $other->last + 1 ) == $self->first );
+    }
 }
 
 sub compare {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa('Farly::IPv4::Object') ) {
+    if ( $other->isa('Farly::IPv4::Object') ) {
 
-		return ( $self->first() <=> $other->first()
-          || $other->last() <=> $self->last() );
-	}
+        return ( $self->first() <=> $other->first()
+              || $other->last() <=> $self->last() );
+    }
 }
 
 1;

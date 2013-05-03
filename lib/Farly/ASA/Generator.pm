@@ -12,78 +12,76 @@ our $VERSION = '0.20';
 #our $AUTOLOAD;
 
 sub new {
-	my ( $class ) = @_;
+    my ($class) = @_;
 
-	my $self = {
-		CONTAINER => Farly::Object::List->new(),    #store data here
-	};
-	bless $self, $class;
+    my $self = {
+        CONTAINER => Farly::Object::List->new(),    #store data here
+    };
+    bless $self, $class;
 
-	my $logger = get_logger(__PACKAGE__);
-	$logger->info("$self NEW");
-	$logger->info( "$self CONTAINER is ", $self->container() );
+    my $logger = get_logger(__PACKAGE__);
+    $logger->info("$self NEW");
+    $logger->info( "$self CONTAINER is ", $self->container() );
 
-	return $self;
+    return $self;
 }
 
 sub container {
-	return $_[0]->{CONTAINER};
+    return $_[0]->{CONTAINER};
 }
 
 sub visit {
-	my ( $self, $node ) = @_;
+    my ( $self, $node ) = @_;
 
-	# $node is a reference to the root of the AST
+    # $node is a reference to the root of the AST
 
-	my $logger = get_logger(__PACKAGE__);
+    my $logger = get_logger(__PACKAGE__);
 
-	# the Farly translator parses one firewall object at a time
-	my $object = Farly::Object->new();
+    # the Farly translator parses one firewall object at a time
+    my $object = Farly::Object->new();
 
-	# the AST root node is the 'ENTRY'
-	$object->set('ENTRY', Farly::Value::String->new( ref($node) ) );
+    # the AST root node is the 'ENTRY'
+    $object->set( 'ENTRY', Farly::Value::String->new( ref($node) ) );
 
-	$logger->debug( "ENTRY = ", ref($node) );
+    $logger->debug( "ENTRY = ", ref($node) );
 
-	# set s of explored vertices
-	my %seen;
+    # set s of explored vertices
+    my %seen;
 
-	#stack is all neighbors of s
-	my @stack;
-	push @stack, $node;
+    #stack is all neighbors of s
+    my @stack;
+    push @stack, $node;
 
-	my $key;
+    my $key;
 
-	while (@stack) {
+    while (@stack) {
 
-		my $node = pop @stack;
+        my $node = pop @stack;
 
-		next if ( $seen{$node}++ );
+        next if ( $seen{$node}++ );
 
-		$logger->debug( "ast node class = ", ref($node) );
+        $logger->debug( "ast node class = ", ref($node) );
 
-		# continue exploring the AST
-		foreach my $key ( keys %$node ) {
+        # continue exploring the AST
+        foreach my $key ( keys %$node ) {
 
-			my $next = $node->{$key};
+            my $next = $node->{$key};
 
-			if ( $key eq '__VALUE__' ) {
-				
-				#then $next isa token
-				$object->set( ref($node), $next );
-				$logger->debug( "set ", ref($node), " = ", ref($next), " ", $next->as_string );
-			}
-			else {				
-				push @stack, $next;
-			}
-		}
-	}
+            if ( $key eq '__VALUE__' ) {
 
-	$self->container->add($object);
+                #then $next isa token
+                $object->set( ref($node), $next );
+                $logger->debug( "set ", ref($node), " = ", ref($next), " ",
+                    $next->as_string );
+            }
+            else {
+                push @stack, $next;
+            }
+        }
+    }
+
+    $self->container->add($object);
 }
-
-#sub AUTOLOAD { } 
-#sub DESTROY { }
 
 1;
 __END__

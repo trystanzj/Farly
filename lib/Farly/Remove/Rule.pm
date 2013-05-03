@@ -39,7 +39,7 @@ sub _keeps {
     my $keep = Farly::Object::List->new();
 
     foreach my $rule ( $list->iter() ) {
-        if ( ! $rule->has_defined('REMOVE') ) {
+        if ( !$rule->has_defined('REMOVE') ) {
             $keep->add($rule);
         }
     }
@@ -82,7 +82,7 @@ sub _is_unique {
 
 sub _aggregate {
     my ( $self, $list ) = @_;
-    my $agg = Farly::Object::Aggregate->new( $list );
+    my $agg = Farly::Object::Aggregate->new($list);
     $agg->groupby( 'ENTRY', 'ID', 'LINE' );
     return $agg;
 }
@@ -126,7 +126,7 @@ sub remove {
 
         # the entries which are being kept
         my $keep_set = $keep_agg->matches($id);
-        
+
         foreach my $keep_rule ( $keep_set->iter() ) {
             $self->result->add($keep_rule);
         }
@@ -137,7 +137,6 @@ sub remove {
 }
 
 1;
-
 __END__
 
 =head1 NAME

@@ -75,12 +75,12 @@
 0.20 - April 2013
    - added compare method
    - moved Object::KVC into Farly
-		Object::KVC::Hash = Farly::Object
-		Object::KVC::HashRef = Farly::Object::Ref
+		Farly::Object = Farly::Object
+		Farly::ObjectRef = Farly::Object::Ref
 		Object::KVC::List = Farly::Object::List
-		Farly::Object::Set = Farly::Object::Set
+		Object::KVC::Set = Farly::Object::Set
 		Farly::Value::String = Farly::Value::String
-		Farly::Value::Integer = Farly::Value::Integer
+		Object::KVC::Integer = Farly::Value::Integer
    - added Farly::Object::Aggregate
    - optimised Farly::Rule::Optimizer
-   - fixing broken Farly::Remove::Rule
+   - fixed broken Farly::Remove::Rule

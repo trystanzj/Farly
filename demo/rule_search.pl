@@ -12,19 +12,19 @@ my $file = "../t/test.cfg";
 my $importer = Farly->new();
 
 # call the process method in order to obtain
-# an Farly::Object::List<Farly::Object> firewall 
+# an Farly::Object::List<Farly::Object> firewall
 # device model
 
-my $container = $importer->process("ASA",$file);
+my $container = $importer->process( "ASA", $file );
 
 # create a rule expander object which will be
-# used to obtain an Farly::Object::List<Farly::Object> 
+# used to obtain an Farly::Object::List<Farly::Object>
 # container with all of the firewalls raw rule entries
 # (same as "show access-list" on a Cisco ASA firewall)
 
 use Farly::Rule::Expander;
 
-my $rule_expander = Farly::Rule::Expander->new( $container );
+my $rule_expander = Farly::Rule::Expander->new($container);
 
 # get the raw rule entries
 
@@ -68,6 +68,6 @@ my $template = Farly::Template::Cisco->new('ASA');
 # print the search results
 
 foreach my $rule_object ( $search_result->iter() ) {
-	$template->as_string( $rule_object );
-	print "\n"; 
+    $template->as_string($rule_object);
+    print "\n";
 }

@@ -8,67 +8,66 @@ use Carp;
 our $VERSION = '0.20';
 
 sub new {
-	my ( $class, $protocol ) = @_;
+    my ( $class, $protocol ) = @_;
 
-	confess "protocol number required" unless (defined $protocol);
+    confess "protocol number required" unless ( defined $protocol );
 
-	$protocol =~ s/\s+//g;
+    $protocol =~ s/\s+//g;
 
-	confess "$protocol is not a number" 
-		unless ( $protocol =~ /^\d+$/ );
-	
-	confess "invalid protocol $protocol"
-	  unless ( ( $protocol >= 0 && $protocol <= 255 ) );
+    confess "$protocol is not a number"
+      unless ( $protocol =~ /^\d+$/ );
 
-	return bless( \$protocol, $class );
+    confess "invalid protocol $protocol"
+      unless ( ( $protocol >= 0 && $protocol <= 255 ) );
+
+    return bless( \$protocol, $class );
 }
 
 sub protocol {
-	return ${$_[0]};
+    return ${ $_[0] };
 }
 
 sub as_string {
-	return ${$_[0]};
+    return ${ $_[0] };
 }
 
 sub equals {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa( 'Farly::Transport::Protocol' ) ) {
+    if ( $other->isa('Farly::Transport::Protocol') ) {
 
-		return $self->protocol() == $other->protocol();
-	}
+        return $self->protocol() == $other->protocol();
+    }
 }
 
 sub contains {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa( 'Farly::Transport::Protocol' ) ) {
+    if ( $other->isa('Farly::Transport::Protocol') ) {
 
-		if ( $self->protocol() == 0 ) {
-			return 1;
-		}
-	
-		return $self->equals($other);
-	}
+        if ( $self->protocol() == 0 ) {
+            return 1;
+        }
+
+        return $self->equals($other);
+    }
 }
 
 sub intersects {
-	my ( $self, $other ) = @_;
-	
-	if ( $self->contains($other) || $other->contains($self) ) {
-		return 1;
-	}
+    my ( $self, $other ) = @_;
+
+    if ( $self->contains($other) || $other->contains($self) ) {
+        return 1;
+    }
 }
 
 sub compare {
-	my ( $self, $other ) = @_;
+    my ( $self, $other ) = @_;
 
-	if ( $other->isa('Farly::Transport::Protocol') ) {
-		return $self->protocol() <=> $other->protocol();
-	}
+    if ( $other->isa('Farly::Transport::Protocol') ) {
+        return $self->protocol() <=> $other->protocol();
+    }
 }
-
 
 1;
 __END__

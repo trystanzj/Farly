@@ -14,18 +14,18 @@ our $VERSION = '0.20';
 # 'ENTRY' is roughly equivalent to a namespace or table name
 
 our $AST_Root_Class = {
-	'hostname'     => 'HOSTNAME',
-	'named_ip'     => 'NAME',
-	'interface'    => 'INTERFACE',
-	'object'       => 'OBJECT',
-	'object_group' => 'GROUP',
-	'access_list'  => 'RULE',
-	'access_group' => 'ACCESS_GROUP',
-	'route'        => 'ROUTE',
+    'hostname'     => 'HOSTNAME',
+    'named_ip'     => 'NAME',
+    'interface'    => 'INTERFACE',
+    'object'       => 'OBJECT',
+    'object_group' => 'GROUP',
+    'access_list'  => 'RULE',
+    'access_group' => 'ACCESS_GROUP',
+    'route'        => 'ROUTE',
 };
 
 # The $AST_Node_Class hash key is the rule name and the class of the parse tree node
-# The $AST_Node_Class hash value is the new AST node class 
+# The $AST_Node_Class hash value is the new AST node class
 # Any Token / '__VALUE__' found in the parse tree beneath the given nodes
 # in the parse tree becomes the AST node '__VALUE__'
 # The AST node class will become the key in the Farly::Object object
@@ -34,159 +34,160 @@ our $AST_Root_Class = {
 # $object->set( ref($ast_node), $ast_node->{__VALUE__} );
 
 my $AST_Node_Class = {
-	'named_ip'                => 'OBJECT',
-	'name'                    => 'ID',
-	'name_comment'            => 'COMMENT',
-	'hostname'                => 'ID',
-	'interface'               => 'NAME',
-	'if_name'                 => 'ID',
-	'sec_level'               => 'SECURITY_LEVEL',
-	'if_ip'                   => 'OBJECT',
-	'if_mask'                 => 'MASK',
-	'if_standby'              => 'STANDBY_IP',
-	'object'                  => 'OBJECT_TYPE',      #this will be over written
-	'object_id'               => 'ID',
-	'object_address'          => 'OBJECT',
-	'object_service_protocol' => 'PROTOCOL',
-	'object_service_src'      => 'SRC_PORT',
-	'object_service_dst'      => 'DST_PORT',
-	'object_icmp'             => 'ICMP_TYPE',
-	'object_group'            => 'GROUP_TYPE',
-	'og_id'                   => 'ID',
-	'og_protocol'             => 'GROUP_PROTOCOL',
-	'og_network_object'       => 'OBJECT',
-	'og_port_object'          => 'OBJECT',
-	'og_group_object'         => 'OBJECT',
-	'og_protocol_object'      => 'OBJECT',
-	'og_description'          => 'OBJECT',
-	'og_icmp_object'          => 'OBJECT',
-	'og_service_object'       => 'OBJECT',
-	'og_so_protocol'          => 'PROTOCOL',
-	'og_so_src_port'          => 'SRC_PORT',
-	'og_so_dst_port'          => 'DST_PORT',
-	'acl_action'              => 'ACTION',
-	'acl_id'                  => 'ID',
-	'acl_line'                => 'LINE',
-	'acl_type'                => 'TYPE',
-	'acl_protocol'            => 'PROTOCOL',
-	'acl_src_ip'              => 'SRC_IP',
-	'acl_src_port'            => 'SRC_PORT',
-	'acl_dst_ip'              => 'DST_IP',
-	'acl_dst_port'            => 'DST_PORT',
-	'acl_icmp_type'           => 'ICMP_TYPE',
-	'acl_remark'              => 'COMMENT',
-	'acl_log_level'           => 'LOG_LEVEL',
-	'acl_log_interval'        => 'LOG_INTERVAL',
-	'acl_time_range'          => 'TIME_RANGE',
-	'acl_inactive'            => 'STATUS',
-	'ag_id'                   => 'ID',
-	'ag_direction'            => 'DIRECTION',
-	'ag_interface'            => 'INTERFACE',
-	'route_interface'         => 'INTERFACE',
-	'route_dst'               => 'DST_IP',
-	'route_nexthop'           => 'NEXTHOP',
-	'route_cost'              => 'COST',
-	'route_track'             => 'TRACK',
-	'route_tunneled'          => 'TUNNELED',
-	'port_neq'                => 'NEQ',         #not used yet
-	'MEMBER_TYPE'             => 'OBJECT_TYPE', #map imaginary token MEMBER_TYPE to OBJECT_TYPE
+    'named_ip'                => 'OBJECT',
+    'name'                    => 'ID',
+    'name_comment'            => 'COMMENT',
+    'hostname'                => 'ID',
+    'interface'               => 'NAME',
+    'if_name'                 => 'ID',
+    'sec_level'               => 'SECURITY_LEVEL',
+    'if_ip'                   => 'OBJECT',
+    'if_mask'                 => 'MASK',
+    'if_standby'              => 'STANDBY_IP',
+    'object'                  => 'OBJECT_TYPE',      #this will be over written
+    'object_id'               => 'ID',
+    'object_address'          => 'OBJECT',
+    'object_service_protocol' => 'PROTOCOL',
+    'object_service_src'      => 'SRC_PORT',
+    'object_service_dst'      => 'DST_PORT',
+    'object_icmp'             => 'ICMP_TYPE',
+    'object_group'            => 'GROUP_TYPE',
+    'og_id'                   => 'ID',
+    'og_protocol'             => 'GROUP_PROTOCOL',
+    'og_network_object'       => 'OBJECT',
+    'og_port_object'          => 'OBJECT',
+    'og_group_object'         => 'OBJECT',
+    'og_protocol_object'      => 'OBJECT',
+    'og_description'          => 'OBJECT',
+    'og_icmp_object'          => 'OBJECT',
+    'og_service_object'       => 'OBJECT',
+    'og_so_protocol'          => 'PROTOCOL',
+    'og_so_src_port'          => 'SRC_PORT',
+    'og_so_dst_port'          => 'DST_PORT',
+    'acl_action'              => 'ACTION',
+    'acl_id'                  => 'ID',
+    'acl_line'                => 'LINE',
+    'acl_type'                => 'TYPE',
+    'acl_protocol'            => 'PROTOCOL',
+    'acl_src_ip'              => 'SRC_IP',
+    'acl_src_port'            => 'SRC_PORT',
+    'acl_dst_ip'              => 'DST_IP',
+    'acl_dst_port'            => 'DST_PORT',
+    'acl_icmp_type'           => 'ICMP_TYPE',
+    'acl_remark'              => 'COMMENT',
+    'acl_log_level'           => 'LOG_LEVEL',
+    'acl_log_interval'        => 'LOG_INTERVAL',
+    'acl_time_range'          => 'TIME_RANGE',
+    'acl_inactive'            => 'STATUS',
+    'ag_id'                   => 'ID',
+    'ag_direction'            => 'DIRECTION',
+    'ag_interface'            => 'INTERFACE',
+    'route_interface'         => 'INTERFACE',
+    'route_dst'               => 'DST_IP',
+    'route_nexthop'           => 'NEXTHOP',
+    'route_cost'              => 'COST',
+    'route_track'             => 'TRACK',
+    'route_tunneled'          => 'TUNNELED',
+    'port_neq'                => 'NEQ',          #not used yet
+    'MEMBER_TYPE'             => 'OBJECT_TYPE',  #map imaginary token MEMBER_TYPE to OBJECT_TYPE
 };
 
 sub new {
-	my ($class) = @_;
-	my $self = bless {}, $class;
-	my $logger = get_logger(__PACKAGE__);
-	$logger->info("$self NEW");
-	return $self;
+    my ($class) = @_;
+    my $self = bless {}, $class;
+    my $logger = get_logger(__PACKAGE__);
+    $logger->info("$self NEW");
+    return $self;
 }
 
 sub rewrite {
-	my ( $self, $pt_node ) = @_;
+    my ( $self, $pt_node ) = @_;
 
-	# $node is a reference to the current node in the parse tree
-	# i.e. the root of the parse tree to begin with
+    # $node is a reference to the current node in the parse tree
+    # i.e. the root of the parse tree to begin with
 
-	my $logger = get_logger(__PACKAGE__);
+    my $logger = get_logger(__PACKAGE__);
 
-	# $root is a reference to the root of the new abstract syntax tree
-	my $root = bless( {}, 'NULL' );
+    # $root is a reference to the root of the new abstract syntax tree
+    my $root = bless( {}, 'NULL' );
 
-	# $ast_node is a reference to current ast node
-	my $ast_node;
+    # $ast_node is a reference to current ast node
+    my $ast_node;
 
-	# set s of explored vertices
-	my %seen;
+    # set s of explored vertices
+    my %seen;
 
-	#stack is all neighbors of s
-	my @stack;
-	push @stack, [ $pt_node, $ast_node ];
+    #stack is all neighbors of s
+    my @stack;
+    push @stack, [ $pt_node, $ast_node ];
 
-	my $key;
+    my $key;
 
-	while (@stack) {
+    while (@stack) {
 
-		my $rec = pop @stack;
+        my $rec = pop @stack;
 
-		$pt_node  = $rec->[0];
-		$ast_node = $rec->[1];
+        $pt_node  = $rec->[0];
+        $ast_node = $rec->[1];
 
-		$logger->debug( "parse tree node = ", ref($pt_node), " : ast node = ", ref($ast_node) );
+        $logger->debug( "parse tree node = ", ref($pt_node), " : ast node = ", ref($ast_node) );
 
-		next if ( $seen{$pt_node}++ );
+        next if ( $seen{$pt_node}++ );
 
-		my $pt_node_class = ref($pt_node);
+        my $pt_node_class = ref($pt_node);
 
-		# redefine the abstract syntax tree root node class
-		if ( defined( $AST_Root_Class->{$pt_node_class} ) ) {
+        # redefine the abstract syntax tree root node class
+        if ( defined( $AST_Root_Class->{$pt_node_class} ) ) {
 
-			$root     = bless( {}, $AST_Root_Class->{$pt_node_class} );
-			$ast_node = $root;
+            $root     = bless( {}, $AST_Root_Class->{$pt_node_class} );
+            $ast_node = $root;
 
-			$logger->debug( "new ast root class = ", ref($root) );
-		}
+            $logger->debug( "new ast root class = ", ref($root) );
+        }
 
-		# create new abstract syntax tree nodes
-		if ( defined( $AST_Node_Class->{$pt_node_class} ) ) {
+        # create new abstract syntax tree nodes
+        if ( defined( $AST_Node_Class->{$pt_node_class} ) ) {
 
-			# create a new AST node and add it to the AST
-			my $new_ast_node_class = $AST_Node_Class->{$pt_node_class};
-			$ast_node->{ $new_ast_node_class } = bless( {}, $new_ast_node_class );
-			
-			#update the $ast_node reference to refer to the new AST node
-			$ast_node = $ast_node->{ $new_ast_node_class };
+            # create a new AST node and add it to the AST
+            my $new_ast_node_class = $AST_Node_Class->{$pt_node_class};
+            $ast_node->{$new_ast_node_class} = bless( {}, $new_ast_node_class );
 
-			$logger->debug( "mapped $pt_node_class to AST class ", ref($ast_node) );
+            #update the $ast_node reference to refer to the new AST node
+            $ast_node = $ast_node->{$new_ast_node_class};
 
-			# the AST root class has to have been changed or something is very wrong
-			confess "rewrite error" if ( $root->isa('NULL') );
-		}
+            $logger->debug( "mapped $pt_node_class to AST class ", ref($ast_node) );
 
-		# continue exploring the parse tree
-		foreach my $key ( keys %$pt_node ) {
+        # the AST root class has to have been changed or something is very wrong
+            confess "rewrite error" if ( $root->isa('NULL') );
+        }
 
-			# not interested in the EOL token
-			next if ( $key eq "EOL" );
+        # continue exploring the parse tree
+        foreach my $key ( keys %$pt_node ) {
 
-			my $next = $pt_node->{$key};
+            # not interested in the EOL token
+            next if ( $key eq "EOL" );
 
-			# skip and filter out string values
-			if ( blessed($next) ) {
+            my $next = $pt_node->{$key};
 
-				if ( $key eq '__VALUE__' ) {
-					#then $next isa token
-					$ast_node->{'__VALUE__'} = $next;
-					$logger->debug( "ast node = ", ref($ast_node), " : token = ", ref($next) );
-				}
-				else {
-					push @stack, [ $next, $ast_node ];
-				}
-			}
-		}
-	}
+            # skip and filter out string values
+            if ( blessed($next) ) {
 
-	confess "rewrite error" if ( $root->isa('NULL') );
+                if ( $key eq '__VALUE__' ) {
 
-	return $root;
+                    #then $next isa token
+                    $ast_node->{'__VALUE__'} = $next;
+                    $logger->debug( "ast node = ", ref($ast_node), " : token = ", ref($next) );
+                }
+                else {
+                    push @stack, [ $next, $ast_node ];
+                }
+            }
+        }
+    }
+
+    confess "rewrite error" if ( $root->isa('NULL') );
+
+    return $root;
 }
 
 1;

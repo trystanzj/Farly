@@ -8,122 +8,120 @@ use Farly::IPv4::Address;
 require Farly::IPv4::Network;
 use Farly::IPv4::Object;
 
-our @ISA = qw(Farly::IPv4::Object);
+our @ISA     = qw(Farly::IPv4::Object);
 our $VERSION = '0.20';
 
 sub new {
-	my ($class, $first, $last) = @_;
+    my ( $class, $first, $last ) = @_;
 
-	my $self = {
-		FIRST => undef,		#::IPv4::Address
-		LAST  => undef,		#::IPv4::Address
-	};
-	bless( $self, $class );
-	
-	if ( defined $last ) {
-		$self->_init( $first, $last );
-	}
-	elsif ( defined $first ) {
-		my ( $f, $l ) = split( /-|\s+/, $first );
-		$self->_init( $f, $l );	
-	}
-	else {
-		confess "first last address range required";
-	}
-	
-	return $self;
+    my $self = {
+        FIRST => undef,    #::IPv4::Address
+        LAST  => undef,    #::IPv4::Address
+    };
+    bless( $self, $class );
+
+    if ( defined $last ) {
+        $self->_init( $first, $last );
+    }
+    elsif ( defined $first ) {
+        my ( $f, $l ) = split( /-|\s+/, $first );
+        $self->_init( $f, $l );
+    }
+    else {
+        confess "first last address range required";
+    }
+
+    return $self;
 }
 
 sub _init {
-	my ( $self, $first, $last ) = @_;
+    my ( $self, $first, $last ) = @_;
 
-	$self->{FIRST} = Farly::IPv4::Address->new($first);
-	$self->{LAST}  = Farly::IPv4::Address->new($last);
-	
-	confess "First must be less than last"
-	  if ( $self->first() > $self->last() );
+    $self->{FIRST} = Farly::IPv4::Address->new($first);
+    $self->{LAST}  = Farly::IPv4::Address->new($last);
+
+    confess "First must be less than last"
+      if ( $self->first() > $self->last() );
 }
 
 sub first {
-	return $_[0]->{FIRST}->address();
+    return $_[0]->{FIRST}->address();
 }
 
 sub last {
-	return $_[0]->{LAST}->address();
+    return $_[0]->{LAST}->address();
 }
 
 sub as_string {
-	my ($self) = @_;
-	return join( " ", $self->{FIRST}->as_string(), $self->{LAST}->as_string() );
+    my ($self) = @_;
+    return join( " ", $self->{FIRST}->as_string(), $self->{LAST}->as_string() );
 }
 
 sub adjacent {
-	my ( $self, $other ) = @_;
-	if ( ($self->last() + 1) == $other->first() ) {
-		return 1;
-	}
-	return 0;
+    my ( $self, $other ) = @_;
+    if ( ( $self->last() + 1 ) == $other->first() ) {
+        return 1;
+    }
+    return 0;
 }
 
 sub start {
-	return $_[0]->{FIRST};
+    return $_[0]->{FIRST};
 }
 
 sub end {
-	return $_[0]->{LAST};
+    return $_[0]->{LAST};
 }
 
 sub as_network {
-	my ( $self ) = @_;
-	my $first = $self->first(); 
-	my $last = $self->last(); 
-	my @list;
-	my $mask;
-	my $host_mask = 4294967295;  #0XFFFFFFFF
+    my ($self) = @_;
+    my $first  = $self->first();
+    my $last   = $self->last();
+    my @list;
+    my $mask;
+    my $host_mask = 4294967295;    #0XFFFFFFFF
 
-	#start from the first address in the range
-	while ( $first < $last  ) {
+    #start from the first address in the range
+    while ( $first < $last ) {
 
-		# start from the /32 mask and work downwards
-		my $current_mask = $host_mask;
-		
-		# check if the current mask results in first being a network number
-		while ( $first == ($first & $current_mask) ) {
-			
-			# if the current mask is still in the range try a bigger mask
-			my $inverse_mask = ~$current_mask & $host_mask;
-			if ( ($first + $inverse_mask) <= $last ) {
-				$mask = $current_mask;
-				$current_mask = ($current_mask << 1) & $host_mask;
-			}
-			else {
-				last;
-			}
-		}
-	
-		if ( $mask == 4294967295 ) {
-			push @list, Farly::IPv4::Address->new( $first );
-		}
-		else {
-			push @list, Farly::IPv4::Network->new("$first $mask"); 		
-		}
-		
-		$first = $first + (~$mask & $host_mask) + 1;
-		
-		if ( $first == $last ) {
-			push @list, Farly::IPv4::Address->new($first);
-		}
-		
-	}
-	
-	return @list;	
+        # start from the /32 mask and work downwards
+        my $current_mask = $host_mask;
+
+        # check if the current mask results in first being a network number
+        while ( $first == ( $first & $current_mask ) ) {
+
+            # if the current mask is still in the range try a bigger mask
+            my $inverse_mask = ~$current_mask & $host_mask;
+            if ( ( $first + $inverse_mask ) <= $last ) {
+                $mask         = $current_mask;
+                $current_mask = ( $current_mask << 1 ) & $host_mask;
+            }
+            else {
+                last;
+            }
+        }
+
+        if ( $mask == 4294967295 ) {
+            push @list, Farly::IPv4::Address->new($first);
+        }
+        else {
+            push @list, Farly::IPv4::Network->new("$first $mask");
+        }
+
+        $first = $first + ( ~$mask & $host_mask ) + 1;
+
+        if ( $first == $last ) {
+            push @list, Farly::IPv4::Address->new($first);
+        }
+
+    }
+
+    return @list;
 }
 
 sub iter {
-	my @iter = ( Farly::IPv4::Range->new(
-					$_[0]->first(),
-					$_[0]->last()) );
-	return @iter;
+    my @iter = ( Farly::IPv4::Range->new( $_[0]->first(), $_[0]->last() ) );
+    return @iter;
 }
 
 1;

@@ -9,52 +9,53 @@ use Parse::RecDescent;
 
 our $VERSION = '0.20';
 
-$::RD_ERRORS = 1; # Make sure the parser dies when it encounters an error
+$::RD_ERRORS = 1;    # Make sure the parser dies when it encounters an error
+
 #$::RD_WARN   = 1; # Enable warnings. This will warn on unused rules &c.
 #$::RD_HINT   = 1; # Give out hints to help fix problems.
 #$::RD_TRACE   = 1;
 
 sub new {
-	my ($class) = @_;
+    my ($class) = @_;
 
-	my $self = { PARSER => undef, };
-	bless $self, $class;
+    my $self = { PARSER => undef, };
+    bless $self, $class;
 
-	my $logger  = get_logger(__PACKAGE__);
-	$logger->info("$self NEW");
-	
-	$self->_init();
+    my $logger = get_logger(__PACKAGE__);
+    $logger->info("$self NEW");
 
-	return $self;
+    $self->_init();
+
+    return $self;
 }
 
 sub _init {
-	my ($self) = @_;
+    my ($self) = @_;
 
-	$self->{PARSER} = Parse::RecDescent->new( $self->_grammar() );
+    $self->{PARSER} = Parse::RecDescent->new( $self->_grammar() );
 
-	my $logger = get_logger(__PACKAGE__);
-	$logger->info( "$self NEW PARSER ", $self->{PARSER} );
+    my $logger = get_logger(__PACKAGE__);
+    $logger->info( "$self NEW PARSER ", $self->{PARSER} );
 }
 
 sub parse {
-	my ( $self, $string ) = @_;
+    my ( $self, $string ) = @_;
 
-	defined ($string) or confess "blank line received";
+    defined($string) or confess "blank line received";
 
-	#STDERR should go to a log file
-	my $tree = $self->{PARSER}->startrule($string);
+    #STDERR should go to a log file
+    my $tree = $self->{PARSER}->startrule($string);
 
-	#throw an error if the parse fails
-	defined($tree) or confess "unrecognized line\n";
-		  
-	return $tree;
+    #throw an error if the parse fails
+    defined($tree) or confess "unrecognized line\n";
+
+    return $tree;
 }
 
 sub _grammar {
-	my ($self) = @_;
+    my ($self) = @_;
 
-	my $grammar = q{
+    my $grammar = q{
 <autotree>
 
 startrule :
@@ -615,7 +616,7 @@ EOL :
 
 };
 
-	return $grammar;
+    return $grammar;
 }
 
 1;

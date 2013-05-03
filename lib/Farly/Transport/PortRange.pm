@@ -8,68 +8,68 @@ use Farly::Transport::Port;
 use Farly::Transport::Object;
 
 our $VERSION = '0.20';
-our @ISA = qw(Farly::Transport::Object);
+our @ISA     = qw(Farly::Transport::Object);
 
 sub new {
-	my ($class, $first, $last) = @_;
+    my ( $class, $first, $last ) = @_;
 
-	my $self = {
-		LOW  => undef,
-		HIGH => undef,
-	};
-	bless( $self, $class );
+    my $self = {
+        LOW  => undef,
+        HIGH => undef,
+    };
+    bless( $self, $class );
 
-	if ( defined $last ) {
-		$self->{LOW}  = Farly::Transport::Port->new( $first );
-		$self->{HIGH} = Farly::Transport::Port->new( $last );
-	}
-	elsif ( defined $first ) {
-		my ( $low, $high ) = split( /-|\s+/, $first );
-		$self->{LOW}  = Farly::Transport::Port->new($low);
-		$self->{HIGH} = Farly::Transport::Port->new($high);
-	}
+    if ( defined $last ) {
+        $self->{LOW}  = Farly::Transport::Port->new($first);
+        $self->{HIGH} = Farly::Transport::Port->new($last);
+    }
+    elsif ( defined $first ) {
+        my ( $low, $high ) = split( /-|\s+/, $first );
+        $self->{LOW}  = Farly::Transport::Port->new($low);
+        $self->{HIGH} = Farly::Transport::Port->new($high);
+    }
 
-	confess "invalid port range" 
-	  if ( $self->first() > $self->last() );
+    confess "invalid port range"
+      if ( $self->first() > $self->last() );
 
-	return $self;
+    return $self;
 }
 
 sub low {
-	return $_[0]->{LOW};
+    return $_[0]->{LOW};
 }
 
 sub high {
-	return $_[0]->{HIGH};
+    return $_[0]->{HIGH};
 }
 
 sub first {
-	return $_[0]->{LOW}->port();
+    return $_[0]->{LOW}->port();
 }
 
 sub last {
-	return $_[0]->{HIGH}->port();
+    return $_[0]->{HIGH}->port();
 }
 
 sub as_string {
-	my ( $self ) = @_;
-	return join( " ", $self->low()->as_string(), $self->high()->as_string() );
+    my ($self) = @_;
+    return join( " ", $self->low()->as_string(), $self->high()->as_string() );
 }
 
 sub iter {
-	my ($self) = @_;
+    my ($self) = @_;
 
-	my @list;
-	my $i = $self->first();
+    my @list;
+    my $i = $self->first();
 
-	do {
+    do {
 
-		push @list, Farly::Transport::Port->new($i);
-		$i++;
+        push @list, Farly::Transport::Port->new($i);
+        $i++;
 
-	} while ( $i < $self->last() );
+    } while ( $i < $self->last() );
 
-	return @list;
+    return @list;
 }
 
 1;

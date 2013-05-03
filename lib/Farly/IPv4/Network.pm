@@ -8,163 +8,160 @@ use Farly::IPv4::Object;
 use Farly::IPv4::Address;
 require Farly::IPv4::Range;
 
-our @ISA = qw(Farly::IPv4::Object);
+our @ISA     = qw(Farly::IPv4::Object);
 our $VERSION = '0.20';
 
 sub new {
-	my ( $class, $network ) = @_;
+    my ( $class, $network ) = @_;
+    confess "IP address and subnet mask required"
+      unless ($network);
 
-	confess "IP address and subnet mask required"
-	  unless ($network);
+    my $self = {
+        NETWORK => undef,    #Farly::IPv4::Address object
+        MASK    => undef     #Farly::IPv4::Address object
+    };
+    bless( $self, $class );
 
-	my $self = {
-		NETWORK => undef,    #Farly::IPv4::Address object
-		MASK    => undef     #Farly::IPv4::Address object
-	};
-	bless( $self, $class );
+    $self->_init($network);
 
-	$self->_init($network);
-
-	return $self;
+    return $self;
 }
 
 sub _init {
-	my ( $self, $network ) = @_;
+    my ( $self, $network ) = @_;
 
-	$network =~ s/^\s+|\s+$//g;
+    $network =~ s/^\s+|\s+$//g;
 
-	my $address;
-	my $mask;
-	my $bits;
+    my $address;
+    my $mask;
+    my $bits;
 
-	if ( $network =~ /^((\d{1,3})((\.)(\d{1,3})){3})\s+((\d{1,3})((\.)(\d{1,3})){3})$/ )
-	{
-		( $address, $mask ) = split( /\s+/, $network );
-	}
-	elsif ( $network =~ /^(\d{1,3}(\.\d{1,3}){3})(\/)(\d+)$/ )
-	{
-		( $address, $bits ) = split( "/", $network );
-		$mask = $self->_bits_to_mask($bits);
-	}
-	elsif ( $network =~ /^\d+\s+\d+$/)
-	{
-		( $address, $mask ) = split( /\s+/, $network );
-	}
-	else {
-		confess "Invalid input $network";
-	}
-	
-	$self->_set_address( $address );
-	$self->_set_mask( $mask );
+    if ( $network =~ /^((\d{1,3})((\.)(\d{1,3})){3})\s+((\d{1,3})((\.)(\d{1,3})){3})$/ )
+    {
+        ( $address, $mask ) = split( /\s+/, $network );
+    }
+    elsif ( $network =~ /^(\d{1,3}(\.\d{1,3}){3})(\/)(\d+)$/ ) {
+        ( $address, $bits ) = split( "/", $network );
+        $mask = $self->_bits_to_mask($bits);
+    }
+    elsif ( $network =~ /^\d+\s+\d+$/ ) {
+        ( $address, $mask ) = split( /\s+/, $network );
+    }
+    else {
+        confess "Invalid input $network";
+    }
+
+    $self->_set_address($address);
+    $self->_set_mask($mask);
 }
 
 sub _set_address {
-	my ( $self, $address ) = @_;
-	$self->{NETWORK} = Farly::IPv4::Address->new($address);
+    my ( $self, $address ) = @_;
+    $self->{NETWORK} = Farly::IPv4::Address->new($address);
 }
 
 sub _set_mask {
-	my ( $self, $mask ) = @_;
+    my ( $self, $mask ) = @_;
 
-	if ( $mask =~ /0.0.0.0/ ) {
-		$self->{MASK} = Farly::IPv4::Address->new($mask);
-	}
-	elsif ( $mask =~ /^0/) {
-		my $ip = Farly::IPv4::Address->new($mask);
-		$self->{MASK} = Farly::IPv4::Address->new( $ip->inverse() );
-	}
-	else {
-		$self->{MASK} = Farly::IPv4::Address->new($mask);
-	}
-	
-	$self->_is_valid_mask();	
+    if ( $mask =~ /0.0.0.0/ ) {
+        $self->{MASK} = Farly::IPv4::Address->new($mask);
+    }
+    elsif ( $mask =~ /^0/ ) {
+        my $ip = Farly::IPv4::Address->new($mask);
+        $self->{MASK} = Farly::IPv4::Address->new( $ip->inverse() );
+    }
+    else {
+        $self->{MASK} = Farly::IPv4::Address->new($mask);
+    }
+
+    $self->_is_valid_mask();
 }
 
 sub _bits_to_mask {
-	my ( $self, $bits ) = @_;
-	if ( $bits >= 0 && $bits <= 32 ) {
-		my $zeroBits = 32 - $bits;
-		my $ip = ( 1 << $zeroBits ) - 1;
-		return ~$ip & 4294967295;
-	}
-	else {
-		confess "$bits is not a valid subnet mask";
-	}
+    my ( $self, $bits ) = @_;
+    if ( $bits >= 0 && $bits <= 32 ) {
+        my $zeroBits = 32 - $bits;
+        my $ip       = ( 1 << $zeroBits ) - 1;
+        return ~$ip & 4294967295;
+    }
+    else {
+        confess "$bits is not a valid subnet mask";
+    }
 }
 
 sub _is_valid_mask {
-	my $mask = $_[0]->{MASK}->address();
-	my $current_bit;
-	my $flag = 0;
+    my $mask = $_[0]->{MASK}->address();
+    my $current_bit;
+    my $flag = 0;
 
-	for ( my $i = 0 ; $i < 32 ; ++$i ) {
-		$current_bit = ( $mask >> $i ) & 1;
-		if ( $current_bit == 1 ) {
-			$flag = 1;
-		}
-		if ( ( $flag == 1 ) && ( $current_bit == 0 ) ) {
-			confess "$mask is not a valid subnet mask";
-		}
-	}
+    for ( my $i = 0 ; $i < 32 ; ++$i ) {
+        $current_bit = ( $mask >> $i ) & 1;
+        if ( $current_bit == 1 ) {
+            $flag = 1;
+        }
+        if ( ( $flag == 1 ) && ( $current_bit == 0 ) ) {
+            confess "$mask is not a valid subnet mask";
+        }
+    }
 
-	return 1;
+    return 1;
 }
 
 sub address {
-	return $_[0]->{NETWORK}->address();
+    return $_[0]->{NETWORK}->address();
 }
 
 sub network {
-	return $_[0]->{NETWORK}->address() & $_[0]->{MASK}->address();
+    return $_[0]->{NETWORK}->address() & $_[0]->{MASK}->address();
 }
 
 sub mask {
-	return $_[0]->{MASK};
+    return $_[0]->{MASK};
 }
 
 sub inverse_mask {
-	return $_[0]->mask()->inverse();
+    return $_[0]->mask()->inverse();
 }
 
 sub first {
-	return ( $_[0]->network() );
+    return ( $_[0]->network() );
 }
 
 sub last {
-	return ( $_[0]->network() + $_[0]->inverse_mask() );
+    return ( $_[0]->network() + $_[0]->inverse_mask() );
 }
 
 sub as_string {
-	return join( " ", $_[0]->network_address()->as_string(), $_[0]->mask()->as_string() );
+    return join( " ", $_[0]->network_address()->as_string(), $_[0]->mask()->as_string() );
 }
 
 sub as_wc_string {
-	return join( " ", $_[0]->network_address()->as_string(), $_[0]->wc_mask()->as_string() );
+    return join( " ", $_[0]->network_address()->as_string(), $_[0]->wc_mask()->as_string() );
 }
 
 sub network_address {
-	return Farly::IPv4::Address->new( $_[0]->network() );
+    return Farly::IPv4::Address->new( $_[0]->network() );
 }
 
 sub wc_mask {
-	return Farly::IPv4::Address->new( $_[0]->inverse_mask() );
+    return Farly::IPv4::Address->new( $_[0]->inverse_mask() );
 }
 
 sub broadcast_address {
-	return Farly::IPv4::Address->new( $_[0]->network() + $_[0]->inverse_mask() );
+    return Farly::IPv4::Address->new( $_[0]->network() + $_[0]->inverse_mask() );
 }
 
 sub start {
-	return $_[0]->network_address();
+    return $_[0]->network_address();
 }
 
 sub end {
-	return $_[0]->broadcast_address();
+    return $_[0]->broadcast_address();
 }
 
 sub iter {
-	my @iter = ( Farly::IPv4::Range->new( $_[0]->first(), $_[0]->last() ) );
-	return @iter;
+    my @iter = ( Farly::IPv4::Range->new( $_[0]->first(), $_[0]->last() ) );
+    return @iter;
 }
 
 1;
