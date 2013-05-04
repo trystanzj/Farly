@@ -207,8 +207,7 @@ sub _tuple {
             $r->set( $property, $rule->get($property) );
         }
         else {
-            $logger->warn( "property $property not defined in ",
-                $rule->dump() );
+            $logger->warn( "property $property not defined in ", $rule->dump() );
         }
     }
 
@@ -246,8 +245,7 @@ sub _inconsistent {
             # if $rule_x comes before $rule_y in the rule set
             # then check if $rule_x contains $rule_y
 
-            if ( $rule_x->get('LINE')->number() <=
-                $rule_y->get('LINE')->number() )
+            if ( $rule_x->get('LINE')->number() <= $rule_y->get('LINE')->number() )
             {
 
                 # $rule_x1 is rule_x with layer 3 and 4 properties only
@@ -283,14 +281,8 @@ sub _can_remove {
         if ( !$rule_z->get('DST_IP')->gt( $rule_x1->get('DST_IP') ) ) {
 
             #is Z between X and Y?
-            if (
-                (
-                    $rule_z->get('LINE')->number() >=
-                    $rule_x->get('LINE')->number()
-                )
-                && ( $rule_z->get('LINE')->number() <=
-                    $rule_y->get('LINE')->number() )
-              )
+            if ( ( $rule_z->get('LINE')->number() >= $rule_x->get('LINE')->number() )
+                && ( $rule_z->get('LINE')->number() <= $rule_y->get('LINE')->number() ) )
             {
 
                 # Zd intersect Xp?
@@ -350,19 +342,16 @@ sub _redundant {
                 if ( $rule_y->contained_by($rule_x1) ) {
 
                     # rule_x is before rule_y in the rule set so remove rule_y
-                    if ( $rule_x->get('LINE')->number() <=
-                        $rule_y->get('LINE')->number() )
+                    if ( $rule_x->get('LINE')->number() <= $rule_y->get('LINE')->number() )
                     {
-                        $rule_y->set( 'REMOVE',
-                            Farly::Value::String->new('RULE') );
+                        $rule_y->set( 'REMOVE', Farly::Value::String->new('RULE') );
                         $self->_log_remove( $rule_x, $rule_y );
                     }
                     else {
 
                         # rule_y is actually after rule_x in the rule set
                         if ( $self->_can_remove( $rule_y, $rule_x, $s_an ) ) {
-                            $rule_y->set( 'REMOVE',
-                                Farly::Value::String->new('RULE') );
+                            $rule_y->set( 'REMOVE', Farly::Value::String->new('RULE') );
                             $self->_log_remove( $rule_x, $rule_y );
                         }
                     }
