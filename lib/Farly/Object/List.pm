@@ -43,6 +43,8 @@ sub clone {
 sub matches {
     my ( $self, $other, $result ) = @_;
 
+    $self->_validate( $other, $result );
+
     foreach my $object ( $self->iter() ) {
         if ( $object->matches($other) ) {
             $result->add($object);
@@ -53,6 +55,8 @@ sub matches {
 sub contains {
     my ( $self, $other, $result ) = @_;
 
+    $self->_validate( $other, $result );
+    
     foreach my $object ( $self->iter() ) {
         if ( $object->contains($other) ) {
             $result->add($object);
@@ -62,6 +66,8 @@ sub contains {
 
 sub contained_by {
     my ( $self, $other, $result ) = @_;
+
+    $self->_validate( $other, $result );
 
     foreach my $object ( $self->iter() ) {
         if ( $object->contained_by($other) ) {
@@ -73,6 +79,8 @@ sub contained_by {
 sub intersects {
     my ( $self, $other, $result ) = @_;
 
+    $self->_validate( $other, $result );
+
     foreach my $object ( $self->iter() ) {
         if ( $object->intersects($other) ) {
             $result->add($object);
@@ -82,6 +90,8 @@ sub intersects {
 
 sub search {
     my ( $self, $other, $result ) = @_;
+
+    $self->_validate( $other, $result );
 
     foreach my $object ( $self->iter() ) {
         if ( $object->matches($other) ) {
@@ -102,7 +112,7 @@ sub search {
 sub _validate {
     my ( $self, $other, $result ) = @_;
 
-    carp "other not defined"
+    confess "other not defined"
       unless ( defined $other );
 
     confess "container for result required"
