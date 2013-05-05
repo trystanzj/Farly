@@ -44,6 +44,7 @@ $expanded_rules->matches( $search, $search_result );
 
 $optimizer = Farly::Rule::Optimizer->new($search_result);
 #$optimizer->verbose(1);
+$optimizer->set_l4(); #not really needed, this is the default mode
 $optimizer->run();
 
 ok( $optimizer->optimized->size() == 18, "optimized" );
