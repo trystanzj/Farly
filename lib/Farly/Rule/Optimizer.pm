@@ -109,6 +109,13 @@ sub _ascending_LINE {
     $a->get('LINE')->compare( $b->get('LINE') );
 }
 
+sub set_l4 {
+    my ($self) = @_;
+    $self->{MODE}       = 'L4';
+    $self->{PROTOCOLS}  = [ 0, 6, 17 ];
+    $self->{PROPERTIES} = [ 'PROTOCOL', 'SRC_IP', 'SRC_PORT', 'DST_IP', 'DST_PORT' ];
+}
+
 # sort rules in ascending order so that current can contain next
 # but next can't contain current
 sub _ascending_l4 {
@@ -566,6 +573,19 @@ Change the default permit string. The default permit string is "permit."
 Change the default deny string. The default deny string is "deny."
 
 	$optimizer->set_d_action("drop");
+
+=head2 set_icmp()
+
+Set the optimizer to optimize ICMP rules
+
+	$optimizer->set_icmp();
+
+=head2 set_l3()
+
+Set the optimizer to optimize layer three rules, which does not include
+TCP, UDP or ICMP rules.
+
+	$optimizer->set_l3();
 
 =head2 optimized()
 
