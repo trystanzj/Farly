@@ -9,14 +9,24 @@ use Farly::Object::Aggregate qw(NEXTVAL);
 our $VERSION = '0.20';
 
 sub new {
-    my ($class) = @_;
+    my ( $class, $container ) = @_;
 
-    my $self = { RESULT => Farly::Object::List->new(), };
+    confess "firewall configuration container object required"
+      unless ( defined($container) );
+
+    confess "Farly::Object::List object required"
+      unless ( $container->isa("Farly::Object::List") );
+
+    my $self = {
+        FW     => $container,
+        RESULT => Farly::Object::List->new(),
+    };
     bless $self, $class;
 
     return $self;
 }
 
+sub fw     { return $_[0]->{FW} }
 sub result { return $_[0]->{RESULT} }
 
 sub _removes {
@@ -102,7 +112,7 @@ sub _remove_config {
 }
 
 sub remove {
-    my ( $self, $config, $list ) = @_;
+    my ( $self, $list ) = @_;
 
     my $rule_id = $self->_create_ref( $list->[0] );
 
@@ -112,7 +122,7 @@ sub remove {
 
     # get the config rules
     my $cfg_rules = Farly::Object::List->new();
-    $config->matches( $rule_id, $cfg_rules );
+    $self->fw->matches( $rule_id, $cfg_rules );
 
     # remove_agg will have the list of entries to be removed
     my $remove_agg = $self->_aggregate( $self->_removes($list) );

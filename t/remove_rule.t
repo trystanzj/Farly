@@ -38,9 +38,9 @@ foreach my $obj ( $rules->iter() ) {
     }
 }
 
-my $remover = Farly::Remove::Rule->new();
+my $remover = Farly::Remove::Rule->new($fw);
 
-$remover->remove($fw, $rules);
+$remover->remove($rules);
 
 my $string;
 my $template = Farly::Template::Cisco->new('ASA', 'OUTPUT' => \$string);
