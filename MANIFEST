@@ -61,6 +61,7 @@ t/ipv4_icmptype.t
 t/ipv4_network.t
 t/ipv4_range.t
 t/object_aggregate.t
+t/object_list.t
 t/object_ref.t
 t/object_set.t
 t/object.t
