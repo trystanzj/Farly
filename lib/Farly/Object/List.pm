@@ -11,6 +11,7 @@ sub new {
     my ($class) = @_;
     return bless [], $class;
 }
+
 sub add {
     my ( $self, $object ) = @_;
 

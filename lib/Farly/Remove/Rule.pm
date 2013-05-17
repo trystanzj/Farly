@@ -9,16 +9,16 @@ use Farly::Object::Aggregate qw(NEXTVAL);
 our $VERSION = '0.20';
 
 sub new {
-    my ( $class, $container ) = @_;
+    my ( $class, $list ) = @_;
 
-    confess "firewall configuration container object required"
-      unless ( defined($container) );
+    confess "configuration Farly::Object::List required"
+      unless ( defined($list) );
 
-    confess "Farly::Object::List object required"
-      unless ( $container->isa("Farly::Object::List") );
+    confess "configuration Farly::Object::List required"
+      unless ( $list->isa("Farly::Object::List") );
 
     my $self = {
-        FW     => $container,
+        FW     => $list,
         RESULT => Farly::Object::List->new(),
     };
     bless $self, $class;
@@ -97,20 +97,6 @@ sub _aggregate {
     return $agg;
 }
 
-sub _remove_config {
-    my ( $self, $list, $id ) = @_;
-
-    foreach my $object ( $list->iter() ) {
-        if ( $object->matches($id) ) {
-            my $clone = $object->clone();
-            $clone->set( 'REMOVE', Farly::Value::String->new('RULE') );
-            $clone->delete_key('LINE');
-            $self->result->add($clone);
-            return;
-        }
-    }
-}
-
 sub remove {
     my ( $self, $list ) = @_;
 
@@ -134,15 +120,27 @@ sub remove {
 
     while ( my $id = NEXTVAL($it) ) {
 
-        # the entries which are being kept
-        my $keep_set = $keep_agg->matches($id);
+        # identity of the entries which are being kept
+        my $keep_list = $keep_agg->matches($id);
 
-        foreach my $keep_rule ( $keep_set->iter() ) {
+        # add the entries which are being kept
+        foreach my $keep_rule ( $keep_list->iter() ) {
+
             $self->result->add($keep_rule);
         }
 
-        # the config rule being removed
-        $self->_remove_config( $cfg_rules, $id );
+        # add the config rule being removed
+        foreach my $object ( $cfg_rules->iter() ) {
+
+            if ( $object->matches($id) ) {
+
+                my $clone = $object->clone();
+                $clone->set( 'REMOVE', Farly::Value::String->new('RULE') );
+                $clone->delete_key('LINE');
+
+                $self->result->add($clone);
+            }
+        }
     }
 }
 

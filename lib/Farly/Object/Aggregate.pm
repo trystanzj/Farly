@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Carp;
 require Exporter;
-require Farly::Object::Set;
+require Farly::Object::List;
 
 our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(NEXTVAL);
@@ -54,7 +54,7 @@ sub id_iterator {
         my $object = Farly::Object->new();
 
         foreach my $property ( $arr[$i]->get_keys() ) {
-            if ( $property ne '__SET__' ) {
+            if ( $property ne '__AGG__' ) {
                 $object->set( $property, $arr[$i]->get($property) );
             }
         }
@@ -65,7 +65,7 @@ sub id_iterator {
       }
 }
 
-sub set_iterator {
+sub list_iterator {
     my ($self) = @_;
 
     my @arr = $self->iter();
@@ -74,7 +74,7 @@ sub set_iterator {
     # the iterator code ref
     return sub {
         return undef if ( $i == scalar(@arr) );
-        my $set = $arr[$i]->get('__SET__');
+        my $set = $arr[$i]->get('__AGG__');
         $i++;
         return $set;
       }
@@ -114,12 +114,12 @@ sub _has_defined_keys {
 
 # [ {  KEY1 => value object,
 #      KEY2 => value object,
-#   __SET__ => Farly::Object::Set }, ]
-# __SET__ is a set of all objects sharing the
+#   __AGG__ => Farly::Object::List }, ]
+# __AGG__ is a set of all objects sharing the
 # common identity formed by KEY1 and KEY2,
 # i.e $obj1->{KEY1} equals $obj2->{KEY1}
 # and $obj1->{KEY2} equals $obj2->{KEY2}
-# for all objects in __SET__
+# for all objects in __AGG__
 
 sub groupby {
     my ($self) = shift;
@@ -154,13 +154,13 @@ sub groupby {
             $root->set( $key, $sorted[$i]->get($key) );
         }
 
-        my $set = Farly::Object::Set->new();
+        my $result = Farly::Object::List->new();
 
         my $j = $i;
 
         while ( $sorted[$j]->matches($root) ) {
 
-            $set->add( $sorted[$j] );
+            $result->add( $sorted[$j] );
 
             $j++;
 
@@ -169,7 +169,7 @@ sub groupby {
 
         $i = $j - 1;
 
-        $root->set( '__SET__', $set );
+        $root->set( '__AGG__', $result );
 
         push @grouped, $root;
     }
@@ -178,33 +178,33 @@ sub groupby {
 }
 
 # input = search object
-# return the __SET__ object on first match
+# return the __AGG__ object on first match
 sub matches {
     my ( $self, $search ) = @_;
 
     foreach my $object ( $self->iter() ) {
         if ( $object->matches($search) ) {
-            return $object->get('__SET__');
+            return $object->get('__AGG__');
         }
     }
 
-    #return an empty Set on no match
-    return Farly::Object::Set->new();
+    #return an empty List on no match
+    return Farly::Object::List->new();
 }
 
-# input = search object and new __SET__
+# input = search object and new __AGG__
 sub update {
-    my ( $self, $search, $set ) = @_;
+    my ( $self, $search, $list ) = @_;
 
-    confess "set required"
-      unless defined($set);
+    confess "Farly::Object::List required"
+      unless defined($list);
 
-    confess "set object required"
-      unless $set->isa('Farly::Object::Set');
+    confess "Farly::Object::List required"
+      unless $list->isa('Farly::Object::List');
 
     foreach my $object ( $self->iter() ) {
         if ( $object->matches($search) ) {
-            $object->set( '__SET__', $set );
+            $object->set( '__AGG__', $list );
             return;
         }
     }
@@ -244,12 +244,12 @@ Farly::Object::Aggregate - Group objects with common identity.
   my $id = Farly::Object->new();
   $id->set( 'id', Farly::Value::String->new('id1234') );
 
-  my $set = $aggregate->matches( $id );
+  my $list = $aggregate->matches( $id );
 
 =head1 DESCRIPTION
 
 Farly::Object::Aggregate groups Farly::Objects with a common
-identity (equal key/value pairs) into Farly::Object::Sets.
+identity (equal key/value pairs) into Farly::Object::Lists.
 
 =head1 METHODS
 
@@ -262,7 +262,7 @@ The constructor. An Farly::Object::List must be provided.
 =head2 groupby( 'key1', 'key2', 'key3' ... )
 
 All objects in the supplied list of keys, with equal values for the specified keys, 
-will be grouped into a Farly::Object::Set. 
+will be grouped into a Farly::Object::List. 
 
 Farly::Objects without the specified property/key will be skipped.
 
@@ -270,13 +270,13 @@ Farly::Objects without the specified property/key will be skipped.
 
 =head2 matches( $search<Farly::Object> )
 
-Return the Farly::Object::Set of objects with the specified identity.
+Return the Farly::Object::List with the specified identity.
 
   $set = $aggregate->matches( $identity<Farly::Object> );
 
-=head2 update( $search<Farly::Object>, $new_set<Farly::Object::Set> )
+=head2 update( $search<Farly::Object>, $new_list<Farly::Object::List> )
 
-Search for the identity specified by $search and update the __SET__ with $new_set
+Search for the identity specified by $search and update the __AGG__ with $new_list
 
   $set = $aggregate->matches( $identity<Farly::Object> );
 
@@ -286,15 +286,15 @@ Return an array of aggregate objects.
 
   @objects = $aggregate->iter();
 
-=head2 set_iterator()
+=head2 list_iterator()
 
 Return an iterator code reference to an iterator function which iterates over
-all __SET__'s defined in the aggregate. The __SET__'s contain objects with the
+all __AGG__'s defined in the aggregate. The __AGG__'s contain objects with the
 same identity as defined by the 'groupby' method.
 
   use Farly::Object::Aggregate qw(NEXTVAL);
   
-  $it = $aggregate->set_iterator()
+  $it = $aggregate->list_iterator()
 
 =head2 id_iterator()
 
@@ -310,10 +310,10 @@ the identity as defined by the 'groupby' method.
 
 =head2 NEXTVAL()
 
-Advance the iterator to the next __SET__
+Advance the iterator to the next __AGG__
 
-  while ( my $set = NEXTVAL($it) ) {
-      # do something with $set
+  while ( my $list = NEXTVAL($it) ) {
+      # do something with $list
   }
 
 =head1 COPYRIGHT AND LICENCE

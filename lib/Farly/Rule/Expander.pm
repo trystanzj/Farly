@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use Carp;
 use Log::Log4perl qw(get_logger);
+use Farly::Object::Aggregate;
 
 our $VERSION = '0.20';
 
@@ -71,8 +72,7 @@ sub _set_defaults {
             #if a srcport is not defined, define all ports
             if ( !$ce->has_defined('SRC_PORT') ) {
 
-                $ce->set( 'SRC_PORT',
-                    Farly::Transport::PortRange->new( 1, 65535 ) );
+                $ce->set( 'SRC_PORT', Farly::Transport::PortRange->new( 1, 65535 ) );
                 $logger->debug( 'SET SOURCE PORT ', $ce->get('SRC_PORT') );
             }
 
@@ -184,7 +184,7 @@ sub expand {
 
                 last;
             }
-            elsif ( $value->isa('Farly::Object::Set') ) {
+            elsif ( $value->isa('Farly::Object::List') ) {
 
                 $is_expanded = 0;
 
@@ -306,12 +306,12 @@ The constructor. The firewall configuration is provided.
 
 =head2 expand_all()
 
-Returns an Farly::Object::List<Farly::Object> container of all
+Returns a Farly::Object::List<Farly::Object> container of all
 raw expanded firewall rules in the current Farly firewall model.
 
   $expanded_ruleset = $rule_expander->expand_all();
 
-=head2 expand( $rule<Farly::Object>, $result<Farly::Object::List|Farly::Object::Set>)
+=head2 expand( $rule<Farly::Object>, $result<Farly::Object::List>)
 
 Returns the expanded version of the given firewall rule in the
 provided result container.

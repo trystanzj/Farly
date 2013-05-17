@@ -46,9 +46,9 @@ $agg->groupby('S1' );
 
 ok ( scalar( $agg->iter() ) == 3, "single key" );
 
-my $it = $agg->set_iterator();
+my $it = $agg->list_iterator();
 
-ok( ref($it) eq 'CODE', "set_iterator code ref");
+ok( ref($it) eq 'CODE', "list_iterator code ref");
 
 my $set_count = 0;
 my $object_count = 0;
@@ -58,27 +58,27 @@ while ( my $set = NEXTVAL($it) ) {
     $object_count += $set->size(); 
 }
 
-ok( $set_count == 3, "set set_iterator" );
+ok( $set_count == 3, "set list_iterator" );
 
-ok( $object_count == 4, "set set_iterator objects" );
+ok( $object_count == 4, "set list_iterator objects" );
 
 my $id = Farly::Object->new();
 
 $id->set( "S1", Farly::Value::String->new("string31") );
 
-my $result_set = $agg->matches( $id );
+my $result = $agg->matches( $id );
 
-ok ($result_set->isa('Farly::Object::Set'), "matches result type" );
+ok ($result->isa('Farly::Object::List'), "matches result type" );
 
-ok ( $result_set->size() == 2, "matches" );
+ok ( $result->size() == 2, "matches" );
 
-my $new_set = Farly::Object::Set->new();
-$new_set->add($ce4);
+my $new = Farly::Object::List->new();
+$new->add($ce4);
 
-$agg->update( $id, $new_set );
+$agg->update( $id, $new );
 
-$result_set = $agg->matches( $id );
-ok ( $result_set->equals($new_set), "update" );
+$result = $agg->matches( $id );
+ok ( $result->size() == 1, "update" );
 
 my $id_it = $agg->id_iterator();
 

@@ -18,7 +18,7 @@ sub new {
 
     my $self = {
         FW     => $container,
-        REMOVE => Farly::Object::Set->new(),
+        REMOVE => Farly::Object::List->new(),
     };
     bless $self, $class;
 
@@ -112,7 +112,7 @@ sub _collect_garbage {
     my $ROUTE     = Farly::Value::String->new('ROUTE');
 
     my @stack;
-    my $remove = Farly::Object::Set->new();
+    my $remove = Farly::Object::List->new();
 
     push @stack, $garbage_list->iter();
 
@@ -240,7 +240,7 @@ sub _reference_search {
 sub _remove_copy {
     my ( $self, $set, $remove ) = @_;
 
-    my $r = Farly::Object::Set->new();
+    my $r = Farly::Object::List->new();
 
     foreach my $object ( $set->iter ) {
         if ( !$object->matches($remove) ) {
@@ -297,7 +297,7 @@ The remove method may be called for multiple IP addresses.
 
 =head2 result()
 
-Returns an Farly::Object::Set<Farly::Object> object containing all objects
+Returns an Farly::Object::List<Farly::Object> object containing all objects
 which need to be removed from the current Farly firewall model in order to
 remove all references to the removed addresses.
 

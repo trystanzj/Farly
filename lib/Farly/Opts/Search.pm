@@ -22,7 +22,7 @@ sub new {
 
     my $self = {
         SEARCH => Farly::Object->new(),
-        FILTER => Farly::Object::Set->new(),
+        FILTER => Farly::Object::List->new(),
     };
     bless( $self, $class );
 
@@ -222,7 +222,7 @@ Farly::Opts::Search converts a Getopt::Long options hash to an
 Farly::Object object which can be used to search a Farly 
 Farly::Object::List<Farly::Object> firewall model.  
 
-Farly::Opts::Search can also create an Farly::Object::Set<Farly::Object>
+Farly::Opts::Search can also create an Farly::Object::List<Farly::Object>
 object from a configuration file. The filter set is used to exclude 
 firewall rules from the search results of the current Farly firewall
 model.
@@ -244,7 +244,7 @@ rules in the current Farly firewall model.
 
 =head2 filter()
 
-Returns an Farly::Object::Set<Farly::Object> object used to exculde 
+Returns an Farly::Object::List<Farly::Object> object used to exclude 
 firewall rules from the search results of the current Farly firewall
 model.
 
