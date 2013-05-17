@@ -12,7 +12,6 @@ my $path = $volume.$dir;
 use Farly;
 my $importer = Farly->new();
 
-
 my $container = $importer->process( "ASA", "$path/test.cfg" );
 
 ok( $container->size() == 48, "import");

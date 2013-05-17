@@ -15,6 +15,7 @@ my $container = $importer->process( "ASA", "$path/test.cfg" );
 
 ok( $container->size() == 48, "import");
 
+=b
 foreach my $obj ( $container->iter() ) {
     print $obj->dump(),"\n";
 }
