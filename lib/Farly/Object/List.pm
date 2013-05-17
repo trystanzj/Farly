@@ -41,6 +41,16 @@ sub clone {
     return $result;
 }
 
+sub includes {
+    my ( $self, $other ) = @_;
+
+    foreach my $object ( $self->iter() ) {
+        if ( $object->matches($other) ) {
+            return 1;
+        }
+    }
+}
+
 sub matches {
     my ( $self, $other, $result ) = @_;
 
@@ -57,7 +67,7 @@ sub contains {
     my ( $self, $other, $result ) = @_;
 
     $self->_validate( $other, $result );
-    
+
     foreach my $object ( $self->iter() ) {
         if ( $object->contains($other) ) {
             $result->add($object);
@@ -123,7 +133,8 @@ sub _validate {
       unless ( $other->isa("Farly::Object") );
 
     confess "the result container must be an Farly::Object::List or Farly::Object::Set"
-      unless ( $result->isa("Farly::Object::List") || $result->isa("Farly::Object::Set") );
+      unless ( $result->isa("Farly::Object::List")
+        || $result->isa("Farly::Object::Set") );
 }
 
 1;
@@ -198,6 +209,12 @@ Farly::Object container elements.
 Returns 'ARRAY' of the Farly::Object container elements.
 
   my @objects = $container->iter();
+
+=head2 includes( $object<Farly::Object> )
+
+Returns true if an object in this List 'matches' the other object.
+
+  $set1->includes( $object );
 
 =head2 matches( $search<Farly::Object>, $result<Farly::Object::List> )
 
