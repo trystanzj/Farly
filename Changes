@@ -72,15 +72,15 @@
    - translate failure logs to file
    - added META.YML, LICENSE, repository link
 
-0.20 - April 2013
+0.20 - May 2013
    - added compare method
    - moved Object::KVC into Farly
-		Farly::Object = Farly::Object
-		Farly::ObjectRef = Farly::Object::Ref
-		Object::KVC::List = Farly::Object::List
-		Object::KVC::Set = Farly::Object::Set
-		Farly::Value::String = Farly::Value::String
-		Object::KVC::Integer = Farly::Value::Integer
+		Object::KVC::Hash => Farly::Object
+		Object::KVC::HashRef => Farly::Object::Ref
+		Object::KVC::List => Farly::Object::List
+		Object::KVC::Set => Farly::Object::Set
+		Object::KVC::String => Farly::Value::String
+		Object::KVC::Integer => Farly::Value::Integer
    - added Farly::Object::Aggregate
    - optimised Farly::Rule::Optimizer
-   - fixed broken Farly::Remove::Rule
+   - Farly::Remove::Rule now using 'REMOVE' property
