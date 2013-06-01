@@ -5,7 +5,7 @@ Log::Log4perl->easy_init($ERROR);
 
 use Farly;
 use Farly::Opts::Search;
-use Test::Simple tests => 6;
+use Test::Simple tests => 10;
 use File::Spec; 
 
 my $abs_path = File::Spec->rel2abs( __FILE__ );
@@ -59,38 +59,31 @@ ok( $search_parser->search()->equals( $expected ), 'ip net' );
 
 $opts{'exclude-dst'} = "$path/filter.txt";
 
-my $filter_set = Farly::Object::Set->new();
-
 my $filter1 = Farly::Object->new();
 $filter1->set('DST_IP', Farly::IPv4::Network->new('10.1.2.0 255.255.255.0') );
 my $filter2 = Farly::Object->new();
 $filter2->set('DST_IP', Farly::IPv4::Network->new('10.2.2.0 255.255.255.0') );
 
-$filter_set->add($filter1);
-$filter_set->add($filter2);
-
 $search_parser = Farly::Opts::Search->new( \%opts );
 
-ok( $search_parser->filter()->equals( $filter_set ), 'filter dst');
-
+ok( $search_parser->filter()->size == 2, 'filter dst');
+ok( $search_parser->filter()->includes( $filter1 ), 'filter dst 1');
+ok( $search_parser->filter()->includes( $filter2 ), 'filter dst 2');
 
 delete $opts{'exclude-dst'};
 
 $opts{'exclude-src'} = "$path/filter.txt";
-
-$filter_set = Farly::Object::Set->new();
 
 my $filter3 = Farly::Object->new();
 $filter3->set('SRC_IP', Farly::IPv4::Network->new('10.1.2.0 255.255.255.0') );
 my $filter4 = Farly::Object->new();
 $filter4->set('SRC_IP', Farly::IPv4::Network->new('10.2.2.0 255.255.255.0') );
 
-$filter_set->add($filter3);
-$filter_set->add($filter4);
-
 $search_parser = Farly::Opts::Search->new( \%opts );
 
-ok( $search_parser->filter()->equals( $filter_set ), 'filter src');
+ok( $search_parser->filter()->size == 2, 'filter src');
+ok( $search_parser->filter()->includes( $filter3 ), 'filter src 1');
+ok( $search_parser->filter()->includes( $filter4 ), 'filter src 2');
 
 $opts{'exclude-src'} = "$path/filter2.txt";
 
