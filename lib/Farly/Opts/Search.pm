@@ -145,7 +145,7 @@ sub _set_port {
     my $port_formatter = Farly::ASA::PortFormatter->new();
 
     $port =~ s/^\s+|\s+$//g;
-
+    
     if ( $port =~ /^\d+$/ ) {
         $self->search->set( $property, Farly::Transport::Port->new($port) );
     }
@@ -154,6 +154,9 @@ sub _set_port {
           or die "unknown port '$port'\n";
         $self->search->set( $property, Farly::Transport::Port->new($port_number) );
     }
+    else {
+        die "$port is not a port number\n";
+    }    
 }
 
 sub _src_port {
