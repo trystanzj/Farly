@@ -548,7 +548,7 @@ NAMED_NET :
 
 PROTOCOL :
 		/\d+/ | 'ah' | 'eigrp' | 'esp' | 'gre' | 'icmp' | 'icmp6' | 'igmp' 
-	| 'igrp' | 'ip' | 'ipinip' | 'ipsec' | 'nos' | 'ospf' | 'pcp' 
+	| 'igrp' | 'ipinip' | 'ipsec' | 'ip' | 'nos' | 'ospf' | 'pcp' 
 	| 'pim' | 'pptp' | 'snp' | 'tcp' | 'udp'
 
 GROUP_PROTOCOL :
