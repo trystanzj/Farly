@@ -48,7 +48,7 @@
   - Fixed documentation mistakes
   - Improved Makefile.PL
   - Fixed bug in Farly::Remove::Address
-  - Added 'route' support
+  - Added 'route' support patches from Lukas Thiemeier
  
 0.10 - November 2012
   - Fixed documentation mistakes
@@ -83,4 +83,6 @@
 		Farly::Value::Integer => Farly::Value::Integer
    - added Farly::Object::Aggregate
    - optimised Farly::Rule::Optimizer
-   - Farly::Remove::Rule now using 'REMOVE' property
+   - fixed Farly::Remove::Rule - now using 'REMOVE' property
+   - bug fixes and all protocols test from Lukas Thiemeier
+ 
