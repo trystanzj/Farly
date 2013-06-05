@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::Simple tests => 1;
+use Test::Simple tests => 3;
 
 use File::Spec; 
 
@@ -13,7 +13,9 @@ use Farly;
 my $importer = Farly->new();
 my $container = $importer->process( "ASA", "$path/test.cfg" );
 
-ok( $container->size() == 48, "import");
+ok( defined $container, "container defined");
+ok( $container->isa("Farly::Object::List"), "container type");
+ok( $container->size() == 63, "import ok");
 
 =b
 foreach my $obj ( $container->iter() ) {
