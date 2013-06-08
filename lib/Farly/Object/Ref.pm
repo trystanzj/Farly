@@ -28,8 +28,8 @@ Farly::Object::Ref - A reference object
 
 =head1 DESCRIPTION
 
-A Farly::Object::Ref is a reference object which refers to one or more
-Farly::Objects in the same Farly::Object::List.
+A Farly::Object::Ref is a reference object which refers to the identity
+of one or more Farly::Objects in the same Farly::Object::List.
 
 Farly::Object::Ref is a Farly::Object. 
 

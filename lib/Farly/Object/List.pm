@@ -133,8 +133,7 @@ sub _validate {
       unless ( $other->isa("Farly::Object") );
 
     confess "the result container must be an Farly::Object::List or Farly::Object::Set"
-      unless ( $result->isa("Farly::Object::List")
-        || $result->isa("Farly::Object::Set") );
+      unless ( $result->isa("Farly::Object::List") || $result->isa("Farly::Object::Set") );
 }
 
 1;

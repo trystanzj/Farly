@@ -14,7 +14,7 @@ my $importer = Farly->new();
 
 my $container = $importer->process( "ASA", "$path/test.cfg" );
 
-ok( $container->size() == 48, "import");
+ok( $container->size() == 63, "import");
 
 use Farly::Rule::Expander;
 

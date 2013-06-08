@@ -114,7 +114,7 @@ sub _process_section {
     $logger->debug("$header");
     my $header_pos = $pos;
 
-    while ($line &&  $line =~ /^\s/ ) {
+    while ( $line &&  $line =~ /^\s/ ) {
 
         if ( $line =~ /^\s(?=$options)/ ) {
             $logger->debug("$line");
