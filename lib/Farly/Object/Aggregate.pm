@@ -310,7 +310,7 @@ the identity as defined by the 'groupby' method.
 
 =head2 NEXTVAL()
 
-Advance the iterator to the next __AGG__
+Advance the iterator to the next aggregate object.
 
   while ( my $list = NEXTVAL($it) ) {
       # do something with $list
