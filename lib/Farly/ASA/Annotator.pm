@@ -9,7 +9,7 @@ use Log::Log4perl qw(get_logger);
 use Farly::ASA::PortFormatter;
 use Farly::ASA::ProtocolFormatter;
 use Farly::ASA::ICMPFormatter;
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 our $AUTOLOAD;
 
 #each token type maps to a class

@@ -6,7 +6,7 @@ use warnings;
 use Carp;
 use Farly::Object::Aggregate qw(NEXTVAL);
 
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 
 sub new {
     my ( $class, $list ) = @_;
