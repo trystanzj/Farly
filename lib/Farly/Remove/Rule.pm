@@ -149,36 +149,42 @@ __END__
 
 =head1 NAME
 
-Farly::Remove::Rule - Removes a list of firewall rule entries
+Farly::Remove::Rule - Removes firewall rule entries from the configuration
 
 =head1 DESCRIPTION
 
-Farly::Remove::Rule calculates dependencies and generates the commands needed
-to remove a $list<Farly::Object::List<Farly::Object>> of firewall rule entries
-from the given firewall configuration.
+Farly::Remove::Rule replaces a firewall rule configuration with the set of 
+firewall rule entries to be kept. i.e. If the firewall configuration rule uses
+a group, then the configuration rule is removed and the expanded firewall rule
+entries are used in the configuration.
 
-If the firewall configuration rule uses a group, then the configuration rule is removed
-and the expanded firewall rule entries are used in the configuration.
+Farly::Remove::Rule must be provided with the original configuration container 
+and a unique expanded $list<Farly::Object::List> of firewall rule entries where
+entries to be removed have the 'REMOVE' property set.
+
+The commands needed to remove the 'REMOVE' firewall rule entries from the given 
+firewall configuration will be generated.
 
 =head1 METHODS
 
-=head2 new( $list )
+=head2 new( $config<Farly::Object::List> )
 
-The constructor.
+The constructor. The firewall configuration container is required.
 
-=head2 remove( $config<Farly::Object::List>, $expanded_rules<Farly::Object::List> )
+  $remover = Farly::Remove::Rule->new( $config<Farly::Object::List> );
 
-Resolves removes the list of firewall rule entries from the 
-given Farly firewall $config model.
+=head2 remove( $expanded_rules<Farly::Object::List> )
 
-  $remover->remove( $config, $expanded_rules );
+Removes entries with the 'REMOVE' property from the given Farly firewall $config model.
 
-Object being removed from the config must have the 'REMOVE' property
+  $remover->remove( $expanded_rules );
+
+Rules entry objects being removed from the config must have the 'REMOVE' property
 set within $expanded_rules.
 
 =head2 result()
 
-Returns an Farly::Object::List<Farly::Object> object containing all objects
+Returns a Farly::Object::List<Farly::Object> object containing all objects
 which need to be removed or added to the current Farly firewall model in order
 to remove all references to the removed firewall rule entries.
 

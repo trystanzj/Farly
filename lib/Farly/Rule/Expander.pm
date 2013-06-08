@@ -285,7 +285,7 @@ __END__
 
 =head1 NAME
 
-Farly::Rule::Expander - Convert a firewall rule configuration into an expanded rule set
+Farly::Rule::Expander - Expand a firewall rule configuration
 
 =head1 DESCRIPTION
 
