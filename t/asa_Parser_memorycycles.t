@@ -6,6 +6,8 @@ use File::Spec;
 use Farly::ASA::Filter;
 use Farly::ASA::Parser;
 use IO::File;
+use Log::Log4perl qw(:easy);
+Log::Log4perl->easy_init($ERROR);
 
 eval "use Test::Memory::Cycle";
 
