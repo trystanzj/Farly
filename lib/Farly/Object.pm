@@ -40,8 +40,9 @@ sub set {
     confess "a value object must be defined"
       unless ( defined($value) );
 
-    # reference object, or list (i.e. $self is tree node)
-    if ( $value->isa('Farly::Object') || $value->isa('Farly::Object::List') )
+    # reference object, or list (i.e. $self is tree node), or set
+    if ( $value->isa('Farly::Object') || $value->isa('Farly::Object::List')
+         || $value->isa('Farly::Object::Set') )
     {
         $self->{$key} = $value;
         return;
