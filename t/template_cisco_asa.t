@@ -7,7 +7,7 @@ Log::Log4perl->easy_init($ERROR);
 use Farly;
 use Farly::ASA::Builder;
 use Farly::Template::Cisco;
-use Test::Simple tests => 2;
+use Test::Simple tests => 3;
 
 my $container = Farly::Object::List->new();
 
@@ -279,6 +279,16 @@ route inside 0.0.0.0 0.0.0.0 192.168.0.1 2
 };
 
 ok( $string eq $expected, 'template - no formatting' );
+
+$string = '';
+$template = Farly::Template::Cisco->new( 'ASA', 'OUTPUT' => \$string );
+$template->use_text(1);
+
+foreach my $ce ( $container->iter() ) {
+	$template->as_string($ce);
+	$string .= "\n";
+}
+ok( $string eq $expected, 'template - no formatting (use_text = 1)' );
 
 $string = '';
 $template = Farly::Template::Cisco->new( 'ASA', 'OUTPUT' => \$string );

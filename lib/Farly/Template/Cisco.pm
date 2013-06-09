@@ -79,7 +79,7 @@ sub _value_format {
     elsif ( $value->isa('Farly::Transport::Protocol') ) {
 
         if ( $self->_text ) {
-            $string = defined( $self->{protocol_formatter}->as_string( $value->as_string() ) )
+            $string = defined($self->{protocol_formatter}) && defined( $self->{protocol_formatter}->as_string( $value->as_string() ) )
               ? $self->{protocol_formatter}->as_string( $value->as_string() )
               : $value->as_string();
         }
@@ -90,7 +90,7 @@ sub _value_format {
     elsif ( $value->isa('Farly::Transport::PortGT') ) {
         $string = "gt ";
         if ( $self->_text ) {
-            $string .= defined( $self->{port_formatter}->as_string( $value->as_string() ) )
+            $string .= defined($self->{port_formatter}) && defined( $self->{port_formatter}->as_string( $value->as_string() ) )
               ? $self->{port_formatter}->as_string( $value->as_string() )
               : $value->as_string();
         }
@@ -101,7 +101,7 @@ sub _value_format {
     elsif ( $value->isa('Farly::Transport::PortLT') ) {
         $string = "lt ";
         if ( $self->_text ) {
-            $string .= defined( $self->{port_formatter}->as_string( $value->as_string() ) )
+            $string .= defined($self->{port_formatter}) && defined( $self->{port_formatter}->as_string( $value->as_string() ) )
               ? $self->{port_formatter}->as_string( $value->as_string() )
               : $value->as_string();
         }
@@ -112,7 +112,7 @@ sub _value_format {
     elsif ( $value->isa('Farly::Transport::Port') ) {
         $string = "eq ";
         if ( $self->_text ) {
-            $string .= defined( $self->{port_formatter}->as_string( $value->as_string() ) )
+            $string .= defined($self->{port_formatter}) && defined( $self->{port_formatter}->as_string( $value->as_string() ) )
               ? $self->{port_formatter}->as_string( $value->as_string() )
               : $value->as_string();
         }
@@ -126,13 +126,13 @@ sub _value_format {
 
         if ( $self->_text ) {
 
-            $string .= defined( $self->{port_formatter}->as_string( $value->first() ) )
+            $string .= defined($self->{port_formatter}) && defined( $self->{port_formatter}->as_string( $value->first() ) )
               ? $self->{port_formatter}->as_string( $value->first() )
               : $value->first();
 
             $string .= " ";
 
-            $string .= defined( $self->{port_formatter}->as_string( $value->last() ) )
+            $string .= defined($self->{port_formatter}) && defined( $self->{port_formatter}->as_string( $value->last() ) )
               ? $self->{port_formatter}->as_string( $value->last() )
               : $value->last();
         }
@@ -250,7 +250,7 @@ sub _format {
 
         if ( $self->_text && $key eq 'ICMP_TYPE' ) {
 
-            $string = defined( $self->{icmp_formatter}->as_string( $value->as_string() ) )
+            $string = defined($self->{icmp_formatter}) && defined( $self->{icmp_formatter}->as_string( $value->as_string() ) )
               ? $self->{icmp_formatter}->as_string( $value->as_string() )
               : $value->as_string();
         }
