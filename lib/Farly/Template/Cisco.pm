@@ -52,7 +52,6 @@ sub _init {
 sub use_text {
     my ( $self, $flag ) = @_;
     $self->{TEXT} = $flag;
-    $self->set_formatters if $flag;
 }
 
 # port_formatter     => Farly::ASA::PortFormatter->new(),
