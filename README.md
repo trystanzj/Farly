@@ -19,12 +19,12 @@ large scale firewall configuration changes.
 Development
 ===========
 
-Version 0.21
+Version 0.22
 
 Current Release
 ===============
 
-http://search.cpan.org/~tjohnson/Farly-0.20/
+http://search.cpan.org/~tjohnson/Farly-0.21/
 
 LICENSING
 =========
