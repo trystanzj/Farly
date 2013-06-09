@@ -38,13 +38,12 @@ my $AST_Node_Class = {
     'name'                    => 'ID',
     'name_comment'            => 'COMMENT',
     'hostname'                => 'ID',
-    'interface'               => 'NAME',
+    'interface'               => 'INTERFACE',
     'if_name'                 => 'ID',
     'sec_level'               => 'SECURITY_LEVEL',
     'if_ip'                   => 'OBJECT',
     'if_mask'                 => 'MASK',
     'if_standby'              => 'STANDBY_IP',
-    'object'                  => 'OBJECT_TYPE',      #this will be over written
     'object_id'               => 'ID',
     'object_address'          => 'OBJECT',
     'object_service_protocol' => 'PROTOCOL',
@@ -88,8 +87,8 @@ my $AST_Node_Class = {
     'route_cost'              => 'COST',
     'route_track'             => 'TRACK',
     'route_tunneled'          => 'TUNNELED',
-    'port_neq'                => 'NEQ',          #not used yet
-    'MEMBER_TYPE'             => 'OBJECT_TYPE',  #map imaginary token MEMBER_TYPE to OBJECT_TYPE
+    'port_neq'                => 'NEQ',              #not used yet
+    'OBJECT_TYPE'             => 'OBJECT_TYPE',      #imaginary token mapping
 };
 
 sub new {
@@ -157,7 +156,7 @@ sub rewrite {
 
             $logger->debug( "mapped $pt_node_class to AST class ", ref($ast_node) );
 
-        # the AST root class has to have been changed or something is very wrong
+            # the AST root class has to have been changed or something is very wrong
             confess "rewrite error" if ( $root->isa('NULL') );
         }
 
