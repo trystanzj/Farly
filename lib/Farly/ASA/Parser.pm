@@ -6,6 +6,7 @@ use warnings;
 use Carp;
 use Log::Log4perl qw(get_logger);
 use Parse::RecDescent;
+use Scalar::Util qw/blessed weaken/;
 
 our $VERSION = '0.21';
 
@@ -48,7 +49,31 @@ sub parse {
     #throw an error if the parse fails
     defined($tree) or confess "unrecognized line\n";
 
+    # Comment by lukast:
+    # This is a workaround to avoid memory leaks within the parse tree.
+    # I don't really like this solution. It would be way better to have a grammar
+    # which does not create any unweakened circular references!
+    _weaken_circular_references($tree);
+
     return $tree;
+}
+
+# takes an object and weakens all circular references within the object
+# recurses for non-circular object references
+sub _weaken_circular_references{
+    my ($obj) = @_;
+    croak "_weaken_circular_references expects an object, got $obj" unless blessed $obj;
+    foreach (keys %$obj){
+        if(blessed $obj->{$_}){
+            if($obj->{$_} == $obj){
+                weaken $obj->{$_};
+            }
+            else{
+                _weaken_circular_references($obj->{$_});
+            }
+
+        }
+    }
 }
 
 sub _grammar {
