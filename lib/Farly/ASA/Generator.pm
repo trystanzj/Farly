@@ -88,7 +88,7 @@ __END__
 
 =head1 NAME
 
-Farly::ASA::Generator - Create Farly::Object objects from an AST
+Farly::ASA::Generator - Create Farly::Objects from an AST
 
 =head1 DESCRIPTION
 
