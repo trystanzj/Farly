@@ -14,25 +14,25 @@ our $AUTOLOAD;
 
 #each token type maps to a class
 our $Token_Class_Map = {
-    'STRING'      => 'Farly::Value::String',
-    'DIGIT'       => 'Farly::Value::Integer',
-    'NAME'        => 'Farly::Value::String',    #method replaces name with IP
-    'NAME_ID'     => 'Farly::Value::String',    #this is just the name string
-    'IF_REF'      => 'Farly::Object::Ref',
-    'OBJECT_REF'  => 'Farly::Object::Ref',
-    'GROUP_REF'   => 'Farly::Object::Ref',
-    'RULE_REF'    => 'Farly::Object::Ref',
-    'GROUP_TYPE'  => 'Farly::Value::String',
-    'MEMBER_TYPE' => 'Farly::Value::String',
-    'OBJECT_TYPE' => 'Farly::Value::String',
-    'ANY'         => 'Farly::IPv4::Network',    #method ANY = '0.0.0.0 0.0.0.0'
-    'IPADDRESS'   => 'Farly::IPv4::Address',
-    'MASK'        => 'Farly::IPv4::Address',
-    'IPNETWORK'   => 'Farly::IPv4::Network',
-    'IPRANGE'     => 'Farly::IPv4::Range',
-    'NAMED_NET'   => 'Farly::Value::String',    #method replaces name with IP
+    'STRING'       => 'Farly::Value::String',
+    'DIGIT'        => 'Farly::Value::Integer',
+    'NAME'         => 'Farly::Value::String',    #method replaces name with IP
+    'NAME_ID'      => 'Farly::Value::String',    #this is just the name string
+    'IF_REF'       => 'Farly::Object::Ref',
+    'OBJECT_REF'   => 'Farly::Object::Ref',
+    'GROUP_REF'    => 'Farly::Object::Ref',
+    'RULE_REF'     => 'Farly::Object::Ref',
+    'GROUP_TYPE'   => 'Farly::Value::String',
+    'OBJECT_ENTRY' => 'Farly::Value::String',
+    'OBJECT_TYPE'  => 'Farly::Value::String',
+    'ANY'          => 'Farly::IPv4::Network',    #method ANY = '0.0.0.0 0.0.0.0'
+    'IPADDRESS'    => 'Farly::IPv4::Address',
+    'MASK'         => 'Farly::IPv4::Address',
+    'IPNETWORK'    => 'Farly::IPv4::Network',
+    'IPRANGE'      => 'Farly::IPv4::Range',
+    'NAMED_NET'    => 'Farly::Value::String',    #method replaces name with IP
     'PROTOCOL'       => 'Farly::Transport::Protocol',
-    'GROUP_PROTOCOL' => 'Farly::Value::String',       #not ::Protocol because of 'tcp-udp'
+    'GROUP_PROTOCOL' => 'Farly::Value::String',    #not ::Protocol because of 'tcp-udp'
     'ICMP_TYPE'     => 'Farly::IPv4::ICMPType',       #method maps string to int
     'PORT_ID'       => 'Farly::Transport::Port',      #method maps string to int
     'PORT_RANGE'    => 'Farly::Transport::PortRange', #method maps string to int
@@ -46,8 +46,8 @@ our $Token_Class_Map = {
     'STATE'         => 'Farly::Value::String',
     'ACL_STATUS'    => 'Farly::Value::String',
     'LOG_LEVEL'     => 'Farly::Value::String',
-    'DEFAULT_ROUTE' => 'Farly::IPv4::Network',  #method DEFAULT_ROUTE sets '0.0.0.0 0.0.0.0'
-    'TUNNELED' => 'Farly::Value::String'
+    'DEFAULT_ROUTE' => 'Farly::IPv4::Network',    #method DEFAULT_ROUTE sets '0.0.0.0 0.0.0.0'
+    'TUNNELED'      => 'Farly::Value::String'
 };
 
 # 'ENTRY' is like a namespace in which an ID must be unique
@@ -192,8 +192,7 @@ sub ICMP_TYPE {
 
     $node->{'__VALUE__'} =
       defined( $self->icmp_formatter()->as_integer($icmp_type) )
-      ? Farly::IPv4::ICMPType->new(
-        $self->icmp_formatter()->as_integer($icmp_type) )
+      ? Farly::IPv4::ICMPType->new( $self->icmp_formatter()->as_integer($icmp_type) )
       : Farly::IPv4::ICMPType->new($icmp_type);
 }
 
@@ -204,8 +203,7 @@ sub PROTOCOL {
 
     $node->{'__VALUE__'} =
       defined( $self->protocol_formatter()->as_integer($protocol) )
-      ? Farly::Transport::Protocol->new(
-        $self->protocol_formatter()->as_integer($protocol) )
+      ? Farly::Transport::Protocol->new( $self->protocol_formatter()->as_integer($protocol) )
       : Farly::Transport::Protocol->new($protocol);
 }
 
@@ -216,8 +214,7 @@ sub PORT_ID {
 
     $node->{'__VALUE__'} =
       defined( $self->port_formatter()->as_integer($port) )
-      ? Farly::Transport::Port->new(
-        $self->port_formatter()->as_integer($port) )
+      ? Farly::Transport::Port->new( $self->port_formatter()->as_integer($port) )
       : Farly::Transport::Port->new($port);
 }
 
@@ -246,8 +243,7 @@ sub PORT_GT {
 
     $node->{'__VALUE__'} =
       defined( $self->port_formatter()->as_integer($port) )
-      ? Farly::Transport::PortGT->new(
-        $self->port_formatter()->as_integer($port) )
+      ? Farly::Transport::PortGT->new( $self->port_formatter()->as_integer($port) )
       : Farly::Transport::PortGT->new($port);
 }
 
@@ -258,8 +254,7 @@ sub PORT_LT {
 
     $node->{'__VALUE__'} =
       defined( $self->port_formatter()->as_integer($port) )
-      ? Farly::Transport::PortLT->new(
-        $self->port_formatter()->as_integer($port) )
+      ? Farly::Transport::PortLT->new( $self->port_formatter()->as_integer($port) )
       : Farly::Transport::PortLT->new($port);
 }
 
