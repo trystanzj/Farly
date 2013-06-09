@@ -6,6 +6,8 @@ use Log::Log4perl qw(:easy);
 Log::Log4perl->easy_init($ERROR);
 use Farly::ASA::Parser;
 
+use Data::Dumper;
+
 my $parser = Farly::ASA::Parser->new();
 
 ok( defined($parser), "constructor" );
@@ -141,9 +143,8 @@ $actual = productions($tree);
 $expected = {
 	'object'         => 1,
 	'object_address' => 1,
-	'object_host'    => 2,
 	'STRING'         => 1,
-	'MEMBER_TYPE'    => 1,
+	'OBJECT_ENTRY'    => 1,
 	'object_id'      => 1,
 	'OBJECT_TYPE'    => 1,
 	'IPADDRESS'      => 1
@@ -164,13 +165,13 @@ $tree = $parser->parse($string);
 
 $actual = productions($tree);
 
+
 $expected = {
-	'object_network' => 2,
 	'object'         => 1,
 	'IPNETWORK'      => 1,
 	'object_address' => 1,
 	'STRING'         => 1,
-	'MEMBER_TYPE'    => 1,
+	'OBJECT_ENTRY'    => 1,
 	'object_id'      => 1,
 	'OBJECT_TYPE'    => 1
 };
@@ -193,11 +194,10 @@ $actual = productions($tree);
 $expected = {
 	'IPRANGE'        => 1,
 	'object'         => 1,
-	'MEMBER_TYPE'    => 1,
+	'OBJECT_ENTRY'    => 1,
 	'object_address' => 1,
 	'object_id'      => 1,
 	'OBJECT_TYPE'    => 1,
-	'object_range'   => 2,
 	'STRING'         => 1
 };
 
@@ -221,14 +221,14 @@ $expected = {
 	'object_service_protocol' => 1,
 	'object'                  => 1,
 	'port_gt'                 => 1,
-	'object_service'          => 2,
+	'object_service'          => 1,
 	'PROTOCOL'                => 1,
 	'PORT_ID'                 => 1,
 	'port'                    => 2,
 	'object_service_src'      => 1,
 	'PORT_GT'                 => 1,
 	'STRING'                  => 1,
-	'MEMBER_TYPE'             => 1,
+	'OBJECT_ENTRY'             => 1,
 	'object_service_dst'      => 1,
 	'object_id'               => 1,
 	'OBJECT_TYPE'             => 1
@@ -250,7 +250,7 @@ $actual = productions($tree);
 
 $expected = {
 	'port_eq'           => 1,
-	'og_service_object' => 2,
+	'og_service_object' => 1,
 	'PROTOCOL'          => 1,
 	'og_so_protocol'    => 1,
 	'PORT_ID'           => 1,
@@ -259,7 +259,7 @@ $expected = {
 	'STRING'            => 1,
 	'og_id'             => 1,
 	'og_so_src_port'    => 1,
-	'MEMBER_TYPE'       => 1,
+	'OBJECT_TYPE'       => 1,
 	'og_object'         => 1,
 	'GROUP_TYPE'        => 1
 };
@@ -281,9 +281,9 @@ $actual = productions($tree);
 
 $expected = {
 	'og_id'              => 1,
-	'MEMBER_TYPE'        => 1,
+	'OBJECT_TYPE'        => 1,
 	'PROTOCOL'           => 1,
-	'og_protocol_object' => 2,
+	'og_protocol_object' => 1,
 	'og_object'          => 1,
 	'object_group'       => 1,
 	'GROUP_TYPE'         => 1,
@@ -309,8 +309,8 @@ $expected = {
 	'object_group'      => 1,
 	'STRING'            => 1,
 	'og_id'             => 1,
-	'og_network_object' => 2,
-	'MEMBER_TYPE'       => 1,
+	'og_network_object' => 1,
+	'OBJECT_TYPE'       => 1,
 	'og_object'         => 1,
 	'address'           => 1,
 	'GROUP_TYPE'        => 1
@@ -337,11 +337,11 @@ $expected = {
 	'GROUP_PROTOCOL' => 1,
 	'object_group'   => 1,
 	'port'           => 1,
-	'og_port_object' => 2,
+	'og_port_object' => 1,
 	'STRING'         => 1,
 	'og_protocol'    => 1,
 	'og_id'          => 1,
-	'MEMBER_TYPE'    => 1,
+	'OBJECT_TYPE'    => 1,
 	'og_object'      => 1,
 	'GROUP_TYPE'     => 1
 };
@@ -366,8 +366,8 @@ $expected = {
 	'GROUP_REF'       => 1,
 	'STRING'          => 1,
 	'og_id'           => 1,
-	'MEMBER_TYPE'     => 1,
-	'og_group_object' => 2,
+	'OBJECT_TYPE'     => 1,
+	'og_group_object' => 1,
 	'og_object'       => 1,
 	'GROUP_TYPE'      => 1
 };
@@ -390,10 +390,10 @@ $actual = productions($tree);
 $expected = {
 	'REMARKS'        => 1,
 	'og_id'          => 1,
-	'MEMBER_TYPE'    => 1,
+	'OBJECT_TYPE'    => 1,
 	'og_object'      => 1,
 	'object_group'   => 1,
-	'og_description' => 2,
+	'og_description' => 1,
 	'GROUP_TYPE'     => 1,
 	'STRING'         => 1
 };
@@ -414,7 +414,7 @@ $actual = productions($tree);
 
 $expected = {
 	'port_eq'           => 1,
-	'og_service_object' => 2,
+	'og_service_object' => 1,
 	'PROTOCOL'          => 1,
 	'og_so_protocol'    => 1,
 	'PORT_ID'           => 1,
@@ -423,7 +423,7 @@ $expected = {
 	'og_so_dst_port'    => 1,
 	'STRING'            => 1,
 	'og_id'             => 1,
-	'MEMBER_TYPE'       => 1,
+	'OBJECT_TYPE'       => 1,
 	'og_object'         => 1,
 	'GROUP_TYPE'        => 1
 };
@@ -450,8 +450,8 @@ $expected = {
 	'STRING'          => 1,
 	'og_protocol'     => 1,
 	'og_id'           => 1,
-	'MEMBER_TYPE'     => 1,
-	'og_group_object' => 2,
+	'OBJECT_TYPE'     => 1,
+	'og_group_object' => 1,
 	'og_object'       => 1,
 	'GROUP_TYPE'      => 1
 };

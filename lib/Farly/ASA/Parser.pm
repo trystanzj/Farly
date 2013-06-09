@@ -10,10 +10,9 @@ use Parse::RecDescent;
 our $VERSION = '0.21';
 
 $::RD_ERRORS = 1;    # Make sure the parser dies when it encounters an error
-
 #$::RD_WARN   = 1; # Enable warnings. This will warn on unused rules &c.
 #$::RD_HINT   = 1; # Give out hints to help fix problems.
-#$::RD_TRACE   = 1;
+#$::RD_TRACE  = 1;
 
 sub new {
     my ($class) = @_;
@@ -125,43 +124,42 @@ if_standby :
 #
 
 object :
-		'object' OBJECT_TYPE object_id
+		'object' OBJECT_ENTRY object_id
 
 object_id : 
 		STRING object_address
 	|	STRING object_service
 
 object_address :
-		object_host
-	|	object_range
-	|	object_network
+		object_host IPADDRESS
+	|	object_range IPRANGE
+	|	object_subnet IPNETWORK
 
 object_host :
-		'host' IPADDRESS
+        'host'
 {
-	$item{'MEMBER_TYPE'} = bless( {'__VALUE__' => 'HOST'}, 'MEMBER_TYPE' );
-	bless \%item, $item[0];
+	$item{'OBJECT_TYPE'} = bless( {'__VALUE__' => 'HOST'}, 'OBJECT_TYPE' );
 }
 
 object_range :
-		'range' IPRANGE
+        'range'
 {
-	$item{'MEMBER_TYPE'} = bless( {'__VALUE__' => 'RANGE'}, 'MEMBER_TYPE' );
-	bless \%item, $item[0];
+	$item{'OBJECT_TYPE'} = bless( {'__VALUE__' => 'RANGE'}, 'OBJECT_TYPE' );
 }
 
-object_network :
-		'subnet' IPNETWORK
+object_subnet :
+		'subnet'
 {
-	$item{'MEMBER_TYPE'} = bless( {'__VALUE__' => 'NETWORK'}, 'MEMBER_TYPE' );
-	bless \%item, $item[0];
+	$item{'OBJECT_TYPE'} = bless( {'__VALUE__' => 'NETWORK'}, 'OBJECT_TYPE' );
 }
 
 object_service :
-		'service' object_service_protocol
+		service object_service_protocol
+
+service :
+        'service'
 {
-	$item{'MEMBER_TYPE'} = bless( {'__VALUE__' => 'SERVICE'}, 'MEMBER_TYPE' );
-	bless \%item, $item[0];
+	$item{'OBJECT_TYPE'} = bless( {'__VALUE__' => 'SERVICE'}, 'OBJECT_TYPE' );
 }
 
 object_service_protocol :
@@ -204,52 +202,66 @@ og_object :
 	|	og_service_object
 
 og_network_object :
-		'network-object' address
+		network_object address
+
+network_object :
+        'network-object'
 {
-	$item{'MEMBER_TYPE'} = bless( {'__VALUE__' => 'NETWORK'}, 'MEMBER_TYPE' );
-	bless \%item, $item[0];
+	$item{'OBJECT_TYPE'} = bless( {'__VALUE__' => 'NETWORK'}, 'OBJECT_TYPE' );
 }
 
 og_port_object :
-		'port-object' port
+		port_object port
+
+port_object :
+        'port-object'
 {
-	$item{'MEMBER_TYPE'} = bless( {'__VALUE__' => 'PORT'}, 'MEMBER_TYPE' );
-	bless \%item, $item[0];
+	$item{'OBJECT_TYPE'} = bless( {'__VALUE__' => 'PORT'}, 'OBJECT_TYPE' );
 }
 
 og_group_object :
-		'group-object' GROUP_REF
+		group_object GROUP_REF
+
+group_object :
+        'group-object'
 {
-	$item{'MEMBER_TYPE'} = bless( {'__VALUE__' => 'GROUP'}, 'MEMBER_TYPE' );
-	bless \%item, $item[0];
+	$item{'OBJECT_TYPE'} = bless( {'__VALUE__' => 'GROUP'}, 'OBJECT_TYPE' );
 }
 
 og_protocol_object :
-		'protocol-object' PROTOCOL
+		protocol_object PROTOCOL
+
+protocol_object :
+        'protocol-object'
 {
-	$item{'MEMBER_TYPE'} = bless( {'__VALUE__' => 'PROTOCOL'}, 'MEMBER_TYPE' );
-	bless \%item, $item[0];
+	$item{'OBJECT_TYPE'} = bless( {'__VALUE__' => 'PROTOCOL'}, 'OBJECT_TYPE' );
 }
 
 og_description :
-		'description' REMARKS
+		description REMARKS
+
+description :
+        'description'
 {
-	$item{'MEMBER_TYPE'} = bless( {'__VALUE__' => 'COMMENT'}, 'MEMBER_TYPE' );
-	bless \%item, $item[0];
+	$item{'OBJECT_TYPE'} = bless( {'__VALUE__' => 'COMMENT'}, 'OBJECT_TYPE' );
 }
 
 og_icmp_object :
-		'icmp-object' ICMP_TYPE
+		icmp_object ICMP_TYPE
+
+icmp_object :
+        'icmp-object'
 {
-	$item{'MEMBER_TYPE'} = bless( {'__VALUE__' => 'ICMP_TYPE'}, 'MEMBER_TYPE' );
-	bless \%item, $item[0];
+	$item{'OBJECT_TYPE'} = bless( {'__VALUE__' => 'ICMP_TYPE'}, 'OBJECT_TYPE' );
 }
 
 og_service_object :
-		'service-object' og_so_protocol
+		service_object og_so_protocol
+		
+service_object :
+        'service-object'
 {
-	$item{'MEMBER_TYPE'} = bless( {'__VALUE__' => 'SERVICE'}, 'MEMBER_TYPE' );
-	bless \%item, $item[0];
+	$item{'OBJECT_TYPE'} = bless( {'__VALUE__' => 'SERVICE'}, 'OBJECT_TYPE' );
 }
 
 og_so_protocol :
@@ -354,22 +366,14 @@ acl_options :
 
 acl_logging :
 		'log' acl_log_level
-	|	'log' acl_time_range
-{
-	$item{'LOG_LEVEL'} = bless( {'__VALUE__' => '6'}, 'LOG_LEVEL' );
-	bless \%item, 'acl_log_level';
-}
+	|	LOG_DEFAULT acl_time_range
+	|	LOG_DEFAULT acl_inactive
+	|	LOG_DEFAULT
 
-	|	'log' acl_inactive
+LOG_DEFAULT :
+       'log' 
 {
 	$item{'LOG_LEVEL'} = bless( {'__VALUE__' => '6'}, 'LOG_LEVEL' );
-	bless \%item, 'acl_log_level';
-}
-
-	|	'log'
-{
-	$item{'LOG_LEVEL'} = bless( {'__VALUE__' => '6'}, 'LOG_LEVEL' );
-	bless \%item, 'acl_log_level';
 }
 
 acl_log_level :
@@ -521,7 +525,7 @@ RULE_REF :
 GROUP_TYPE :
 		'service' | 'icmp-type' | 'network' | 'protocol'
 
-OBJECT_TYPE :			
+OBJECT_ENTRY :			
 			'network'
 		|	'service'
 
@@ -611,7 +615,7 @@ EOL :
 #
 # Imaginary Tokens
 #
-# MEMBER_TYPE
+# OBJECT_TYPE
 #
 
 };
