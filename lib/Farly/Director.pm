@@ -6,7 +6,7 @@ use warnings;
 use Carp;
 use Log::Log4perl qw(get_logger);
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 sub new {
     my $class = shift;

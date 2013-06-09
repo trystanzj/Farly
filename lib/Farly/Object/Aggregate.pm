@@ -9,7 +9,7 @@ require Farly::Object::List;
 our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(NEXTVAL);
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 sub new {
     my ( $class, $container ) = @_;
