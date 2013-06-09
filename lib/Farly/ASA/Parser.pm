@@ -366,11 +366,11 @@ acl_options :
 
 acl_logging :
 		'log' acl_log_level
-	|	LOG_DEFAULT acl_time_range
-	|	LOG_DEFAULT acl_inactive
-	|	LOG_DEFAULT
+	|	log_default acl_time_range
+	|	log_default acl_inactive
+	|	log_default
 
-LOG_DEFAULT :
+log_default :
        'log' 
 {
 	$item{'LOG_LEVEL'} = bless( {'__VALUE__' => '6'}, 'LOG_LEVEL' );
