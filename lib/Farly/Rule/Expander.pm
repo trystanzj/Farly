@@ -79,8 +79,7 @@ sub _set_defaults {
             #if a dst port is not defined, define all ports
             if ( !$ce->has_defined('DST_PORT') ) {
 
-                $ce->set( 'DST_PORT',
-                    Farly::Transport::PortRange->new( 1, 65535 ) );
+                $ce->set( 'DST_PORT', Farly::Transport::PortRange->new( 1, 65535 ) );
                 $logger->debug( "SET DST PORT ", $ce->get('DST_PORT') );
             }
         }

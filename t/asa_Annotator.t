@@ -31,8 +31,7 @@ my $named_host = $parser->parse($string);
 $annotator->visit($named_net);
 $annotator->visit($named_host);
 
-$string =
-"access-list acl-outside permit ip intranet 255.0.0.0 host server1 range 80 65535";
+$string = "access-list acl-outside permit ip intranet 255.0.0.0 host server1 range 80 65535";
 
 my $named_rule = $parser->parse($string);
 
