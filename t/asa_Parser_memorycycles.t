@@ -24,15 +24,9 @@ my $parser = Farly::ASA::Parser->new;
 
 $filter->set_file(IO::File->new("$path/test.cfg"));
 
-
-TODO: { 
-    local $TODO = "fix memory cycles in Farly::ASA::Parser";
-    foreach ($filter->run){
-        my $tree = $parser->parse($_);
-        memory_cycle_ok($tree)
-    }
-};
-
+foreach ($filter->run){
+    my $tree = $parser->parse($_);
+    memory_cycle_ok($tree)
+}
 done_testing;
-
 
