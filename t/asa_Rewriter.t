@@ -1,13 +1,13 @@
 use strict;
 use warnings;
 use Test::More tests => 1;
-use Log::Log4perl qw(:easy);
+
 use Farly;
 use Farly::ASA::Parser;
 use Farly::ASA::Annotator;
 use Farly::ASA::Rewriter;
  
-Log::Log4perl->easy_init($ERROR);
+
 
 my $abs_path = File::Spec->rel2abs( __FILE__ );
 our ($volume,$dir,$file) = File::Spec->splitpath( $abs_path );
