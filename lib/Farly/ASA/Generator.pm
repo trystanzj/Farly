@@ -7,15 +7,13 @@ use Carp;
 use Scalar::Util qw(blessed);
 use Log::Any;
 
-our $VERSION = '0.21';
-
-#our $AUTOLOAD;
+our $VERSION = '0.23';
 
 sub new {
     my ($class) = @_;
 
     my $self = {
-        CONTAINER => Farly::Object::List->new(),    #store data here
+        CONTAINER => Farly::Object::List->new(), # result
     };
     bless $self, $class;
 
@@ -88,7 +86,7 @@ __END__
 
 =head1 NAME
 
-Farly::ASA::Generator - Create Farly::Object objects from an AST
+Farly::ASA::Generator - Create Farly::Objects from the AST
 
 =head1 DESCRIPTION
 

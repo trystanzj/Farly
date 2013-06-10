@@ -8,7 +8,7 @@ use Log::Any;
 
 use Farly::Template::Cisco;
 
-our $VERSION = '0.21';
+our $VERSION = '0.23';
 
 sub new {
     my ( $class, $rules ) = @_;
@@ -526,14 +526,14 @@ Farly::Rule::Optimizer finds duplicate and contained firewall rules in an
 expanded rule set.
 
 Farly::Rule::Optimizer stores the list of optimized rules, as well as the list 
-of rule entries which can be removed from the rule set without affecting the
+of rule entries which can be removed from the rule set without effecting the
 traffic filtering properties of the firewall.
 
 The 'optimized' and 'removed' rule sets are expanded rule entries and may
 not correspond to the actual configuration on the device.
 
-To view Farly::Rule::Optimizer actions and results, Set the logging adapter to Log::Any::Adapter::Log4perl and add the 
-following to your Log4perl configuration:
+To view Farly::Rule::Optimizer actions and results with Log4perl, set the logging adapter to Log::Any::Adapter::Log4perl and 
+add the following to your Log4perl configuration:
 
  log4perl.logger.Farly.Optimizer=INFO,Screen
  log4perl.appender.Screen=Log::Log4perl::Appender::Screen 
@@ -554,7 +554,7 @@ The constructor. A single expanded rule list is required.
 
 =head2 verbose()
 
-Have the optimizer all analysis results in Cisco ASA format
+Have the optimizer display analysis results in Cisco ASA format
 
 	$optimizer->verbose(1);
 
@@ -591,16 +591,16 @@ TCP, UDP or ICMP rules.
 
 =head2 optimized()
 
-Returns an Farly::Object::List<Farly::Object> container of all
-expanded firewall rules, excluding duplicate and overlapping rule objects,
-in the current Farly firewall model.
+Returns a Farly::Object::List<Farly::Object> container of all expanded firewall
+rules, excluding duplicate and overlapping rule objects, in the current Farly
+firewall model.
 
   $optimized_ruleset = $optimizer->optimized();
 
 =head2 removed()
 
-Returns an Farly::Object::List<Farly::Object> container of all
-duplicate and overlapping firewall rule objects which could be removed.
+Returns a Farly::Object::List<Farly::Object> container of all duplicate and 
+overlapping firewall rule objects which could be removed.
 
   $remove_rules = $optimizer->removed();
 

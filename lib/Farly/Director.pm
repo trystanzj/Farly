@@ -6,7 +6,7 @@ use warnings;
 use Carp;
 use Log::Any;
 
-our $VERSION = '0.21';
+our $VERSION = '0.23';
 
 sub new {
     my $class = shift;

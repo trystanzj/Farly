@@ -6,7 +6,7 @@ use warnings;
 use Carp;
 use Log::Any;
 
-our $VERSION = '0.21';
+our $VERSION = '0.23';
 
 sub new {
     my ($class) = @_;
@@ -45,7 +45,7 @@ sub run {
 
     my $logger = Log::Any->get_logger;
 
-    my $interface_options = "nameif|security-level|ip address"; #shutdown needed
+    my $interface_options = "nameif|security-level|ip address"; #shutdown
     my $object_options    = "host|range|subnet|service";
     my $group_options     = "network-object|port-object|group-object|protocol-object|description|icmp-object|service-object";
     my $unsupported_acl_type = "ethertype|standard|webtype";
@@ -83,7 +83,7 @@ sub run {
             next;
         }
 
-#access-list outside-in line 3 extended permit tcp OG_NETWORK internal OG_SERVICE highports host 192.168.2.1 eq 80
+        #access-list outside-in line 3 extended permit tcp OG_NETWORK internal OG_SERVICE highports host 192.168.2.1 eq 80
         if ( $line =~ /^access-list/ ) {
             my $p_line = $self->_process_acl($line);
             $logger->debug("$self pre-processed line '$p_line'");
@@ -142,7 +142,6 @@ sub _process_section {
         $logger->warn("empty section : '$header'");
     }
 
-    #should check that this worked?
     $file->setpos($pos);
 }
 
@@ -193,7 +192,7 @@ Farly::ASA::Filter - Firewall configuration filter and pre-processor
 
 =head1 DESCRIPTION
 
-Farly::ASA::Filter filters out unneeded configuration and pre formats
+Farly::ASA::Filter filters out unneeded configuration and pre-formats
 the configuration in a manner as needed by the parser. It accepts
 the configuration in an IO::File object, and stores the pre formatted
 configuration, line by line, into an array.

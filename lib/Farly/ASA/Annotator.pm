@@ -9,7 +9,7 @@ use Log::Any;
 use Farly::ASA::PortFormatter;
 use Farly::ASA::ProtocolFormatter;
 use Farly::ASA::ICMPFormatter;
-our $VERSION = '0.21';
+our $VERSION = '0.23';
 our $AUTOLOAD;
 
 #each token type maps to a class
@@ -314,16 +314,16 @@ __END__
 
 =head1 NAME
 
-Farly::ASA::Annotator - Turn Token values into objects
+Farly::ASA::Annotator - Map tokens to value objects
 
 =head1 DESCRIPTION
 
 Farly::ASA::Annotator walks the Parse::RecDescent <autotree> parse tree
 searching for Token objects. Token objects are recognized by the presence
 of the '__VALUE__' key (see <autotree>). Farly::ASA::Annotator then
-converts Token object values into objects of a suitable class based on
-the class of the Token object. The value associated with the '__VALUE__'
-key is replaced with the new object.
+maps the Token object to a value object of suitable class based on
+the type of Token object. The scalar value associated with the token's 
+'__VALUE__' key is replaced with the new value object.
 
 Farly::ASA::Annotator dies on error.
 

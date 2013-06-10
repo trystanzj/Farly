@@ -11,7 +11,7 @@ use Farly::Director;
 use Farly::Object;
 require Time::HiRes;
 
-our $VERSION = '0.21';
+our $VERSION = '0.23';
 our ( $volume, $dir, $file ) = File::Spec->splitpath( $INC{'Farly.pm'} );
 
 
@@ -112,7 +112,7 @@ The constructor. No arguments required.
  
 =head2 process( <firewall type>, <configuration file>)
 
- my $container = $importer->process("ASA", "firewall-config.txt");
+ my $container = $importer->process('ASA', "firewall-config.txt");
 
 Returns Farly::Object::List<Farly::Object> firewall device model.
  

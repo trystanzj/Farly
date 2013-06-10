@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Carp;
 
-our $VERSION = '0.21';
+our $VERSION = '0.23';
 
 sub new {
     my ($class) = @_;
@@ -233,7 +233,7 @@ Farly::Object::Set - Set calculations on Farly::Objects
 
 =head1 DESCRIPTION
 
-List based Set calculations on a set of Farly::Object objects.
+List based Set calculations on an arrays of Farly::Objects.
 
 =head1 METHODS
 

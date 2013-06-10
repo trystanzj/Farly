@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Carp;
 
-our $VERSION = '0.21';
+our $VERSION = '0.23';
 
 sub new {
     my ( $class, $type ) = @_;
@@ -74,11 +74,11 @@ __END__
 
 =head1 NAME
 
-Farly::IPv4::ICMPType - ICMP type number
+Farly::IPv4::ICMPType - IPv4 ICMP type class
 
 =head1 DESCRIPTION
 
-Represents an ICMP type number as an object
+Represents an 8 bit ICMP type integer as an object
 
 =head1 METHODS
 
@@ -92,7 +92,7 @@ No arguments.
 
 =head2 type()
 
-Returns the integer type number.
+Returns the 8 bit ICMP type integer.
 
   my $8_bit_int = $type->type();
 

@@ -4,7 +4,7 @@ use 5.008008;
 use strict;
 use warnings;
 
-our $VERSION = '0.21';
+our $VERSION = '0.23';
 
 require Farly::Object;
 our @ISA = qw(Farly::Object);
@@ -14,7 +14,7 @@ __END__
 
 =head1 NAME
 
-Farly::Object::Ref - A reference object
+Farly::Object::Ref - Reference object
 
 =head1 SYNOPSIS
 

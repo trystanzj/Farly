@@ -4,7 +4,7 @@ use 5.008008;
 use strict;
 use warnings;
 
-our $VERSION = '0.21';
+our $VERSION = '0.23';
 
 our $String_To_Int = {
     "echo-reply"           => 0,
@@ -28,27 +28,7 @@ our $String_To_Int = {
     "mobile-redirect"      => 32,
 };
 
-our $Int_To_String = {
-    0  => "echo-reply",
-    3  => "unreachable",
-    4  => "source-quench",
-    5  => "redirect",
-    6  => "alternate-address",
-    8  => "echo",
-    9  => "router-advertisement",
-    10 => "router-solicitation",
-    11 => "time-exceeded",
-    12 => "parameter-problem",
-    13 => "timestamp-request",
-    14 => "timestamp-reply",
-    15 => "information-request",
-    16 => "information-reply",
-    17 => "mask-request",
-    18 => "mask-reply",
-    30 => "traceroute",
-    31 => "conversion-error",
-    32 => "mobile-redirect",
-};
+our $Int_To_String = { reverse %$String_To_Int };
 
 sub new {
     return bless {}, $_[0];
@@ -67,12 +47,12 @@ __END__
 
 =head1 NAME
 
-Farly::ASA::ICMPFormatter - Associates ICMP type ID's and ICMP type integers
+Farly::ASA::ICMPFormatter - Map ICMP type string ID's and integers
 
 =head1 DESCRIPTION
 
 Farly::ASA::ICMPFormatter is like an enum class, but not. It associates ICMP type
-strings with ICMP type integers and vice versa. Is device specific.
+strings with ICMP type integers and vice versa. ICMPFormatter is device specific.
 
 =head1 METHODS
 

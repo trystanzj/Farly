@@ -7,7 +7,7 @@ use Carp;
 use Farly::Transport::Port;
 
 our @ISA     = qw(Farly::Transport::Port);
-our $VERSION = '0.21';
+our $VERSION = '0.23';
 
 sub first {
     return 1;
@@ -18,7 +18,7 @@ __END__
 
 =head1 NAME
 
-Farly::Transport::PortLT - TCP or UDP port number 'less than' class
+Farly::Transport::PortLT - TCP/UDP port 'less than' class
 
 =head1 DESCRIPTION
 

@@ -4,7 +4,7 @@ use 5.008008;
 use strict;
 use warnings;
 
-our $VERSION = '0.21';
+our $VERSION = '0.23';
 
 our $String_To_Int = {
     "aol"               => 5190,
@@ -82,81 +82,7 @@ our $String_To_Int = {
     "xdmcp"             => 177,
 };
 
-our $Int_To_String = {
-    5190 => "aol",
-    179  => "bgp",
-    512  => "biff",
-    68   => "bootpc",
-    67   => "bootps",
-    19   => "chargen",
-    3020 => "cifs",
-    1494 => "citrix-ica",
-    2748 => "ctiqbe",
-    13   => "daytime",
-    9    => "discard",
-    195  => "dnsix",
-    53   => "domain",
-    7    => "echo",
-    512  => "exec",
-    79   => "finger",
-    21   => "ftp",
-    20   => "ftp-data",
-    70   => "gopher",
-    1720 => "h323",
-    101  => "hostname",
-    443  => "https",
-    113  => "ident",
-    143  => "imap4",
-    194  => "irc",
-    500  => "isakmp",
-    750  => "kerberos",
-    543  => "klogin",
-    544  => "kshell",
-    389  => "ldap",
-    636  => "ldaps",
-    513  => "login",
-    1352 => "lotusnotes",
-    515  => "lpd",
-    434  => "mobile-ip",
-    42   => "nameserver",
-    138  => "netbios-dgm",
-    137  => "netbios-ns",
-    139  => "netbios-ssn",
-    2049 => "nfs",
-    119  => "nntp",
-    123  => "ntp",
-    5631 => "pcanywhere-data",
-    5632 => "pcanywhere-status",
-    496  => "pim-auto-rp",
-    109  => "pop2",
-    110  => "pop3",
-    1723 => "pptp",
-    1645 => "radius",
-    1646 => "radius-acct",
-    520  => "rip",
-    514  => "rsh",
-    554  => "rtsp",
-    5510 => "secureid-udp",
-    5060 => "sip",
-    5060 => "sip",
-    25   => "smtp",
-    161  => "snmp",
-    162  => "snmptrap",
-    1521 => "sqlnet",
-    22   => "ssh",
-    111  => "sunrpc",
-    514  => "syslog",
-    49   => "tacacs",
-    517  => "talk",
-    23   => "telnet",
-    69   => "tftp",
-    37   => "time",
-    540  => "uucp",
-    513  => "who",
-    43   => "whois",
-    80   => "www",
-    177  => "xdmcp",
-};
+our $Int_To_String = { reverse %$String_To_Int };
 
 sub new {
     return bless {}, $_[0];
@@ -175,11 +101,12 @@ __END__
 
 =head1 NAME
 
-Farly::ASA::PortFormatter - Associates port names and port string ID's
+Farly::ASA::PortFormatter - Maps port string ID's and integers
 
 =head1 DESCRIPTION
 
-Farly::ASA::PortFormatter is like an enum class, but not. Is device specific.
+Farly::ASA::PortFormatter is like an enum class, but not.
+PortFormatter is device specific.
 
 =head1 METHODS
 

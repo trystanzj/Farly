@@ -9,7 +9,7 @@ require Farly::Object::List;
 our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(NEXTVAL);
 
-our $VERSION = '0.21';
+our $VERSION = '0.23';
 
 sub new {
     my ( $class, $container ) = @_;
@@ -217,7 +217,7 @@ __END__
 
 =head1 NAME
 
-Farly::Object::Aggregate - Group objects with common identity.
+Farly::Object::Aggregate - Group Farly::Objects with common identity
 
 =head1 SYNOPSIS
 
@@ -249,7 +249,7 @@ Farly::Object::Aggregate - Group objects with common identity.
 =head1 DESCRIPTION
 
 Farly::Object::Aggregate groups Farly::Objects with a common
-identity (equal key/value pairs) into Farly::Object::Lists.
+identity (i.e. equal key/value pairs) into Farly::Object::Lists.
 
 =head1 METHODS
 
@@ -261,12 +261,12 @@ The constructor. An Farly::Object::List must be provided.
 
 =head2 groupby( 'key1', 'key2', 'key3' ... )
 
-All objects in the supplied list of keys, with equal values for the specified keys, 
-will be grouped into a Farly::Object::List. 
-
-Farly::Objects without the specified property/key will be skipped.
+All objects in the supplied list of keys, with equal value objects for the 
+specified keys, will be grouped into a Farly::Object::List. 
 
   $aggregate->groupby( 'key1', 'key2', 'key3' );
+
+Farly::Objects without the specified property/key will be skipped.
 
 =head2 matches( $search<Farly::Object> )
 
@@ -276,7 +276,8 @@ Return the Farly::Object::List with the specified identity.
 
 =head2 update( $search<Farly::Object>, $new_list<Farly::Object::List> )
 
-Search for the identity specified by $search and update the __AGG__ with $new_list
+Search for the identity specified by $search and update the aggregate object
+with the new Farly::Object::List.
 
   $set = $aggregate->matches( $identity<Farly::Object> );
 
@@ -289,8 +290,8 @@ Return an array of aggregate objects.
 =head2 list_iterator()
 
 Return an iterator code reference to an iterator function which iterates over
-all __AGG__'s defined in the aggregate. The __AGG__'s contain objects with the
-same identity as defined by the 'groupby' method.
+all aggregate objects defined in the Farly::Object::Aggregate. Each aggregate
+contains objects with the same identity as defined by the 'groupby' method.
 
   use Farly::Object::Aggregate qw(NEXTVAL);
   
@@ -298,7 +299,7 @@ same identity as defined by the 'groupby' method.
 
 =head2 id_iterator()
 
-Return an iterator code reference to an iterator function which iterates over
+Return a code reference to an iterator function which iterates over
 all identities defined in the aggregate. The identities are Farly::Objects with
 the identity as defined by the 'groupby' method.
 
@@ -310,7 +311,7 @@ the identity as defined by the 'groupby' method.
 
 =head2 NEXTVAL()
 
-Advance the iterator to the next aggregate object.
+Advance the iterator to the next object.
 
   while ( my $list = NEXTVAL($it) ) {
       # do something with $list

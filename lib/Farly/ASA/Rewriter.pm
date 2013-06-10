@@ -7,7 +7,7 @@ use Carp;
 use Scalar::Util qw(blessed);
 use Log::Any;
 
-our $VERSION = '0.21';
+our $VERSION = '0.23';
 
 # the parser rule name maps to an abstract syntax tree (AST) root node class
 # this will become the 'ENTRY' model meta data in the Farly firewall model

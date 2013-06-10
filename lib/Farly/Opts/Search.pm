@@ -9,7 +9,7 @@ use Log::Any;
 use Farly::ASA::PortFormatter;
 use Farly::ASA::ProtocolFormatter;
 
-our $VERSION = '0.21';
+our $VERSION = '0.23';
 
 sub new {
     my ( $class, $opts ) = @_;
@@ -217,17 +217,17 @@ __END__
 
 =head1 NAME
 
-Farly::Opts::Search - Create a search object from an options hash
+Farly::Opts::Search - Create a Farly::Object from a Getopts hash
 
 =head1 DESCRIPTION
 
-Farly::Opts::Search converts a Getopt::Long options hash to an 
-Farly::Object object which can be used to search a Farly 
-Farly::Object::List<Farly::Object> firewall model.  
+Farly::Opts::Search converts a Getopt::Long options hash to an Farly::Object
+which can be used to search a Farly::Object::List<Farly::Object> firewall
+model.  
 
-Farly::Opts::Search can also create an Farly::Object::List<Farly::Object>
-object from a configuration file. The filter set is used to exclude 
-firewall rules from the search results of the current Farly firewall
+Farly::Opts::Search can also create a Farly::Object::List<Farly::Object>
+container object from a configuration file. The container is used as a filter
+to exclude firewall rules from the search results of the current Farly firewall
 model.
 
 =head1 METHODS
@@ -240,14 +240,14 @@ The constructor. The Getopt::Long GetOptions hash is provided.
 
 =head2 search()
 
-Returns an Farly::Object search object used to search for firewall
+Returns a Farly::Object search object used to search for firewall
 rules in the current Farly firewall model.
 
   $search_object = $search_parser->search();
 
 =head2 filter()
 
-Returns an Farly::Object::List<Farly::Object> object used to exclude 
+Returns a Farly::Object::List<Farly::Object> container used to exclude 
 firewall rules from the search results of the current Farly firewall
 model.
 

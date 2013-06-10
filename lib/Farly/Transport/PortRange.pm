@@ -7,7 +7,7 @@ use Carp;
 use Farly::Transport::Port;
 use Farly::Transport::Object;
 
-our $VERSION = '0.21';
+our $VERSION = '0.23';
 our @ISA     = qw(Farly::Transport::Object);
 
 sub new {
@@ -77,7 +77,7 @@ __END__
 
 =head1 NAME
 
-Farly::Transport::PortRange - TCP or UDP port number range
+Farly::Transport::PortRange - TCP/UDP port range class
 
 =head1 DESCRIPTION
 

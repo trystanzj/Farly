@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Carp;
 
-our $VERSION = '0.21';
+our $VERSION = '0.23';
 
 sub new {
     my ( $class, $protocol ) = @_;
@@ -74,11 +74,11 @@ __END__
 
 =head1 NAME
 
-Farly::Transport::Protocol - TCP/IP protocol number
+Farly::Transport::Protocol - TCP/IP protocol class
 
 =head1 DESCRIPTION
 
-Represents a TCP/IP protocol number as an object
+Represents an 8 bit TCP/IP protocol integer as an object
 
 =head1 METHODS
 

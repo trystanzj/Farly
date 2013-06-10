@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Carp;
 
-our $VERSION = '0.05';
+our $VERSION = '0.23';
 
 sub new {
     my ( $class, $number ) = @_;
@@ -80,7 +80,7 @@ __END__
 
 =head1 NAME
 
-Farly::Value::Integer - Integer wrapper class
+Farly::Value::Integer - Integer value class
 
 =head1 SYNOPSIS
 
@@ -96,7 +96,7 @@ Farly::Value::Integer - Integer wrapper class
 =head1 DESCRIPTION
 
 Farly::Value::Integer is a integer wrapper class for use as a value
-in a Farly::Object object.
+object in a Farly::Object.
 
 =head1 METHODS
 

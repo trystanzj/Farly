@@ -49,6 +49,7 @@ t/asa_Filter.t
 t/asa_Generator.t
 t/asa_ICMPFormatter.t
 t/asa_Import.t
+t/asa_Parser_memorycycles.t
 t/asa_Parser.t
 t/asa_PortFormatter.t
 t/asa_ProtocolFormatter.t

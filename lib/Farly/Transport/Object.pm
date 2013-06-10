@@ -4,7 +4,7 @@ use 5.008008;
 use strict;
 use warnings;
 
-our $VERSION = '0.21';
+our $VERSION = '0.23';
 
 sub size {
     return $_[0]->last - $_[0]->first;

@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Carp;
 
-our $VERSION = '0.21';
+our $VERSION = '0.23';
 
 sub new {
     my ( $class, $container ) = @_;
@@ -268,7 +268,7 @@ __END__
 
 =head1 NAME
 
-Farly::Remove::Address - Remove an address or network
+Farly::Remove::Address - Remove an address or network from the firewall model
 
 =head1 DESCRIPTION
 
@@ -297,9 +297,9 @@ The remove method may be called for multiple IP addresses.
 
 =head2 result()
 
-Returns an Farly::Object::List<Farly::Object> object containing all objects
+Returns a Farly::Object::List<Farly::Object> object containing all objects
 which need to be removed from the current Farly firewall model in order to
-remove all references to the removed addresses.
+remove all references to the specified addresses.
 
   $remove_result_set = $remover->result();
 

@@ -86,3 +86,18 @@
    - fixed Farly::Remove::Rule - now using 'REMOVE' property
    - bug fixes and all protocols test from Lukas Thiemeier
  
+ 0.21 - June 2013
+   - fixed wrong log file in Farly.pm
+   - change MEMBER_TYPE imaginary token to OBJECT_TYPE
+   - remove 'object' rule from Farly::ASA::Rewriter mapping
+   - fixed memory leak in Farly::ASA::Parser Parse::RecDescent grammar
+   - added asa_Parser_memorycycles.t from Lukas T.
+   - Farly::Template::Cisco::use_text bug fix from Lukas T. 
+ 
+ 0.22 - June 2013
+   - Changes file updated
+   - POD updates
+ 
+ 0.23 - June 2013
+   - META.yml version update
+   
