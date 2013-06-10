@@ -7,7 +7,7 @@ use Carp;
 use Scalar::Util qw(blessed);
 use Log::Log4perl qw(get_logger);
 
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 
 sub new {
     my ($class) = @_;
