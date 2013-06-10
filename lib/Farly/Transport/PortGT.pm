@@ -18,7 +18,7 @@ __END__
 
 =head1 NAME
 
-Farly::Transport::PortGT - TCP or UDP port number 'greater than' class
+Farly::Transport::PortGT - TCP/UDP port 'greater than' class
 
 =head1 DESCRIPTION
 

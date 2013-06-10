@@ -51,7 +51,7 @@ __END__
 
 =head1 NAME
 
-Farly::Value::String - String wrapper class
+Farly::Value::String - String value class
 
 =head1 SYNOPSIS
 
@@ -67,7 +67,7 @@ Farly::Value::String - String wrapper class
 =head1 DESCRIPTION
 
 Farly::Value::String is a string wrapper class for use as a value
-in an Farly::Object object.
+object in a Farly::Object.
 
 =head1 METHODS
 

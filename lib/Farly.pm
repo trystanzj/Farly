@@ -111,7 +111,7 @@ The constructor. No arguments required.
  
 =head2 process( <firewall type>, <configuration file>)
 
- my $container = $importer->process("ASA", "firewall-config.txt");
+ my $container = $importer->process('ASA', "firewall-config.txt");
 
 Returns Farly::Object::List<Farly::Object> firewall device model.
  

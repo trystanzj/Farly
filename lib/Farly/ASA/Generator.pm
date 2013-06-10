@@ -9,13 +9,11 @@ use Log::Log4perl qw(get_logger);
 
 our $VERSION = '0.22';
 
-#our $AUTOLOAD;
-
 sub new {
     my ($class) = @_;
 
     my $self = {
-        CONTAINER => Farly::Object::List->new(),    #store data here
+        CONTAINER => Farly::Object::List->new(), # result
     };
     bless $self, $class;
 
@@ -88,7 +86,7 @@ __END__
 
 =head1 NAME
 
-Farly::ASA::Generator - Create Farly::Objects from an AST
+Farly::ASA::Generator - Create Farly::Objects from the AST
 
 =head1 DESCRIPTION
 

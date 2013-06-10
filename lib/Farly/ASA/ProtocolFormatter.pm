@@ -47,11 +47,12 @@ __END__
 
 =head1 NAME
 
-Farly::ASA::ProtocolFormatter - Associates protocol ID's and protocol numbers.
+Farly::ASA::ProtocolFormatter - Maps protocol string ID's and integers
 
 =head1 DESCRIPTION
 
-Farly::ASA::ProtocolFormatter is like an enum class, but not. Is device specific.
+Farly::ASA::ProtocolFormatter is like an enum class, but not. 
+ProtocolFormatter is device specific.
 
 =head1 METHODS
 

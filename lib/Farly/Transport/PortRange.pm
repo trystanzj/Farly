@@ -77,7 +77,7 @@ __END__
 
 =head1 NAME
 
-Farly::Transport::PortRange - TCP or UDP port number range
+Farly::Transport::PortRange - TCP/UDP port range class
 
 =head1 DESCRIPTION
 

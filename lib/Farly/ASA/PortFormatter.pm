@@ -101,11 +101,12 @@ __END__
 
 =head1 NAME
 
-Farly::ASA::PortFormatter - Associates port names and port string ID's
+Farly::ASA::PortFormatter - Maps port string ID's and integers
 
 =head1 DESCRIPTION
 
-Farly::ASA::PortFormatter is like an enum class, but not. Is device specific.
+Farly::ASA::PortFormatter is like an enum class, but not.
+PortFormatter is device specific.
 
 =head1 METHODS
 

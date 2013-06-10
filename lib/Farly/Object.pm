@@ -4,10 +4,14 @@ use 5.008008;
 use strict;
 use warnings;
 use Carp;
+
+#Farly containers
 use Farly::Object::List;
 use Farly::Object::Set;
 use Farly::Object::Aggregate;
+#Farly reference object
 require Farly::Object::Ref;
+#Farly value objects
 use Farly::Value::String;
 use Farly::Value::Integer;
 use Farly::IPv4::Address;
@@ -202,7 +206,7 @@ __END__
 
 =head1 NAME
 
-Farly::Object - The Farly entity object 
+Farly::Object - Generic Farly entity object 
 
 =head1 SYNOPSIS
 
@@ -220,9 +224,8 @@ Farly::Object - The Farly entity object
 
 =head1 DESCRIPTION
 
-Farly::Object is a generic object which can be used to model
-a variety of objects without having to write a large number
-of classes.
+Farly::Object is a generic entity object which can be used to model
+a variety of objects without having to write a large number of classes.
 
 Farly::Objects use string keys to set and access value objects.
 
@@ -250,8 +253,8 @@ No arguments.
    
 =head2 clone()
 
-Returns a new Farly::Object object with the same
-key value pairs as the original object.
+Returns a new Farly::Object object with the same key value pairs as
+the original object.
 
   my $cloned_object = $object->clone(); 
 
@@ -261,14 +264,14 @@ Does not copy the value objects.
 
 Set a key value pair.
 
-  $object->set( "key",  Farly::Value::String->new("string") );
+  $object->set( 'key',  Farly::Value::String->new("string") );
 
 Set throws an exception if the value object does not support
 the required methods.
 
 Same as:
 
-  $object->{ "key" } = Farly::Value::String->new("string");
+  $object->{ 'key' } = Farly::Value::String->new("string");
 
 Without type checking.
 
@@ -276,13 +279,13 @@ Without type checking.
 
 Get a value object.
 
-  my $value = $object->get( "key" );
+  my $value = $object->get( 'key' );
 
 Throws an exception if the specified key if not defined.
 
 Same as:
 
-  my $value = $object->{"key"};
+  my $value = $object->{'key'};
 
 Without checking that the key is defined.
 
@@ -345,21 +348,21 @@ Same as:
 
 Returns true if a key value pair is defined.
 
-  $object->has_defined( "key" );
+  $object->has_defined( 'key' );
 
 Same as:
 
-  defined( $object->{"key"} );
+  defined( $object->{'key'} );
 
 =head2 delete_key( <string> )
 
 Delete a key value pair.
 
-  $object->delete_key( "key" );
+  $object->delete_key( 'key' );
 
 Same as.
 
-  delete( $object->{"key"} );
+  delete( $object->{'key'} );
 
 =head2 as_string()
 

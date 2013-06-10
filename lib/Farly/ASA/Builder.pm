@@ -91,7 +91,7 @@ __END__
 
 =head1 NAME
 
-Farly::ASA::Builder - A vendor specific concrete builder class
+Farly::ASA::Builder - Vendor specific concrete builder class
 
 =head1 DESCRIPTION
 
@@ -99,8 +99,8 @@ Farly::ASA::Builder is a concrete builder which handles the process of
 converting a Cisco ASA firewall configuration into the corresponding
 Farly::Object::List<Farly::Object> firewall device model.
 
-It accepts an firewall configuration IO::File object and returns an
-Farly::Object::List<Farly::Object> when finished.
+It accepts an firewall configuration IO::File object and returns the
+Farly::Object::List<Farly::Object> model when finished.
 
 Farly::ASA::Builder dies on error, highlighting the line of configuration
 which caused the exception.

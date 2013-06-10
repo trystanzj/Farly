@@ -45,7 +45,7 @@ Farly::Builder - Builder base class
 
 =head1 DESCRIPTION
 
-Farly::Builder is the Builder base class. Defines the
+Farly::Builder is the Builder base class which defines the
 vendor independent Builder interface.
 
 Farly::Builder is used by vendor specific builders only.

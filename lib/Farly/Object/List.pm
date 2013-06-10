@@ -176,7 +176,7 @@ Farly::Object::List - Searchable container of Farly::Objects
 =head1 DESCRIPTION
 
 Farly::Object::List is a searchable 'ARRAY' based container of
-Farly::Object objects.
+Farly::Objects.
 
 =head1 METHODS
 

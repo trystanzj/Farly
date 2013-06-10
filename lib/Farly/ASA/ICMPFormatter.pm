@@ -47,12 +47,12 @@ __END__
 
 =head1 NAME
 
-Farly::ASA::ICMPFormatter - Associates ICMP type ID's and ICMP type integers
+Farly::ASA::ICMPFormatter - Map ICMP type string ID's and integers
 
 =head1 DESCRIPTION
 
 Farly::ASA::ICMPFormatter is like an enum class, but not. It associates ICMP type
-strings with ICMP type integers and vice versa. Is device specific.
+strings with ICMP type integers and vice versa. ICMPFormatter is device specific.
 
 =head1 METHODS
 

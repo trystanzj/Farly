@@ -14,7 +14,7 @@ __END__
 
 =head1 NAME
 
-Farly::Object::Ref - A reference object
+Farly::Object::Ref - Reference object
 
 =head1 SYNOPSIS
 

@@ -284,11 +284,11 @@ __END__
 
 =head1 NAME
 
-Farly::Rule::Expander - Expand a firewall rule configuration
+Farly::Rule::Expander - Expands configuration firewall rules
 
 =head1 DESCRIPTION
 
-Farly::Rule::Expander converts a firewall rule configuration into a expanded rule set.
+Farly::Rule::Expander converts a firewall configuration rule set into a expanded rule set.
 The expanded firewall rule set is an Farly::Object::List<Farly::Object> containing
 all firewall rules.  
 
@@ -306,7 +306,7 @@ The constructor. The firewall configuration is provided.
 =head2 expand_all()
 
 Returns a Farly::Object::List<Farly::Object> container of all
-raw expanded firewall rules in the current Farly firewall model.
+expanded firewall rule entries in the current Farly firewall model.
 
   $expanded_ruleset = $rule_expander->expand_all();
 
@@ -315,7 +315,7 @@ raw expanded firewall rules in the current Farly firewall model.
 Returns the expanded version of the given firewall rule in the
 provided result container.
 
-  $expanded_rule = $rule_expander->expand( $rule );
+  $expanded_rule = $rule_expander->expand( $rule, $result );
 
 =head1 COPYRIGHT AND LICENCE
 

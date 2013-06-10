@@ -51,7 +51,7 @@ __END__
 
 =head1 NAME
 
-Farly::Transport::Port - TCP or UDP port number class
+Farly::Transport::Port - TCP/UDP port class
 
 =head1 DESCRIPTION
 
