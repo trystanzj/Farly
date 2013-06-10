@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Carp;
 use Scalar::Util qw(blessed);
-use Log::Log4perl qw(get_logger);
+use Log::Any;
 
 our $VERSION = '0.21';
 
@@ -19,7 +19,7 @@ sub new {
     };
     bless $self, $class;
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
     $logger->info("$self NEW");
     $logger->info( "$self CONTAINER is ", $self->container() );
 
@@ -35,7 +35,7 @@ sub visit {
 
     # $node is a reference to the root of the AST
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
 
     # the Farly translator parses one firewall object at a time
     my $object = Farly::Object->new();

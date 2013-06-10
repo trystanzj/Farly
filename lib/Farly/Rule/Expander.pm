@@ -4,7 +4,7 @@ use 5.008008;
 use strict;
 use warnings;
 use Carp;
-use Log::Log4perl qw(get_logger);
+use Log::Any;
 use Farly::Object::Aggregate;
 
 our $VERSION = '0.21';
@@ -25,7 +25,7 @@ sub new {
 
     bless $self, $class;
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
     $logger->info("$self NEW");
     $logger->info( "$self CONFIG ", $self->{CONFIG} );
 
@@ -46,7 +46,7 @@ sub _init {
 sub _set_defaults {
     my ( $self, $ce ) = @_;
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
 
     my $RULE = Farly::Object->new();
     $RULE->set( 'ENTRY', Farly::Value::String->new('RULE') );
@@ -104,7 +104,7 @@ sub _set_defaults {
 
 sub expand_all {
     my ($self) = @_;
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
 
     my $expanded = Farly::Object::List->new();
 
@@ -141,7 +141,7 @@ sub expand_all {
 
 sub expand {
     my ( $self, $rule, $result ) = @_;
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
 
     my $is_expanded;
     my @stack;
@@ -262,7 +262,7 @@ sub _expand_service {
 sub _expand_vip {
     my ( $self, $key, $clone, $vip_object ) = @_;
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
     $logger->debug("processing VIP : $vip_object - key : $key");
 
     if ( $key eq 'DST_IP' ) {

@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Carp;
 use Socket;
-use Log::Log4perl qw(get_logger);
+use Log::Any;
 use Farly::ASA::PortFormatter;
 use Farly::ASA::ProtocolFormatter;
 
@@ -26,7 +26,7 @@ sub new {
     };
     bless( $self, $class );
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
     $logger->info("$self NEW ");
 
     $self->_check_opts($opts);

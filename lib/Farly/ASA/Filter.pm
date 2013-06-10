@@ -4,7 +4,7 @@ use 5.008008;
 use strict;
 use warnings;
 use Carp;
-use Log::Log4perl qw(get_logger);
+use Log::Any;
 
 our $VERSION = '0.21';
 
@@ -19,7 +19,7 @@ sub new {
     };
     bless $self, $class;
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
     $logger->info("$self NEW");
 
     return $self;
@@ -28,7 +28,7 @@ sub new {
 sub set_file {
     my ( $self, $file ) = @_;
     $self->{FILE} = $file;
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
     $logger->info( "$self SET FILE TO ", $self->{FILE} );
 }
 
@@ -43,7 +43,7 @@ sub run {
     my ($self) = @_;
     my $file = $self->{FILE};
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
 
     my $interface_options = "nameif|security-level|ip address"; #shutdown needed
     my $object_options    = "host|range|subnet|service";
@@ -105,7 +105,7 @@ sub run {
 sub _process_section {
     my ( $self, $header, $options, $full_sect ) = @_;
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
 
     my $file = $self->{FILE};
     my $pos  = $file->getpos();

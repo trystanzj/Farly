@@ -4,7 +4,7 @@ use 5.008008;
 use strict;
 use warnings;
 use Carp;
-use Log::Log4perl qw(get_logger);
+use Log::Any;
 use Parse::RecDescent;
 
 our $VERSION = '0.21';
@@ -20,7 +20,7 @@ sub new {
     my $self = { PARSER => undef, };
     bless $self, $class;
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
     $logger->info("$self NEW");
 
     $self->_init();
@@ -33,7 +33,7 @@ sub _init {
 
     $self->{PARSER} = Parse::RecDescent->new( $self->_grammar() );
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
     $logger->info( "$self NEW PARSER ", $self->{PARSER} );
 }
 

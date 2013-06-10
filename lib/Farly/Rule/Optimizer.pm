@@ -4,7 +4,7 @@ use 5.008008;
 use strict;
 use warnings;
 use Carp;
-use Log::Log4perl qw(get_logger);
+use Log::Any;
 
 use Farly::Template::Cisco;
 
@@ -34,7 +34,7 @@ sub new {
 
     bless $self, $class;
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
     $logger->info("$self NEW");
     $logger->info( "$self RULES ", $self->{RULES} );
 
@@ -92,7 +92,7 @@ sub set_p_action {
     my ( $self, $action ) = @_;
     confess "invalid action" unless ( defined($action) && length($action) );
     $self->{P_ACTION} = $action;
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
     $logger->debug("set permit action to $action");
 }
 
@@ -100,7 +100,7 @@ sub set_d_action {
     my ( $self, $action ) = @_;
     confess "invalid action" unless ( defined($action) && length($action) );
     $self->{D_ACTION} = $action;
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
     $logger->debug("set deny action to $action");
 }
 
@@ -203,7 +203,7 @@ sub _do_search {
 sub _tuple {
     my ( $self, $rule ) = @_;
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
 
     my $r = Farly::Object->new();
 
@@ -438,7 +438,7 @@ sub _do_sort {
 sub _optimize {
     my ($self) = @_;
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
 
     my $permits = $self->_do_search( $self->p_action );
     my $denies  = $self->_do_search( $self->d_action );

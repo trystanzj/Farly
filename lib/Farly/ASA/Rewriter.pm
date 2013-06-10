@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Carp;
 use Scalar::Util qw(blessed);
-use Log::Log4perl qw(get_logger);
+use Log::Any;
 
 our $VERSION = '0.21';
 
@@ -94,7 +94,7 @@ my $AST_Node_Class = {
 sub new {
     my ($class) = @_;
     my $self = bless {}, $class;
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
     $logger->info("$self NEW");
     return $self;
 }
@@ -105,7 +105,7 @@ sub rewrite {
     # $node is a reference to the current node in the parse tree
     # i.e. the root of the parse tree to begin with
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
 
     # $root is a reference to the root of the new abstract syntax tree
     my $root = bless( {}, 'NULL' );
