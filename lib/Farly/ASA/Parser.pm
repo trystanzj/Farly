@@ -125,7 +125,7 @@ if_standby :
 #
 
 object :
-		'object' OBJECT_TYPE object_id
+		'object' OBJECT_ENTRY object_id
 
 object_id : 
 		STRING object_address
@@ -512,7 +512,7 @@ RULE_REF :
 GROUP_TYPE :
 		'service' | 'icmp-type' | 'network' | 'protocol'
 
-OBJECT_TYPE :			
+OBJECT_ENTRY :			
 			'network'
 		|	'service'
 
