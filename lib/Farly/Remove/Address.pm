@@ -198,9 +198,9 @@ sub _collect_garbage {
         elsif ( $object->get('ENTRY')->equals($ROUTE) ) {
             next;
         }
-
         else {
-            confess "\nI don't know what this is:\n", $object->dump();
+            warn "\nunknown object:\n", $object->dump();
+            next;
         }
     }
 
