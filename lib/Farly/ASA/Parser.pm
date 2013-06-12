@@ -7,12 +7,13 @@ use Carp;
 use Log::Log4perl qw(get_logger);
 use Parse::RecDescent;
 
-our $VERSION = '0.23';
+our $VERSION = '0.21';
 
 $::RD_ERRORS = 1;    # Make sure the parser dies when it encounters an error
+
 #$::RD_WARN   = 1; # Enable warnings. This will warn on unused rules &c.
 #$::RD_HINT   = 1; # Give out hints to help fix problems.
-#$::RD_TRACE  = 1;
+#$::RD_TRACE   = 1;
 
 sub new {
     my ($class) = @_;
@@ -47,6 +48,9 @@ sub parse {
 
     #throw an error if the parse fails
     defined($tree) or confess "unrecognized line\n";
+    
+    use Data::Dumper;
+    print Dumper($tree);
 
     return $tree;
 }
@@ -124,42 +128,36 @@ if_standby :
 #
 
 object :
-		'object' OBJECT_ENTRY object_id
+		'object' OBJECT_TYPE object_id
 
 object_id : 
 		STRING object_address
 	|	STRING object_service
 
 object_address :
-		object_host IPADDRESS
-	|	object_range IPRANGE
-	|	object_subnet IPNETWORK
-
-object_host :
-        'host'
+		'host' IPADDRESS
 {
 	$item{'OBJECT_TYPE'} = bless( {'__VALUE__' => 'HOST'}, 'OBJECT_TYPE' );
+	bless {%item}, $item[0];
 }
-
-object_range :
-        'range'
+    |
+		'range' IPRANGE
 {
 	$item{'OBJECT_TYPE'} = bless( {'__VALUE__' => 'RANGE'}, 'OBJECT_TYPE' );
+	bless {%item}, $item[0];
 }
-
-object_subnet :
-		'subnet'
+    |
+		'subnet' IPNETWORK
 {
 	$item{'OBJECT_TYPE'} = bless( {'__VALUE__' => 'NETWORK'}, 'OBJECT_TYPE' );
+	bless {%item}, $item[0];
 }
 
 object_service :
-		service object_service_protocol
-
-service :
-        'service'
+		'service' object_service_protocol
 {
 	$item{'OBJECT_TYPE'} = bless( {'__VALUE__' => 'SERVICE'}, 'OBJECT_TYPE' );
+	bless {%item}, $item[0];
 }
 
 object_service_protocol :
@@ -202,66 +200,52 @@ og_object :
 	|	og_service_object
 
 og_network_object :
-		network_object address
-
-network_object :
-        'network-object'
+		'network-object' address
 {
 	$item{'OBJECT_TYPE'} = bless( {'__VALUE__' => 'NETWORK'}, 'OBJECT_TYPE' );
+	bless {%item}, $item[0];
 }
 
 og_port_object :
-		port_object port
-
-port_object :
-        'port-object'
+		'port-object' port
 {
 	$item{'OBJECT_TYPE'} = bless( {'__VALUE__' => 'PORT'}, 'OBJECT_TYPE' );
+	bless {%item}, $item[0];
 }
 
 og_group_object :
-		group_object GROUP_REF
-
-group_object :
-        'group-object'
+		'group-object' GROUP_REF
 {
 	$item{'OBJECT_TYPE'} = bless( {'__VALUE__' => 'GROUP'}, 'OBJECT_TYPE' );
+	bless {%item}, $item[0];
 }
 
 og_protocol_object :
-		protocol_object PROTOCOL
-
-protocol_object :
-        'protocol-object'
+		'protocol-object' PROTOCOL
 {
 	$item{'OBJECT_TYPE'} = bless( {'__VALUE__' => 'PROTOCOL'}, 'OBJECT_TYPE' );
+	bless {%item}, $item[0];
 }
 
 og_description :
-		description REMARKS
-
-description :
-        'description'
+		'description' REMARKS
 {
 	$item{'OBJECT_TYPE'} = bless( {'__VALUE__' => 'COMMENT'}, 'OBJECT_TYPE' );
+	bless {%item}, $item[0];
 }
 
 og_icmp_object :
-		icmp_object ICMP_TYPE
-
-icmp_object :
-        'icmp-object'
+		'icmp-object' ICMP_TYPE
 {
 	$item{'OBJECT_TYPE'} = bless( {'__VALUE__' => 'ICMP_TYPE'}, 'OBJECT_TYPE' );
+	bless {%item}, $item[0];
 }
 
 og_service_object :
-		service_object og_so_protocol
-		
-service_object :
-        'service-object'
+		'service-object' og_so_protocol
 {
 	$item{'OBJECT_TYPE'} = bless( {'__VALUE__' => 'SERVICE'}, 'OBJECT_TYPE' );
+	bless {%item}, $item[0];
 }
 
 og_so_protocol :
@@ -366,14 +350,20 @@ acl_options :
 
 acl_logging :
 		'log' acl_log_level
-	|	log_default acl_time_range
-	|	log_default acl_inactive
-	|	log_default
-
-log_default :
-       'log' 
+	|	'log' acl_time_range
 {
 	$item{'LOG_LEVEL'} = bless( {'__VALUE__' => '6'}, 'LOG_LEVEL' );
+	bless {%item}, 'acl_log_level';
+}
+	|	'log' acl_inactive
+{
+	$item{'LOG_LEVEL'} = bless( {'__VALUE__' => '6'}, 'LOG_LEVEL' );
+	bless {%item}, 'acl_log_level';
+}
+	|	'log'
+{
+	$item{'LOG_LEVEL'} = bless( {'__VALUE__' => '6'}, 'LOG_LEVEL' );
+	bless {%item}, 'acl_log_level';
 }
 
 acl_log_level :
@@ -525,7 +515,7 @@ RULE_REF :
 GROUP_TYPE :
 		'service' | 'icmp-type' | 'network' | 'protocol'
 
-OBJECT_ENTRY :			
+OBJECT_TYPE :			
 			'network'
 		|	'service'
 
