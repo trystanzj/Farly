@@ -15,9 +15,9 @@ my $container = $importer->process( "ASA", "$path/test.cfg" );
 
 ok( defined $container, "container defined");
 ok( $container->isa("Farly::Object::List"), "container type");
-ok( $container->size() == 63, "import ok");
+ok( $container->size() == 65, "import ok");
 
-=b
+
 foreach my $obj ( $container->iter() ) {
     print $obj->dump(),"\n";
 }

@@ -17,7 +17,7 @@ eval { my $optimizer1 = Farly::Rule::Optimizer->new($container); };
 
 ok( $@ =~ /found invalid object/, "not expanded" );
 
-ok( $container->size() == 63, "import" );
+ok( $container->size() == 65, "import" );
 
 my $rule_expander = Farly::Rule::Expander->new($container);
 
@@ -27,7 +27,7 @@ ok( defined($rule_expander), "constructor" );
 
 my $expanded_rules = $rule_expander->expand_all();
 
-ok( $expanded_rules->size == 20, "expand_all" );
+ok( $expanded_rules->size == 22, "expand_all" );
 
 my $optimizer;
 
@@ -47,7 +47,7 @@ $optimizer = Farly::Rule::Optimizer->new($search_result);
 $optimizer->set_l4(); #not really needed, this is the default mode
 $optimizer->run();
 
-ok( $optimizer->optimized->size() == 18, "optimized" );
+ok( $optimizer->optimized->size() == 20, "optimized" );
 
 ok( $optimizer->removed->size() == 1, "removed" );
 
@@ -58,7 +58,7 @@ $optimizer = Farly::Rule::Optimizer->new($l4_optimized);
 $optimizer->set_l3();
 $optimizer->run();
 
-ok( $optimizer->optimized->size() == 17, "l3 mode - optimized" );
+ok( $optimizer->optimized->size() == 19, "l3 mode - optimized" );
 
 my $l3_optimized = $optimizer->rules();
 
@@ -67,5 +67,5 @@ $optimizer = Farly::Rule::Optimizer->new($l3_optimized);
 $optimizer->set_icmp();
 $optimizer->run();
 
-ok( $optimizer->optimized->size() == 14, "icmp mode - optimized" );
+ok( $optimizer->optimized->size() == 16, "icmp mode - optimized" );
 
