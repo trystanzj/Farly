@@ -100,4 +100,6 @@
  
  0.23 - June 2013
    - META.yml version update
-   
+   - ::Optimizer::set_l3 bug fix
+   - added 'access-list remarks' to unit tests
+   - better Farly::ASA::Parser memory leak fix
