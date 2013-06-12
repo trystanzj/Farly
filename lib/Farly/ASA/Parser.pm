@@ -48,9 +48,6 @@ sub parse {
 
     #throw an error if the parse fails
     defined($tree) or confess "unrecognized line\n";
-    
-    use Data::Dumper;
-    print Dumper($tree);
 
     return $tree;
 }
