@@ -4,7 +4,7 @@ use 5.008008;
 use strict;
 use warnings;
 use Carp;
-use Log::Log4perl qw(get_logger);
+use Log::Any;
 
 use Farly::Template::Cisco;
 
@@ -34,7 +34,7 @@ sub new {
 
     bless $self, $class;
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
     $logger->info("$self NEW");
     $logger->info( "$self RULES ", $self->{RULES} );
 
@@ -95,7 +95,7 @@ sub set_p_action {
     my ( $self, $action ) = @_;
     confess "invalid action" unless ( defined($action) && length($action) );
     $self->{P_ACTION} = $action;
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
     $logger->debug("set permit action to $action");
 }
 
@@ -103,7 +103,7 @@ sub set_d_action {
     my ( $self, $action ) = @_;
     confess "invalid action" unless ( defined($action) && length($action) );
     $self->{D_ACTION} = $action;
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
     $logger->debug("set deny action to $action");
 }
 
@@ -225,7 +225,7 @@ sub _do_search {
 sub _tuple {
     my ( $self, $rule ) = @_;
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
 
     my $r = Farly::Object->new();
 
@@ -466,7 +466,7 @@ sub _do_sort {
 sub _optimize {
     my ($self) = @_;
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
 
     my $permits = $self->_do_search( $self->p_action );
     my $denies  = $self->_do_search( $self->d_action );
@@ -557,8 +557,8 @@ traffic filtering properties of the firewall.
 The 'optimized' and 'removed' rule sets are expanded rule entries and may
 not correspond to the actual configuration on the device.
 
-To view Farly::Rule::Optimizer actions and results add the following to
-"Log/Farly.conf"
+To view Farly::Rule::Optimizer actions and results with Log4perl, set the logging adapter to Log::Any::Adapter::Log4perl and 
+add the following to your Log4perl configuration:
 
  log4perl.logger.Farly.Optimizer=INFO,Screen
  log4perl.appender.Screen=Log::Log4perl::Appender::Screen 
@@ -566,6 +566,7 @@ To view Farly::Rule::Optimizer actions and results add the following to
  log4perl.appender.Screen.layout=Log::Log4perl::Layout::PatternLayout
  log4perl.appender.Screen.layout.ConversionPattern=%d %p> %F{1}:%L %M - %m%n
 
+See L<Log::Any::Adpater> and L<Log::Any::Adapter::Log4perl> for details.
 Logged rules are currently displayed in Cisco ASA format.
 
 =head1 METHODS

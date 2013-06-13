@@ -4,7 +4,7 @@ use 5.008008;
 use strict;
 use warnings;
 use Carp;
-use Log::Log4perl qw(get_logger);
+use Log::Any;
 use Farly::Builder;
 use Farly::ASA::Filter;
 use Farly::ASA::Parser;
@@ -25,7 +25,7 @@ sub new {
     my $self = $class->SUPER::new();
     bless $self, $class;
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
     $logger->info("$self NEW");
 
     return $self;
@@ -34,7 +34,7 @@ sub new {
 sub run {
     my ($self) = @_;
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
 
     my $filter    = Farly::ASA::Filter->new();
     my $parser    = Farly::ASA::Parser->new();

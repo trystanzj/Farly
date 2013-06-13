@@ -6,7 +6,7 @@ use warnings;
 use Carp;
 use File::Spec;
 use Template;
-use Log::Log4perl qw(get_logger);
+use Log::Any;
 
 our $VERSION = '0.24';
 our ( $volume, $dir, $file ) = File::Spec->splitpath( $INC{'Farly/Template/Cisco.pm'} );
@@ -24,7 +24,7 @@ sub new {
 
     $self->_init(%args);
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
     $logger->info("$self NEW");
 
     return $self;
