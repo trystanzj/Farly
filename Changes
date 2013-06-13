@@ -103,3 +103,7 @@
    - ::Optimizer::set_l3 bug fix
    - added 'access-list remarks' to unit tests
    - better Farly::ASA::Parser memory leak fix
+
+ 0.24 - June 2013
+   - ::Optimizer::set_l3 bug fix
+   
