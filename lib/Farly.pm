@@ -10,7 +10,7 @@ use Log::Log4perl qw(get_logger);
 use Farly::Director;
 use Farly::Object;
 
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 our ( $volume, $dir, $file ) = File::Spec->splitpath( $INC{'Farly.pm'} );
 Log::Log4perl::init( $volume . $dir . 'Farly/Log/Farly.conf' );
 

@@ -24,7 +24,7 @@ use Farly::Transport::PortLT;
 use Farly::Transport::PortRange;
 use Farly::Transport::Protocol;
 
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 
 sub new {
     my ($class) = @_;

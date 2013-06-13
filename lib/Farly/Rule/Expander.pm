@@ -7,7 +7,7 @@ use Carp;
 use Log::Log4perl qw(get_logger);
 use Farly::Object::Aggregate;
 
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 
 sub new {
     my ( $class, $fw ) = @_;
