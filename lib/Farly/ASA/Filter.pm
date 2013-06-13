@@ -52,6 +52,8 @@ sub run {
 
     while ( my $line = $file->getline() ) {
 
+        $line =~ s/\s+$//g;
+
         $logger->debug("$self SCAN $line");
 
         if ( $line =~ /^hostname (\S+)/ ) {
