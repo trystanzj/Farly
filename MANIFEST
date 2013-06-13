@@ -19,7 +19,6 @@ lib/Farly/IPv4/ICMPType.pm
 lib/Farly/IPv4/Network.pm
 lib/Farly/IPv4/Object.pm
 lib/Farly/IPv4/Range.pm
-lib/Farly/Log/Farly.conf
 lib/Farly/Object/Aggregate.pm
 lib/Farly/Object/List.pm
 lib/Farly/Object/Ref.pm
