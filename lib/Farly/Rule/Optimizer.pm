@@ -132,7 +132,7 @@ sub _ascending_l4 {
 sub set_icmp {
     my ($self) = @_;
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
     $logger->info("set_icmp mode");
 
     $self->{MODE}       = 'ICMP';
@@ -150,7 +150,7 @@ sub _ascending_icmp {
 sub set_l3 {
     my ($self) = @_;
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
 
     $logger->info("set_l3 mode");
 
@@ -204,7 +204,7 @@ sub run {
 sub _do_search {
     my ( $self, $action ) = @_;
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
  
     my $search = Farly::Object->new();
     my $result = Farly::Object::List->new();
