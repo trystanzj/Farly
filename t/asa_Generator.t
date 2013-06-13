@@ -1,11 +1,11 @@
 use strict;
 use warnings;
 use Test::More tests => 1;
-use Log::Log4perl qw(:easy);
+
 use Farly;
 use Farly::ASA::Generator;
 
-Log::Log4perl->easy_init($ERROR);
+
 
 my $generator = Farly::ASA::Generator->new();
 

@@ -4,8 +4,8 @@ use warnings;
 use Scalar::Util 'blessed';
 use Test::Simple tests => 3;
 
-use Log::Log4perl qw(:easy);
-Log::Log4perl->easy_init($ERROR);
+
+
 
 use Farly;
 use Farly::ASA::Builder;

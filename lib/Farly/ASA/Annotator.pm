@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Carp;
 use Scalar::Util qw(blessed);
-use Log::Log4perl qw(get_logger);
+use Log::Any;
 use Farly::ASA::PortFormatter;
 use Farly::ASA::ProtocolFormatter;
 use Farly::ASA::ICMPFormatter;
@@ -70,7 +70,7 @@ sub new {
     };
     bless $self, $class;
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
     $logger->info("$self NEW");
 
     return $self;
@@ -137,7 +137,7 @@ sub visit {
 sub named_ip {
     my ( $self, $node ) = @_;
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
 
     my $name = $node->{name}->{NAME_ID}->{__VALUE__}
       or confess "$self error: name not found for ", ref($node);

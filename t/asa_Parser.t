@@ -2,8 +2,8 @@ use strict;
 use warnings;
 use Scalar::Util 'blessed';
 use Test::Simple tests => 29;
-use Log::Log4perl qw(:easy);
-Log::Log4perl->easy_init($ERROR);
+
+
 use Farly::ASA::Parser;
 
 use Data::Dumper;

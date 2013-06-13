@@ -4,7 +4,7 @@ use 5.008008;
 use strict;
 use warnings;
 use Carp;
-use Log::Log4perl qw(get_logger);
+use Log::Any;
 
 our $VERSION = '0.24';
 
@@ -17,7 +17,7 @@ sub new {
     };
     bless( $self, $class );
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
     $logger->info("$self NEW ");
 
     return $self;
@@ -28,7 +28,7 @@ sub set_file {
 
     $self->{FILE} = $file;
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
     $logger->info( "$self SET FILE TO ", $self->{FILE} );
 }
 

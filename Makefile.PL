@@ -19,8 +19,8 @@ WriteMakefile(
 	PREREQ_PM          => {
 		#non-core
 		'Parse::RecDescent' => 1.965001,
-		'Log::Log4perl'     => 1.35,
 		'Template'          => 2.22,
+        'Log::Any'          => 0.14,
 		#core
 		'Carp'              => 0,
 		'Config'            => 0,		

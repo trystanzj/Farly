@@ -6,13 +6,14 @@ use warnings;
 use Carp;
 use IO::File;
 use File::Spec;
-use Log::Log4perl qw(get_logger);
+use Log::Any;
 use Farly::Director;
 use Farly::Object;
+require Time::HiRes;
 
 our $VERSION = '0.24';
 our ( $volume, $dir, $file ) = File::Spec->splitpath( $INC{'Farly.pm'} );
-Log::Log4perl::init( $volume . $dir . 'Farly/Log/Farly.conf' );
+
 
 sub new {
     my ( $class, $container ) = @_;
@@ -20,7 +21,7 @@ sub new {
     my $self = { DIRECTOR => Farly::Director->new(), };
     bless $self, $class;
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
     $logger->info("$self NEW");
 
     return $self;
@@ -35,7 +36,7 @@ sub process {
 
     croak "$file_name is not a file" unless ( -f $file_name );
 
-    my $logger = get_logger(__PACKAGE__);
+    my $logger = Log::Any->get_logger;
 
     my $location      = "Farly/$type/Builder.pm";
     my $builder_class = 'Farly::'.$type.'::Builder';
@@ -117,6 +118,28 @@ Returns Farly::Object::List<Farly::Object> firewall device model.
  
 Valid firewall types:
  ASA  - Cisco ASA firewall
+
+=head1 Logging
+
+Farly uses L<Log::Any> for logging. You can enable logging 
+by setting the desired L<Log::Any::Adapter>.
+
+ use Farly;
+ use Log::Any::Adapter;
+ 
+ # send all messages to STDOUT
+ Log::Any::Adapter->set("Stdout");
+
+ my $farly = Farly->new;
+
+ ...
+
+Or you can select logging for specific modules only:
+
+ # only log messages from Farly::ASA::Parser
+ Log::Any::Adapter->set({ category => "Farly::ASA::Parser" }, "Stdout");
+
+See L<Log::Any::Adapter> for configuration details and a list of available adapters.
 
 =head1 AUTHOR
 
