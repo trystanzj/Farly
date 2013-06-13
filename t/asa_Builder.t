@@ -3,9 +3,6 @@ use warnings;
 
 use Test::Simple tests => 1;
 
-
-
-
 use Farly::ASA::Builder;
 
 my $builder = Farly::ASA::Builder->new();

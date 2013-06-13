@@ -1,8 +1,5 @@
 use strict;
-
 #use warnings;
-
-
 
 use Farly;
 use Farly::ASA::Builder;

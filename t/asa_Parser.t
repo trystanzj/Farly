@@ -3,10 +3,7 @@ use warnings;
 use Scalar::Util 'blessed';
 use Test::Simple tests => 29;
 
-
 use Farly::ASA::Parser;
-
-use Data::Dumper;
 
 my $parser = Farly::ASA::Parser->new();
 

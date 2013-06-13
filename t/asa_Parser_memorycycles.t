@@ -7,8 +7,6 @@ use Farly::ASA::Filter;
 use Farly::ASA::Parser;
 use IO::File;
 
-
-
 eval "use Test::Memory::Cycle";
 
 if($@){

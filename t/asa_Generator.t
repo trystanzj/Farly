@@ -5,8 +5,6 @@ use Test::More tests => 1;
 use Farly;
 use Farly::ASA::Generator;
 
-
-
 my $generator = Farly::ASA::Generator->new();
 
 my $ast = bless( {

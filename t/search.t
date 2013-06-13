@@ -1,8 +1,6 @@
 use strict;
 use warnings;
 
-
-
 use Farly;
 use Farly::Opts::Search;
 use Test::Simple tests => 10;

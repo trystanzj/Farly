@@ -4,9 +4,6 @@ use warnings;
 use Scalar::Util 'blessed';
 use Test::Simple tests => 3;
 
-
-
-
 use Farly;
 use Farly::ASA::Builder;
 use Farly::ASA::Parser;

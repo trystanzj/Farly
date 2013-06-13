@@ -6,8 +6,6 @@ use Farly;
 use Farly::ASA::Parser;
 use Farly::ASA::Annotator;
 use Farly::ASA::Rewriter;
- 
-
 
 my $abs_path = File::Spec->rel2abs( __FILE__ );
 our ($volume,$dir,$file) = File::Spec->splitpath( $abs_path );
