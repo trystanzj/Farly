@@ -37,7 +37,7 @@ requires:
   IO::Handle: 0
   IO::Seekable: 0
   List::Util: 0
-  Log::Log4perl: 1.35
+  Log::Any: 0.14
   Parse::RecDescent: 1.965001
   Scalar::Util: 0
   SelectSaver: 0
@@ -50,4 +50,4 @@ requires:
 resources:
   license: http://www.gnu.org/licenses/gpl-3.0.html
   repository: https://github.com/trystanzj/Farly
-version: 0.24
+version: 0.25
