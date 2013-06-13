@@ -7,7 +7,7 @@ use Carp;
 use Log::Any;
 use Farly::Object::Aggregate;
 
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 
 sub new {
     my ( $class, $fw ) = @_;

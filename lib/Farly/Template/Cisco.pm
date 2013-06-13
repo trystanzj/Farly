@@ -8,7 +8,7 @@ use File::Spec;
 use Template;
 use Log::Any;
 
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 our ( $volume, $dir, $file ) = File::Spec->splitpath( $INC{'Farly/Template/Cisco.pm'} );
 
 sub new {

@@ -11,7 +11,7 @@ use Farly::Director;
 use Farly::Object;
 require Time::HiRes;
 
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 
 sub new {
     my ( $class, $container ) = @_;
