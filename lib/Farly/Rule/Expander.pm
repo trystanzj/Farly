@@ -27,7 +27,7 @@ sub new {
 
     my $logger = Log::Any->get_logger;
     $logger->info("$self NEW");
-    $logger->info( "$self CONFIG ", $self->{CONFIG} );
+    $logger->info( "$self CONFIG " . $self->{CONFIG} );
 
     $self->_init();
 
@@ -73,14 +73,14 @@ sub _set_defaults {
             if ( !$ce->has_defined('SRC_PORT') ) {
 
                 $ce->set( 'SRC_PORT', Farly::Transport::PortRange->new( 1, 65535 ) );
-                $logger->debug( 'SET SOURCE PORT ' . $ce->get('SRC_PORT') );
+                $logger->debug( 'set SRC_PORT = ' . $ce->get('SRC_PORT') );
             }
 
             #if a dst port is not defined, define all ports
             if ( !$ce->has_defined('DST_PORT') ) {
 
                 $ce->set( 'DST_PORT', Farly::Transport::PortRange->new( 1, 65535 ) );
-                $logger->debug( "SET DST PORT " . $ce->get('DST_PORT') );
+                $logger->debug( "set DST_PORT = " . $ce->get('DST_PORT') );
             }
         }
 
@@ -93,7 +93,7 @@ sub _set_defaults {
             if ( !$ce->has_defined('ICMP_TYPE') ) {
 
                 $ce->set( 'ICMP_TYPE', Farly::IPv4::ICMPType->new(-1) );
-                $logger->debug('SET ICMP_TYPE to -1 ');
+                $logger->debug('set ICMP_TYPE to -1 ');
             }
         }
     }
@@ -208,8 +208,7 @@ sub expand {
 
                 if ( $value->matches($COMMENT) ) {
 
-                    $logger->debug( "skipped group comment :\n",
-                        $ce->dump(), "\n" );
+                    $logger->debug( "skipped group comment :\n" . $ce->dump() . "\n" );
 
                     last;
                 }
@@ -227,8 +226,7 @@ sub expand {
                 }
                 else {
 
-                    $logger->warn( "skipped $ce property $key has no OBJECT\n",
-                        $ce->dump() );
+                    $logger->warn( "skipped $ce property $key has no OBJECT\n" . $ce->dump() );
 
                     last;
                 }
@@ -263,7 +261,7 @@ sub _expand_vip {
     my ( $self, $key, $clone, $vip_object ) = @_;
 
     my $logger = Log::Any->get_logger;
-    $logger->debug("processing VIP : $vip_object - key : $key");
+    $logger->debug("processing VIP $vip_object : key = $key");
 
     if ( $key eq 'DST_IP' ) {
         $clone->set( $key, $vip_object->get('REAL_IP') );

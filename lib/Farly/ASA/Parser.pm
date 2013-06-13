@@ -35,7 +35,7 @@ sub _init {
     $self->{PARSER} = Parse::RecDescent->new( $self->_grammar() );
 
     my $logger = Log::Any->get_logger;
-    $logger->info( "$self NEW PARSER " . $self->{PARSER} );
+    $logger->info( "$self new ::ASA::Parser " . $self->{PARSER} );
 }
 
 sub parse {

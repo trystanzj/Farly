@@ -236,7 +236,7 @@ sub _tuple {
             $r->set( $property, $rule->get($property) );
         }
         else {
-            $logger->warn( "property $property not defined in ", $rule->dump() );
+            $logger->warn( "property $property not defined in " . $rule->dump() );
         }
     }
 
