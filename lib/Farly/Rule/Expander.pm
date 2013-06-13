@@ -73,14 +73,14 @@ sub _set_defaults {
             if ( !$ce->has_defined('SRC_PORT') ) {
 
                 $ce->set( 'SRC_PORT', Farly::Transport::PortRange->new( 1, 65535 ) );
-                $logger->debug( 'SET SOURCE PORT ', $ce->get('SRC_PORT') );
+                $logger->debug( 'SET SOURCE PORT ' . $ce->get('SRC_PORT') );
             }
 
             #if a dst port is not defined, define all ports
             if ( !$ce->has_defined('DST_PORT') ) {
 
                 $ce->set( 'DST_PORT', Farly::Transport::PortRange->new( 1, 65535 ) );
-                $logger->debug( "SET DST PORT ", $ce->get('DST_PORT') );
+                $logger->debug( "SET DST PORT " . $ce->get('DST_PORT') );
             }
         }
 

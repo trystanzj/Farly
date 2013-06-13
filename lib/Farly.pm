@@ -61,7 +61,7 @@ sub process {
 
     $logger->info("parse time: $elapsed seconds");
 
-    $logger->info( "imported ", $container->size(), " objects" );
+    $logger->info( "imported " . $container->size() . " objects" );
 
     return $container;
 }

@@ -70,7 +70,7 @@ sub run {
         };
         if ($@) {
             my $err = $@;
-            $logger->fatal( $self->file(), "\n $line \n $err\n" );
+            $logger->fatal( $self->file() . "\n $line \n $err\n" );
             chomp($line);
             die "Problem at line :\n$line\nError : $@";
         }

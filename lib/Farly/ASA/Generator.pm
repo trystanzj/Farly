@@ -19,7 +19,7 @@ sub new {
 
     my $logger = Log::Any->get_logger;
     $logger->info("$self NEW");
-    $logger->info( "$self CONTAINER is ", $self->container() );
+    $logger->info( "$self CONTAINER is " . $self->container() );
 
     return $self;
 }
@@ -41,7 +41,7 @@ sub visit {
     # the AST root node is the 'ENTRY'
     $object->set( 'ENTRY', Farly::Value::String->new( ref($node) ) );
 
-    $logger->debug( "ENTRY = ", ref($node) );
+    $logger->debug( "ENTRY = " . ref($node) );
 
     # set s of explored vertices
     my %seen;
@@ -58,7 +58,7 @@ sub visit {
 
         next if ( $seen{$node}++ );
 
-        $logger->debug( "ast node class = ", ref($node) );
+        $logger->debug( "ast node class = " . ref($node) );
 
         # continue exploring the AST
         foreach my $key ( keys %$node ) {
@@ -69,8 +69,7 @@ sub visit {
 
                 #then $next isa token
                 $object->set( ref($node), $next );
-                $logger->debug( "set ", ref($node), " = ", ref($next), " ",
-                    $next->as_string );
+                $logger->debug( "set " . ref($node) . " = " . ref($next). " " . $next->as_string );
             }
             else {
                 push @stack, $next;

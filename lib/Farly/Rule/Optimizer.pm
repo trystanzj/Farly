@@ -36,7 +36,7 @@ sub new {
 
     my $logger = Log::Any->get_logger;
     $logger->info("$self NEW");
-    $logger->info( "$self RULES ", $self->{RULES} );
+    $logger->info( "$self RULES " . $self->{RULES} );
 
     #validate input rule set
     $self->_is_valid_rule_set();
@@ -175,7 +175,7 @@ sub set_l3 {
             $protocols{ $rule->get('PROTOCOL')->as_string() }++;
         }
         else {
-            $logger->info( "set_l3 skipped ",$rule->dump() );
+            $logger->info( "set_l3 skipped:\n" . $rule->dump() );
         }
     }
 
@@ -211,7 +211,7 @@ sub _do_search {
 
     foreach my $protocol ( $self->_protocols ) {
 
-        $logger->info("searching for $action $protocol\n");
+        $logger->info("searching for $action $protocol");
 
         $search->set( 'PROTOCOL', Farly::Transport::Protocol->new($protocol) );
         $search->set( 'ACTION',   Farly::Value::String->new($action) );

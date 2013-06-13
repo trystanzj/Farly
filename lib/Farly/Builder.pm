@@ -18,7 +18,7 @@ sub new {
     bless( $self, $class );
 
     my $logger = Log::Any->get_logger;
-    $logger->info("$self NEW ");
+    $logger->info("$self NEW");
 
     return $self;
 }
@@ -29,7 +29,7 @@ sub set_file {
     $self->{FILE} = $file;
 
     my $logger = Log::Any->get_logger;
-    $logger->info( "$self SET FILE TO ", $self->{FILE} );
+    $logger->info( "$self SET FILE TO " . $self->{FILE} );
 }
 
 sub file {

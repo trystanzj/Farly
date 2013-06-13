@@ -29,7 +29,7 @@ sub set_file {
     my ( $self, $file ) = @_;
     $self->{FILE} = $file;
     my $logger = Log::Any->get_logger;
-    $logger->info( "$self SET FILE TO ", $self->{FILE} );
+    $logger->info( "$self SET FILE TO " . $self->{FILE} );
 }
 
 sub append {

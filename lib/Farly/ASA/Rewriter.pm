@@ -129,7 +129,7 @@ sub rewrite {
         $pt_node  = $rec->[0];
         $ast_node = $rec->[1];
 
-        $logger->debug( "parse tree node = ", ref($pt_node), " : ast node = ", ref($ast_node) );
+        $logger->debug( "parse tree node = " . ref($pt_node) . " : ast node = " . ref($ast_node) );
 
         next if ( $seen{$pt_node}++ );
 
@@ -141,7 +141,7 @@ sub rewrite {
             $root     = bless( {}, $AST_Root_Class->{$pt_node_class} );
             $ast_node = $root;
 
-            $logger->debug( "new ast root class = ", ref($root) );
+            $logger->debug( "new ast root class = " . ref($root) );
         }
 
         # create new abstract syntax tree nodes
@@ -154,7 +154,7 @@ sub rewrite {
             #update the $ast_node reference to refer to the new AST node
             $ast_node = $ast_node->{$new_ast_node_class};
 
-            $logger->debug( "mapped $pt_node_class to AST class ", ref($ast_node) );
+            $logger->debug( "mapped $pt_node_class to AST class " . ref($ast_node) );
 
             # the AST root class has to have been changed or something is very wrong
             confess "rewrite error" if ( $root->isa('NULL') );
@@ -175,7 +175,7 @@ sub rewrite {
 
                     #then $next isa token
                     $ast_node->{'__VALUE__'} = $next;
-                    $logger->debug( "ast node = ", ref($ast_node), " : token = ", ref($next) );
+                    $logger->debug( "ast node = " . ref($ast_node) . " : token = " . ref($next) );
                 }
                 else {
                     push @stack, [ $next, $ast_node ];
