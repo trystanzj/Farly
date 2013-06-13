@@ -131,6 +131,10 @@ sub _ascending_l4 {
 
 sub set_icmp {
     my ($self) = @_;
+
+    my $logger = get_logger(__PACKAGE__);
+    $logger->info("set_icmp mode");
+
     $self->{MODE}       = 'ICMP';
     $self->{PROTOCOLS}  = [ 0, 1 ];
     $self->{PROPERTIES} = [ 'PROTOCOL', 'SRC_IP', 'DST_IP', 'ICMP_TYPE' ];
@@ -147,6 +151,8 @@ sub set_l3 {
     my ($self) = @_;
 
     my $logger = get_logger(__PACKAGE__);
+
+    $logger->info("set_l3 mode");
 
     my $ICMP = Farly::Object->new();
     $ICMP->set( 'PROTOCOL', Farly::Transport::Protocol->new(1) );
@@ -198,10 +204,14 @@ sub run {
 sub _do_search {
     my ( $self, $action ) = @_;
 
+    my $logger = get_logger(__PACKAGE__);
+ 
     my $search = Farly::Object->new();
     my $result = Farly::Object::List->new();
 
     foreach my $protocol ( $self->_protocols ) {
+
+        $logger->info("searching for $action $protocol\n");
 
         $search->set( 'PROTOCOL', Farly::Transport::Protocol->new($protocol) );
         $search->set( 'ACTION',   Farly::Value::String->new($action) );
@@ -455,11 +465,8 @@ sub _optimize {
     my $permits = $self->_do_search( $self->p_action );
     my $denies  = $self->_do_search( $self->d_action );
 
-    my @arr_permits;
-    my @arr_denys;
-
-    @arr_permits = sort _ascending_LINE $permits->iter();
-    @arr_denys   = sort _ascending_LINE $denies->iter();
+    my @arr_permits = sort _ascending_LINE $permits->iter();
+    my @arr_denys   = sort _ascending_LINE $denies->iter();
 
     # find permit rules that contain deny rules
     # which are defined further down in the rule set
