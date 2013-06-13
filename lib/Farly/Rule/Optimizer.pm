@@ -263,6 +263,9 @@ sub _inconsistent {
 
         $rule_x = $s_a->[$x];
 
+        confess "error : rule_x defined remove"
+          if ( $rule_x->has_defined('REMOVE') );
+
         # iterate over rules of action !a
         for ( my $y = 0 ; $y != scalar( @{$s_an} ) ; $y++ ) {
 
@@ -362,6 +365,9 @@ sub _redundant {
         for ( my $y = $x + 1 ; $y != scalar( @{$s_a} ) ; $y++ ) {
 
             my $rule_y = $s_a->[$y];
+
+            #skip check if a rule_x made more than one rule_y redundant
+            next if $rule_y->has_defined('REMOVE');
 
             if ( !$rule_y->get('DST_IP')->gt( $rule_x->get('DST_IP') ) ) {
 

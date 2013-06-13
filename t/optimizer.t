@@ -51,7 +51,7 @@ ok( $optimizer->optimized->size() == 20, "optimized" );
 
 ok( $optimizer->removed->size() == 1, "removed" );
 
-my $l4_optimized = $optimizer->rules();
+my $l4_optimized = $optimizer->optimized();
 
 $optimizer = Farly::Rule::Optimizer->new($l4_optimized);
 #$optimizer->verbose(1);
@@ -60,7 +60,7 @@ $optimizer->run();
 
 ok( $optimizer->optimized->size() == 19, "l3 mode - optimized" );
 
-my $l3_optimized = $optimizer->rules();
+my $l3_optimized = $optimizer->optimized();
 
 $optimizer = Farly::Rule::Optimizer->new($l3_optimized);
 #$optimizer->verbose(1);
