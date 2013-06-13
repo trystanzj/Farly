@@ -12,8 +12,6 @@ use Farly::Object;
 require Time::HiRes;
 
 our $VERSION = '0.24';
-our ( $volume, $dir, $file ) = File::Spec->splitpath( $INC{'Farly.pm'} );
-
 
 sub new {
     my ( $class, $container ) = @_;
@@ -122,7 +120,8 @@ Valid firewall types:
 =head1 Logging
 
 Farly uses L<Log::Any> for logging. You can enable logging 
-by setting the desired L<Log::Any::Adapter>.
+by setting the desired L<Log::Any::Adapter> in your Farly based
+Perl script.
 
  use Farly;
  use Log::Any::Adapter;
@@ -132,14 +131,8 @@ by setting the desired L<Log::Any::Adapter>.
 
  my $farly = Farly->new;
 
- ...
-
-Or you can select logging for specific modules only:
-
- # only log messages from Farly::ASA::Parser
- Log::Any::Adapter->set({ category => "Farly::ASA::Parser" }, "Stdout");
-
-See L<Log::Any::Adapter> for configuration details and a list of available adapters.
+See L<Log::Any::Adapter> for configuration details and a list of
+available adapters.
 
 =head1 AUTHOR
 
