@@ -163,7 +163,7 @@ sub expand {
 
             my $value = $ce->get($key);
 
-            $logger->debug("entry $ce - key : $key - value : $value");
+            $logger->debug("entry $ce : key = $key : value = $value");
 
             $is_expanded = 1;
 
