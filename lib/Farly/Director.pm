@@ -31,7 +31,7 @@ sub set_file {
     $self->{FILE} = $file;
 
     my $logger = Log::Any->get_logger;
-    $logger->info( "$self SET FILE TO " . $self->{FILE} );
+    $logger->info( "$self set FILE = " . $self->{FILE} );
 }
 
 sub file {
@@ -47,7 +47,7 @@ sub set_builder {
     $self->{BUILDER} = $builder;
 
     my $logger = Log::Any->get_logger;
-    $logger->info( "$self SET BUILDER TO " . $self->{BUILDER} );
+    $logger->info( "$self set BUILDER = " . $self->{BUILDER} );
 }
 
 sub builder {
