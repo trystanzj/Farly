@@ -8,7 +8,7 @@ use Log::Log4perl qw(get_logger);
 
 use Farly::Template::Cisco;
 
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 
 sub new {
     my ( $class, $rules ) = @_;
@@ -66,6 +66,9 @@ sub _is_valid_rule_set {
     $search->set( 'ID',    $id );
 
     foreach my $rule ( $self->rules->iter() ) {
+        if ( $rule->has_defined('REMOVE') ) {
+            die "found REMOVE in firewall ruleset ", $rule->dump();
+        }
         if ( !$rule->matches($search) ) {
             die "found invalid object in firewall ruleset ", $rule->dump();
         }
@@ -154,7 +157,7 @@ sub set_l3 {
     my $UDP = Farly::Object->new();
     $UDP->set( 'PROTOCOL', Farly::Transport::Protocol->new(17) );
 
-    my @protocols;
+    my %protocols;
 
     foreach my $rule ( $self->rules->iter() ) {
 
@@ -163,15 +166,17 @@ sub set_l3 {
         next if $rule->matches($UDP);
 
         if ( $rule->has_defined('PROTOCOL') ) {
-            push @protocols, $rule->get('PROTOCOL')->as_string();
+            $protocols{ $rule->get('PROTOCOL')->as_string() }++;
         }
         else {
             $logger->info( "set_l3 skipped ",$rule->dump() );
         }
     }
 
+    my @p = keys %protocols;
+
     $self->{MODE}       = 'L3';
-    $self->{PROTOCOLS}  = \@protocols;
+    $self->{PROTOCOLS}  = \@p;
     $self->{PROPERTIES} = [ 'PROTOCOL', 'SRC_IP', 'DST_IP' ];
 }
 
