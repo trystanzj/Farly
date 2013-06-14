@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Carp;
 use Scalar::Util qw(blessed);
-use Log::Any;
+use Log::Any qw($log);
 
 our $VERSION = '0.25';
 
@@ -16,10 +16,9 @@ sub new {
         CONTAINER => Farly::Object::List->new(), # result
     };
     bless $self, $class;
-
-    my $logger = Log::Any->get_logger;
-    $logger->info("$self NEW");
-    $logger->info( "$self CONTAINER is " . $self->container() );
+    
+    $log->info("$self new");
+    $log->info( "$self CONTAINER is " . $self->container() );
 
     return $self;
 }
@@ -30,10 +29,7 @@ sub container {
 
 sub visit {
     my ( $self, $node ) = @_;
-
-    # $node is a reference to the root of the AST
-
-    my $logger = Log::Any->get_logger;
+    # $node isa reference to the root of the AST
 
     # the Farly translator parses one firewall object at a time
     my $object = Farly::Object->new();
@@ -41,7 +37,7 @@ sub visit {
     # the AST root node is the 'ENTRY'
     $object->set( 'ENTRY', Farly::Value::String->new( ref($node) ) );
 
-    $logger->debug( "ENTRY = " . ref($node) );
+    $log->debug( "ENTRY = " . ref($node) );
 
     # set s of explored vertices
     my %seen;
@@ -58,7 +54,7 @@ sub visit {
 
         next if ( $seen{$node}++ );
 
-        $logger->debug( "ast node class = " . ref($node) );
+        $log->debug( "ast node class = " . ref($node) );
 
         # continue exploring the AST
         foreach my $key ( keys %$node ) {
@@ -69,7 +65,7 @@ sub visit {
 
                 #then $next isa token
                 $object->set( ref($node), $next );
-                $logger->debug( "set " . ref($node) . " = " . ref($next). " " . $next->as_string );
+                $log->debug( "set " . ref($node) . " = " . ref($next). " " . $next->as_string );
             }
             else {
                 push @stack, $next;

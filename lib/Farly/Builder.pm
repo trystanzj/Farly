@@ -4,7 +4,7 @@ use 5.008008;
 use strict;
 use warnings;
 use Carp;
-use Log::Any;
+use Log::Any qw($log);
 
 our $VERSION = '0.25';
 
@@ -16,9 +16,8 @@ sub new {
         CONTAINER => undef,
     };
     bless( $self, $class );
-
-    my $logger = Log::Any->get_logger;
-    $logger->info("$self NEW");
+    
+    $log->info("$self NEW");
 
     return $self;
 }
@@ -27,9 +26,8 @@ sub set_file {
     my ( $self, $file ) = @_;
 
     $self->{FILE} = $file;
-
-    my $logger = Log::Any->get_logger;
-    $logger->info( "$self SET FILE TO " . $self->{FILE} );
+    
+    $log->info( "$self SET FILE TO " . $self->{FILE} );
 }
 
 sub file {

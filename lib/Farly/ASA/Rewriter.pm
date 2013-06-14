@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Carp;
 use Scalar::Util qw(blessed);
-use Log::Any;
+use Log::Any qw($log);
 
 our $VERSION = '0.25';
 
@@ -93,19 +93,18 @@ my $AST_Node_Class = {
 
 sub new {
     my ($class) = @_;
+
     my $self = bless {}, $class;
-    my $logger = Log::Any->get_logger;
-    $logger->info("$self NEW");
+
+    $log->info("$self NEW");
+
     return $self;
 }
 
 sub rewrite {
     my ( $self, $pt_node ) = @_;
-
     # $node is a reference to the current node in the parse tree
     # i.e. the root of the parse tree to begin with
-
-    my $logger = Log::Any->get_logger;
 
     # $root is a reference to the root of the new abstract syntax tree
     my $root = bless( {}, 'NULL' );
@@ -129,7 +128,7 @@ sub rewrite {
         $pt_node  = $rec->[0];
         $ast_node = $rec->[1];
 
-        $logger->debug( "parse tree node = " . ref($pt_node) . " : ast node = " . ref($ast_node) );
+        $log->debug( "parse tree node = " . ref($pt_node) . " : ast node = " . ref($ast_node) );
 
         next if ( $seen{$pt_node}++ );
 
@@ -141,7 +140,7 @@ sub rewrite {
             $root     = bless( {}, $AST_Root_Class->{$pt_node_class} );
             $ast_node = $root;
 
-            $logger->debug( "new ast root class = " . ref($root) );
+            $log->debug( "new ast root class = " . ref($root) );
         }
 
         # create new abstract syntax tree nodes
@@ -154,7 +153,7 @@ sub rewrite {
             #update the $ast_node reference to refer to the new AST node
             $ast_node = $ast_node->{$new_ast_node_class};
 
-            $logger->debug( "mapped $pt_node_class to AST class " . ref($ast_node) );
+            $log->debug( "mapped $pt_node_class to AST class " . ref($ast_node) );
 
             # the AST root class has to have been changed or something is very wrong
             confess "rewrite error" if ( $root->isa('NULL') );
@@ -175,7 +174,7 @@ sub rewrite {
 
                     #then $next isa token
                     $ast_node->{'__VALUE__'} = $next;
-                    $logger->debug( "ast node = " . ref($ast_node) . " : token = " . ref($next) );
+                    $log->debug( "ast node = " . ref($ast_node) . " : token = " . ref($next) );
                 }
                 else {
                     push @stack, [ $next, $ast_node ];

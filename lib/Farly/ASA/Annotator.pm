@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Carp;
 use Scalar::Util qw(blessed);
-use Log::Any;
+use Log::Any qw($log);
 use Farly::ASA::PortFormatter;
 use Farly::ASA::ProtocolFormatter;
 use Farly::ASA::ICMPFormatter;
@@ -70,9 +70,8 @@ sub new {
         ICMP_FMT     => Farly::ASA::ICMPFormatter->new()
     };
     bless $self, $class;
-
-    my $logger = Log::Any->get_logger;
-    $logger->info("$self NEW");
+    
+    $log->info("$self new");
 
     return $self;
 }
@@ -138,15 +137,14 @@ sub visit {
 sub named_ip {
     my ( $self, $node ) = @_;
 
-    my $logger = Log::Any->get_logger;
-
     my $name = $node->{name}->{NAME_ID}->{__VALUE__}
       or confess "$self error: name not found for ", ref($node);
 
     my $ip = $node->{IPADDRESS}->{__VALUE__}
       or confess "$self error: IP address not found for ", ref($node);
 
-    $logger->debug("name: $name ip: $ip");
+    $log->debug("name = $name : ip = $ip");
+
     $self->{NAMES}->{$name} = $ip;
 }
 
@@ -191,8 +189,7 @@ sub ICMP_TYPE {
 
     my $icmp_type = $node->{'__VALUE__'};
 
-    $node->{'__VALUE__'} =
-      defined( $self->icmp_formatter()->as_integer($icmp_type) )
+    $node->{'__VALUE__'} = defined( $self->icmp_formatter()->as_integer($icmp_type) )
       ? Farly::IPv4::ICMPType->new( $self->icmp_formatter()->as_integer($icmp_type) )
       : Farly::IPv4::ICMPType->new($icmp_type);
 }
@@ -202,8 +199,7 @@ sub PROTOCOL {
 
     my $protocol = $node->{'__VALUE__'};
 
-    $node->{'__VALUE__'} =
-      defined( $self->protocol_formatter()->as_integer($protocol) )
+    $node->{'__VALUE__'} = defined( $self->protocol_formatter()->as_integer($protocol) )
       ? Farly::Transport::Protocol->new( $self->protocol_formatter()->as_integer($protocol) )
       : Farly::Transport::Protocol->new($protocol);
 }
@@ -213,8 +209,7 @@ sub PORT_ID {
 
     my $port = $node->{'__VALUE__'};
 
-    $node->{'__VALUE__'} =
-      defined( $self->port_formatter()->as_integer($port) )
+    $node->{'__VALUE__'} = defined( $self->port_formatter()->as_integer($port) )
       ? Farly::Transport::Port->new( $self->port_formatter()->as_integer($port) )
       : Farly::Transport::Port->new($port);
 }
@@ -242,8 +237,7 @@ sub PORT_GT {
 
     my $port = $node->{'__VALUE__'};
 
-    $node->{'__VALUE__'} =
-      defined( $self->port_formatter()->as_integer($port) )
+    $node->{'__VALUE__'} = defined( $self->port_formatter()->as_integer($port) )
       ? Farly::Transport::PortGT->new( $self->port_formatter()->as_integer($port) )
       : Farly::Transport::PortGT->new($port);
 }
@@ -253,8 +247,7 @@ sub PORT_LT {
 
     my $port = $node->{'__VALUE__'};
 
-    $node->{'__VALUE__'} =
-      defined( $self->port_formatter()->as_integer($port) )
+    $node->{'__VALUE__'} = defined( $self->port_formatter()->as_integer($port) )
       ? Farly::Transport::PortLT->new( $self->port_formatter()->as_integer($port) )
       : Farly::Transport::PortLT->new($port);
 }
@@ -295,12 +288,10 @@ sub AUTOLOAD {
     my $value = $node->{'__VALUE__'};
 
     if ( $class eq 'Farly::Object::Ref' ) {
-
         #need to set 'ENTRY' and 'ID' properties
         $object = $self->_new_ObjectRef( $token_class, $value );
     }
     else {
-
         #create the object right away
         $object = $class->new($value);
     }

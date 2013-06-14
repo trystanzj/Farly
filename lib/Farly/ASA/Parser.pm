@@ -4,7 +4,7 @@ use 5.008008;
 use strict;
 use warnings;
 use Carp;
-use Log::Any;
+use Log::Any qw($log);
 use Parse::RecDescent;
 
 our $VERSION = '0.25';
@@ -20,9 +20,8 @@ sub new {
 
     my $self = { PARSER => undef, };
     bless $self, $class;
-
-    my $logger = Log::Any->get_logger;
-    $logger->info("$self NEW");
+    
+    $log->info("$self NEW");
 
     $self->_init();
 
@@ -33,9 +32,8 @@ sub _init {
     my ($self) = @_;
 
     $self->{PARSER} = Parse::RecDescent->new( $self->_grammar() );
-
-    my $logger = Log::Any->get_logger;
-    $logger->info( "$self new ::ASA::Parser " . $self->{PARSER} );
+    
+    $log->info( "$self new Parser " . $self->{PARSER} );
 }
 
 sub parse {

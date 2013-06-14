@@ -4,7 +4,7 @@ use 5.008008;
 use strict;
 use warnings;
 use Carp;
-use Log::Any;
+use Log::Any qw($log);
 
 our $VERSION = '0.25';
 
@@ -17,8 +17,8 @@ sub new {
     };
     bless( $self, $class );
 
-    my $logger = Log::Any->get_logger;
-    $logger->info("$self NEW ");
+    
+    $log->info("$self NEW ");
     return $self;
 }
 
@@ -29,9 +29,8 @@ sub set_file {
       or confess "an IO::File object is required";
 
     $self->{FILE} = $file;
-
-    my $logger = Log::Any->get_logger;
-    $logger->info( "$self set FILE = " . $self->{FILE} );
+    
+    $log->info( "$self set FILE = " . $self->{FILE} );
 }
 
 sub file {
@@ -46,8 +45,8 @@ sub set_builder {
 
     $self->{BUILDER} = $builder;
 
-    my $logger = Log::Any->get_logger;
-    $logger->info( "$self set BUILDER = " . $self->{BUILDER} );
+    
+    $log->info( "$self set BUILDER = " . $self->{BUILDER} );
 }
 
 sub builder {
@@ -58,7 +57,6 @@ sub run {
     my ($self) = @_;
 
     $self->builder()->set_file( $self->file() );
-
     $self->builder()->run();
     return $self->builder()->result();
 }

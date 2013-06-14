@@ -4,7 +4,7 @@ use 5.008008;
 use strict;
 use warnings;
 use Carp;
-use Log::Any;
+use Log::Any qw($log);
 
 use Farly::Template::Cisco;
 
@@ -34,9 +34,9 @@ sub new {
 
     bless $self, $class;
 
-    my $logger = Log::Any->get_logger;
-    $logger->info("$self NEW");
-    $logger->info( "$self RULES " . $self->{RULES} );
+    
+    $log->info("$self NEW");
+    $log->info( "$self RULES " . $self->{RULES} );
 
     #validate input rule set
     $self->_is_valid_rule_set();
@@ -95,16 +95,16 @@ sub set_p_action {
     my ( $self, $action ) = @_;
     confess "invalid action" unless ( defined($action) && length($action) );
     $self->{P_ACTION} = $action;
-    my $logger = Log::Any->get_logger;
-    $logger->debug("set permit action to $action");
+    
+    $log->debug("set permit action to $action");
 }
 
 sub set_d_action {
     my ( $self, $action ) = @_;
     confess "invalid action" unless ( defined($action) && length($action) );
     $self->{D_ACTION} = $action;
-    my $logger = Log::Any->get_logger;
-    $logger->debug("set deny action to $action");
+    
+    $log->debug("set deny action to $action");
 }
 
 # sort rules in ascending order by line number
@@ -132,8 +132,8 @@ sub _ascending_l4 {
 sub set_icmp {
     my ($self) = @_;
 
-    my $logger = Log::Any->get_logger;
-    $logger->info("set_icmp mode");
+    
+    $log->info("set_icmp mode");
 
     $self->{MODE}       = 'ICMP';
     $self->{PROTOCOLS}  = [ 0, 1 ];
@@ -150,9 +150,9 @@ sub _ascending_icmp {
 sub set_l3 {
     my ($self) = @_;
 
-    my $logger = Log::Any->get_logger;
+    
 
-    $logger->info("set_l3 mode");
+    $log->info("set_l3 mode");
 
     my $ICMP = Farly::Object->new();
     $ICMP->set( 'PROTOCOL', Farly::Transport::Protocol->new(1) );
@@ -175,7 +175,7 @@ sub set_l3 {
             $protocols{ $rule->get('PROTOCOL')->as_string() }++;
         }
         else {
-            $logger->info( "set_l3 skipped:\n" . $rule->dump() );
+            $log->info( "set_l3 skipped:\n" . $rule->dump() );
         }
     }
 
@@ -204,14 +204,14 @@ sub run {
 sub _do_search {
     my ( $self, $action ) = @_;
 
-    my $logger = Log::Any->get_logger;
+    
  
     my $search = Farly::Object->new();
     my $result = Farly::Object::List->new();
 
     foreach my $protocol ( $self->_protocols ) {
 
-        $logger->info("searching for $action $protocol");
+        $log->info("searching for $action $protocol");
 
         $search->set( 'PROTOCOL', Farly::Transport::Protocol->new($protocol) );
         $search->set( 'ACTION',   Farly::Value::String->new($action) );
@@ -225,7 +225,7 @@ sub _do_search {
 sub _tuple {
     my ( $self, $rule ) = @_;
 
-    my $logger = Log::Any->get_logger;
+    
 
     my $r = Farly::Object->new();
 
@@ -236,7 +236,7 @@ sub _tuple {
             $r->set( $property, $rule->get($property) );
         }
         else {
-            $logger->warn( "property $property not defined in " . $rule->dump() );
+            $log->warn( "property $property not defined in " . $rule->dump() );
         }
     }
 
@@ -466,7 +466,7 @@ sub _do_sort {
 sub _optimize {
     my ($self) = @_;
 
-    my $logger = Log::Any->get_logger;
+    
 
     my $permits = $self->_do_search( $self->p_action );
     my $denies  = $self->_do_search( $self->d_action );
@@ -476,7 +476,7 @@ sub _optimize {
 
     # find permit rules that contain deny rules
     # which are defined further down in the rule set
-    $logger->info("Checking for deny rule inconsistencies...");
+    $log->info("Checking for deny rule inconsistencies...");
     $self->_inconsistent( \@arr_permits, \@arr_denys );
 
     # create a new list of deny rules which are being kept
@@ -487,7 +487,7 @@ sub _optimize {
 
     # find deny rules which contain permit
     # rules further down in the rule set
-    $logger->info("Checking for permit rule inconsistencies...");
+    $log->info("Checking for permit rule inconsistencies...");
     $self->_inconsistent( \@arr_denys, \@arr_permits );
 
     # create the list of permit rules which are being kept
@@ -497,7 +497,7 @@ sub _optimize {
     my $aref_permits = $self->_do_sort($permits);
     my $aref_denys   = $self->_do_sort($denies);
 
-    $logger->info("Checking for permit rule redundancies...");
+    $log->info("Checking for permit rule redundancies...");
     $self->_redundant( $aref_permits, $aref_denys );
 
     $permits = $self->_keep($aref_permits);
@@ -505,7 +505,7 @@ sub _optimize {
     # sort the permits again
     $aref_permits = $self->_do_sort($permits);
 
-    $logger->info("Checking for deny rule redundancies...");
+    $log->info("Checking for deny rule redundancies...");
     $self->_redundant( $aref_denys, $aref_permits );
 
 }

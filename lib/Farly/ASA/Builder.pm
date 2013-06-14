@@ -4,7 +4,7 @@ use 5.008008;
 use strict;
 use warnings;
 use Carp;
-use Log::Any;
+use Log::Any qw($log);
 use Farly::Builder;
 use Farly::ASA::Filter;
 use Farly::ASA::Parser;
@@ -24,17 +24,14 @@ sub new {
     #call the constructor of the parent class
     my $self = $class->SUPER::new();
     bless $self, $class;
-
-    my $logger = Log::Any->get_logger;
-    $logger->info("$self NEW");
+    
+    $log->info("$self NEW");
 
     return $self;
 }
 
 sub run {
     my ($self) = @_;
-
-    my $logger = Log::Any->get_logger;
 
     my $filter    = Farly::ASA::Filter->new();
     my $parser    = Farly::ASA::Parser->new();
@@ -70,7 +67,7 @@ sub run {
         };
         if ($@) {
             my $err = $@;
-            $logger->fatal( $self->file() . "\n $line \n $err\n" );
+            $log->fatal( $self->file() . "\n: $line \n $err\n" );
             chomp($line);
             die "Problem at line :\n$line\nError : $@";
         }

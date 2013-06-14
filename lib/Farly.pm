@@ -6,7 +6,7 @@ use warnings;
 use Carp;
 use IO::File;
 use File::Spec;
-use Log::Any;
+use Log::Any qw($log);
 use Farly::Director;
 use Farly::Object;
 require Time::HiRes;
@@ -18,9 +18,8 @@ sub new {
 
     my $self = { DIRECTOR => Farly::Director->new(), };
     bless $self, $class;
-
-    my $logger = Log::Any->get_logger;
-    $logger->info("$self NEW");
+    
+    $log->info("$self NEW");
 
     return $self;
 }
@@ -33,8 +32,6 @@ sub process {
     my ( $self, $type, $file_name ) = @_;
 
     croak "$file_name is not a file" unless ( -f $file_name );
-
-    my $logger = Log::Any->get_logger;
 
     my $location      = "Farly/$type/Builder.pm";
     my $builder_class = 'Farly::'.$type.'::Builder';
@@ -59,9 +56,9 @@ sub process {
 
     my $elapsed = Time::HiRes::tv_interval($start);
 
-    $logger->info("parse time: $elapsed seconds");
+    $log->info("parse time: $elapsed seconds");
 
-    $logger->info( "imported " . $container->size() . " objects" );
+    $log->info( "imported " . $container->size() . " objects" );
 
     return $container;
 }

@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Carp;
 use Socket;
-use Log::Any;
+use Log::Any qw($log);
 use Farly::ASA::PortFormatter;
 use Farly::ASA::ProtocolFormatter;
 
@@ -24,10 +24,10 @@ sub new {
         SEARCH => Farly::Object->new(),
         FILTER => Farly::Object::List->new(),
     };
-    bless( $self, $class );
 
-    my $logger = Log::Any->get_logger;
-    $logger->info("$self NEW ");
+    bless( $self, $class );
+    
+    $log->info("$self new");
 
     $self->_check_opts($opts);
 

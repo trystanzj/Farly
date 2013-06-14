@@ -4,7 +4,7 @@ use 5.008008;
 use strict;
 use warnings;
 use Carp;
-use Log::Any;
+use Log::Any qw($log);
 
 our $VERSION = '0.25';
 
@@ -18,18 +18,16 @@ sub new {
         ACL_ID   => {},      #for inserting line numbers
     };
     bless $self, $class;
-
-    my $logger = Log::Any->get_logger;
-    $logger->info("$self NEW");
+    
+    $log->info("$self NEW");
 
     return $self;
 }
 
 sub set_file {
     my ( $self, $file ) = @_;
-    $self->{FILE} = $file;
-    my $logger = Log::Any->get_logger;
-    $logger->info( "$self SET FILE TO " . $self->{FILE} );
+    $self->{FILE} = $file;  
+    $log->info( "$self set FILE to " . $self->{FILE} );
 }
 
 sub append {
@@ -41,9 +39,8 @@ sub append {
 
 sub run {
     my ($self) = @_;
-    my $file = $self->{FILE};
 
-    my $logger = Log::Any->get_logger;
+    my $file = $self->{FILE};
 
     my $interface_options = "nameif|security-level|ip address"; #shutdown
     my $object_options    = "host|range|subnet|service";
@@ -52,9 +49,7 @@ sub run {
 
     while ( my $line = $file->getline() ) {
 
-        $line =~ s/\s+$//g;
-
-        $logger->debug("$self SCAN $line");
+        $log->debug("$self SCAN $line");
 
         if ( $line =~ /^hostname (\S+)/ ) {
             $self->append($line);
@@ -76,19 +71,19 @@ sub run {
             my $type = $1;
             my $id   = $2;
             $self->{OG_INDEX}->{$id} = $type;
-            $logger->debug("added OG_INDEX $id $type");
+            $log->debug("added OG_INDEX $id $type");
             $self->_process_section( $line, $group_options );
             next;
         }
         if ( $line =~ /^access-list (.*) $unsupported_acl_type/ ) {
-            $logger->info("$self SKIPPED access-list '$line'");
+            $log->info("$self SKIPPED access-list '$line'");
             next;
         }
 
         #access-list outside-in line 3 extended permit tcp OG_NETWORK internal OG_SERVICE highports host 192.168.2.1 eq 80
         if ( $line =~ /^access-list/ ) {
             my $p_line = $self->_process_acl($line);
-            $logger->debug("$self pre-processed line '$p_line'");
+            $log->debug("$self pre-processed line '$p_line'");
             $self->append($p_line);
             next;
         }
@@ -107,19 +102,17 @@ sub run {
 sub _process_section {
     my ( $self, $header, $options, $full_sect ) = @_;
 
-    my $logger = Log::Any->get_logger;
-
     my $file = $self->{FILE};
     my $pos  = $file->getpos();
     my $line = $file->getline();
 
-    $logger->debug("$header");
+    $log->debug("$header");
     my $header_pos = $pos;
 
     while ( $line &&  $line =~ /^\s/ ) {
 
         if ( $line =~ /^\s(?=$options)/ ) {
-            $logger->debug("$line");
+            $log->debug("$line");
             if ( defined($full_sect) ) {
                 $header .= $line;
             }
@@ -129,7 +122,7 @@ sub _process_section {
         }
         else {
             chomp($line);
-            $logger->warn("unknown option in line '$line'");
+            $log->warn("unknown option in line '$line'");
         }
 
         $pos  = $file->getpos();
@@ -141,7 +134,7 @@ sub _process_section {
     }
 
     if ( $pos eq $header_pos ) {
-        $logger->warn("empty section : '$header'");
+        $log->warn("empty section : '$header'");
     }
 
     $file->setpos($pos);
