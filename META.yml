@@ -37,7 +37,8 @@ requires:
   IO::Handle: 0
   IO::Seekable: 0
   List::Util: 0
-  Log::Any: 0.14
+  Log::Any: 0.15
+  Log::Any::Adapter: 0.11
   Parse::RecDescent: 1.965001
   Scalar::Util: 0
   SelectSaver: 0

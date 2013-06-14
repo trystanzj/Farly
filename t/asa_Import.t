@@ -4,6 +4,8 @@ use warnings;
 use Test::Simple tests => 3;
 
 use File::Spec; 
+use Log::Any::Adapter;
+Log::Any::Adapter->set( 'Stdout' );
 
 my $abs_path = File::Spec->rel2abs( __FILE__ );
 our ($volume,$dir,$file) = File::Spec->splitpath( $abs_path );

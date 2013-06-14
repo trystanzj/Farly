@@ -20,7 +20,8 @@ WriteMakefile(
 		#non-core
 		'Parse::RecDescent' => 1.965001,
 		'Template'          => 2.22,
-        'Log::Any'          => 0.14,
+        'Log::Any'          => 0.15,
+        'Log::Any::Adapter' => 0.11,        
 		#core
 		'Carp'              => 0,
 		'Config'            => 0,		
