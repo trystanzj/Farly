@@ -49,7 +49,7 @@ sub run {
 
     while ( my $line = $file->getline() ) {
 
-        $log->debug("$self SCAN $line");
+        $log->trace("$self SCAN $line");
 
         if ( $line =~ /^hostname (\S+)/ ) {
             $self->append($line);
