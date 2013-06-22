@@ -9,7 +9,7 @@ require Farly::IPv4::Network;
 use Farly::IPv4::Object;
 
 our @ISA     = qw(Farly::IPv4::Object);
-our $VERSION = '0.25';
+our $VERSION = '0.26';
 
 sub new {
     my ( $class, $first, $last ) = @_;

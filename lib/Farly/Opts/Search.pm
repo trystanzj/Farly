@@ -9,7 +9,7 @@ use Log::Any qw($log);
 use Farly::ASA::PortFormatter;
 use Farly::ASA::ProtocolFormatter;
 
-our $VERSION = '0.25';
+our $VERSION = '0.26';
 
 sub new {
     my ( $class, $opts ) = @_;

@@ -8,7 +8,7 @@ use Log::Any qw($log);
 
 use Farly::Template::Cisco;
 
-our $VERSION = '0.25';
+our $VERSION = '0.26';
 
 sub new {
     my ( $class, $rules ) = @_;

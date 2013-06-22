@@ -7,7 +7,7 @@ use Carp;
 use Log::Any qw($log);
 use Parse::RecDescent;
 
-our $VERSION = '0.25';
+our $VERSION = '0.26';
 
 $::RD_ERRORS = 1;    # Make sure the parser dies when it encounters an error
 
