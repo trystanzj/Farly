@@ -57,8 +57,8 @@ File::Spec
 
 DEVICES SUPPORTED
 
-Cisco ASA 7.2 - 8.x.
-Cisco FWSM 3.x 
+Cisco ASA 7.2+
+Cisco FWSM 3.x+ 
 
 LIMITATIONS
 
@@ -72,7 +72,7 @@ LIMITATIONS
 
 BUGS
 
-The most likely bugs are around unrecognized variations within
+None known. The most likely bugs are around unrecognized variations within
 a firewall configuration. Farly should throw an exception and display
 the unrecognized line of configuration.
 

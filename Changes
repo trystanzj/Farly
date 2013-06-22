@@ -106,4 +106,6 @@
 
  0.24 - June 2013
    - ::Optimizer::set_l3 bug fix
-   
+
+ 0.25 - June 2013
+   - moved from Log::Log4perl to Log::Any 
