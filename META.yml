@@ -51,4 +51,4 @@ requires:
 resources:
   license: http://www.gnu.org/licenses/gpl-3.0.html
   repository: https://github.com/trystanzj/Farly
-version: 0.25
+version: 0.26
