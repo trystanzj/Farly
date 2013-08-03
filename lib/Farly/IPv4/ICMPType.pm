@@ -86,9 +86,9 @@ Represents an 8 bit ICMP type integer as an object
 
 The constructor.
 
-   my $type = Farly::IPv4::ICMPType->new();
+   my $type = Farly::IPv4::ICMPType->new( $number );
 
-No arguments.
+An digit between -1 and 255 is required.
 
 =head2 type()
 
