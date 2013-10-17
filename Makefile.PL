@@ -5,6 +5,7 @@ WriteMakefile(
 	NAME               => 'Farly',
 	VERSION_FROM       => 'lib/Farly.pm',
 	LICENSE            => 'gpl',
+	MIN_PERL_VERSION   => 5.008008,
     META_MERGE => {
          resources => {
             license     => 'http://www.gnu.org/licenses/gpl-3.0.html',
