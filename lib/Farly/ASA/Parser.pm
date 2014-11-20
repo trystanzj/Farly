@@ -416,6 +416,7 @@ route_dst :
 
 route_nexthop :
 		IPADDRESS route_options
+	|	NAME route_options
 
 route_options :
 		route_cost
